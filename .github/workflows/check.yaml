@@ -1,0 +1,36 @@
+name: Check
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install npm deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Check the build
+        run: pnpm run check
+
+      - name: Code linting
+        run: pnpm run lint
