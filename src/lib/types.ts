@@ -5,3 +5,9 @@ export interface Deposit {
 	endDate?: Date
 	frequency: number
 }
+
+export interface Portfolio {
+	apy: number
+	feeSuccess: number
+	feeMangement: number
+}
