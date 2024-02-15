@@ -3,9 +3,8 @@
 
 	interface Props {
 		deposit: Deposit
-		deleteDeposit: () => void
 	}
-	let { deposit, deleteDeposit } = $props<Props>()
+	let { deposit } = $props<Props>()
 </script>
 
 <div>
@@ -29,5 +28,5 @@
 		Frekvence
 		<input type="text" bind:value={deposit.frequency} />
 	</label>
-	<button onclick={deleteDeposit}>delete</button>
+	<slot />
 </div>
