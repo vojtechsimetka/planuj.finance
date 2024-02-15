@@ -7,6 +7,7 @@
 		feeMangement: number
 	}
 	let portfolio = $state<Portfolio>({ apy: 0, feeSuccess: 0, feeMangement: 0 })
+    let deposits = $state([{}])
 </script>
 
 <div>
@@ -30,4 +31,10 @@
 		Poplatek za správu
 		<input type="text" name="feeMangement" bind:value={portfolio.feeMangement} />
 	</label>
+</div>
+<div>
+    <h3>Vklady</h3>
+    <button>+</button>
+    <h3>Výběry</h3>
+    <button>+</button>
 </div>
