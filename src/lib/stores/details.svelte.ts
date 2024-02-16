@@ -1,10 +1,11 @@
-import type { Deposit, Portfolio } from '$lib/types'
+import type { Deposit, Portfolio, Withdrawal } from '$lib/types'
 
 interface DetailsStore {
 	age: number
 	endAge: number
 	portfolio: Portfolio
 	deposits: Deposit[]
+	withdrawals: Withdrawal[]
 }
 
 export function withDetailsStore(): DetailsStore {
@@ -12,6 +13,7 @@ export function withDetailsStore(): DetailsStore {
 	let endAge = $state(80)
 	let portfolio = $state<Portfolio>({ apy: 0, feeSuccess: 0, feeMangement: 0 })
 	let deposits = $state<Deposit[]>([])
+	let withdrawals = $state<Withdrawal[]>([])
 
 	return {
 		get age() {
@@ -37,6 +39,13 @@ export function withDetailsStore(): DetailsStore {
 		},
 		set deposits(value) {
 			deposits = value
+		},
+
+		get withdrawals() {
+			return withdrawals
+		},
+		set withdrawals(value) {
+			withdrawals = value
 		},
 	}
 }

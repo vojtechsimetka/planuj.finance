@@ -11,3 +11,10 @@ export interface Portfolio {
 	feeSuccess: number
 	feeMangement: number
 }
+export interface Withdrawal {
+	name: string
+	amount: number
+	startDate: Date
+	endDate?: Date
+	frequency: number
+}

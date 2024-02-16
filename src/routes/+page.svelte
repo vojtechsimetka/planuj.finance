@@ -31,5 +31,8 @@
 		<div>{JSON.stringify(deposit)}<a href="/deposit/{i}">edit</a></div>
 	{/each}
 	<h3>Výběry</h3>
-	<button>+</button>
+	<a href="/withdrawal">+</a>
+	{#each detailStore.withdrawals as withdrawal, i}
+		<div>{JSON.stringify(withdrawal)}<a href="/withdrawal/{i}">edit</a></div>
+	{/each}
 </div>
