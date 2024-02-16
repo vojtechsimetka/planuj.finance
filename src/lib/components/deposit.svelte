@@ -14,7 +14,7 @@
 	</label>
 	<label>
 		Výše
-		<input type="text" bind:value={deposit.amount} />
+		<input type="number" bind:value={deposit.amount} />
 	</label>
 	<label>
 		Začátek
@@ -26,7 +26,7 @@
 	</label>
 	<label>
 		Frekvence
-		<input type="text" bind:value={deposit.frequency} />
+		<input type="number" bind:value={deposit.frequency} />
 	</label>
 	<slot />
 </div>

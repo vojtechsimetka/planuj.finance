@@ -14,7 +14,7 @@
 	</label>
 	<label>
 		Výše
-		<input type="text" bind:value={withdrawal.amount} />
+		<input type="number" bind:value={withdrawal.amount} />
 	</label>
 	<label>
 		Začátek
@@ -26,7 +26,7 @@
 	</label>
 	<label>
 		Frekvence
-		<input type="text" bind:value={withdrawal.frequency} />
+		<input type="number" bind:value={withdrawal.frequency} />
 	</label>
 	<slot />
 </div>
