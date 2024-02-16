@@ -1,6 +1,7 @@
 <script lang="ts">
 	import routes from '$lib/routes'
 	import { detailStore } from '$lib/stores/details.svelte'
+	import { resultStore } from '$lib/stores/results.svelte'
 </script>
 
 <div>
@@ -48,4 +49,8 @@
 			>
 		</div>
 	{/each}
+</div>
+<div>
+	<h3>Výsledky</h3>
+	Efektivní zhodnocení {(resultStore.effectiveApy * 100).toFixed(2)} %
 </div>
