@@ -116,5 +116,6 @@
 		<h3>Výsledky</h3>
 		Efektivní zhodnocení {(resultStore.effectiveApy * 100).toFixed(2)} % Věk klienta: {age}
 		Celkové vklady: {resultStore.totalDeposited}
+		Celkové vklady: {resultStore.totalWithdrawn}
 	</div>
 {/if}

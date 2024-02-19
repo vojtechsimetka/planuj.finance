@@ -2,16 +2,13 @@ import { getEffectiveInterestRate } from '$lib/calc'
 import type { Deposit, Withdrawal } from '$lib/types'
 import { detailStore } from './details.svelte'
 
-function calculateTotal(deposits: Deposit[]): number {
+function calculateTotal(deposits: Deposit[] | Withdrawal[]): number {
 	let total: number = 0
-	console.count('calculateTotal' + deposits.length)
 	deposits.forEach((dep) => {
 		if (!dep.isRecurring) {
 			total += dep.amount
-			console.count('inside')
 		}
 	})
-	$inspect(total, deposits)
 	return total
 }
 
@@ -24,16 +21,19 @@ export function withResultsStore() {
 			detailStore.inflation,
 		),
 	)
-	let totalDeposited: number = $derived(calculateTotal(detailStore.deposits))
-	const totalWithdrawn: number = $state(0)
-
-	$inspect(detailStore.deposits.length)
+	const totalDeposited: number = $derived(calculateTotal(detailStore.deposits))
+	const totalWithdrawn: number = $derived(calculateTotal(detailStore.withdrawals))
 
 	return {
 		get effectiveApy() {
 			return effectiveApy
 		},
-		totalDeposited,
+		get totalDeposited() {
+			return totalDeposited
+		},
+		get totalWithdrawn() {
+			return totalWithdrawn
+		},
 	}
 }
 
