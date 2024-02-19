@@ -11,6 +11,8 @@ export interface Portfolio {
 	apy: number
 	feeSuccess: number
 	feeMangement: number
+	entryFee: number
+	withdrawalFee: number
 }
 export interface Withdrawal {
 	name: string

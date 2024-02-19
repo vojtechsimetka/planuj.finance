@@ -75,6 +75,14 @@
 			Poplatek za správu
 			<input type="number" bind:value={detailStore.portfolio.feeMangement} />
 		</label>
+		<label>
+			Vstupní poplatek
+			<input type="number" bind:value={detailStore.portfolio.entryFee} />
+		</label>
+		<label>
+			Poplatek za výběr
+			<input type="number" bind:value={detailStore.portfolio.withdrawalFee} />
+		</label>
 	</div>
 	<div>
 		<h3>Vklady</h3>
