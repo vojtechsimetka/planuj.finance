@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { getEffectiveInterestRate } from './calc'
+import { getEffectiveInterestRate, calculateTotal } from './calc'
 
 describe('getEffectiveInterestRate', () => {
 	test('should return 0 for all values equal to 0', () => {
@@ -56,4 +56,22 @@ describe('getEffectiveInterestRate', () => {
 		const res = getEffectiveInterestRate(0, 10, 10, 10)
 		expect(res).toBeLessThan(0)
 	})
+})
+
+describe('calculateTotal', () => {
+	test('should return 0 for empty array', () => {
+		const res = calculateTotal([])
+		expect(res).toBe(0)
+	})
+
+	// TODO: add more tests
+	/*
+		bez opakovani deposity/withdrawal
+		s jednim opakovanimi - pro den, tyden, mesic, rok
+		s vice opakovanimi - pro den, tyden, mesic, rok
+		pro vice depositu/withdrawalu s ruznymi opakovanimi
+		pro vice deposity/withdrawalu s ruznymi opakovanimi i bez opakovani
+		pro zaporne hodnoty
+		pro nulove hodnoty
+	*/
 })
