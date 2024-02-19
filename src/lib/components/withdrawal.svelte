@@ -5,7 +5,13 @@
 		withdrawal: Withdrawal
 	}
 	let { withdrawal } = $props<Props>()
-	let isRepeated = $state(false)
+
+	$effect(() => {
+		if (!withdrawal.isRecurring) {
+			withdrawal.endDate = undefined
+			withdrawal.frequency = undefined
+		}
+	})
 </script>
 
 <div>
@@ -23,9 +29,9 @@
 	</label>
 	<label>
 		Pravidelný vklad
-		<input type="checkbox" bind:checked={isRepeated} />
+		<input type="checkbox" bind:checked={withdrawal.isRecurring} />
 	</label>
-	{#if isRepeated}
+	{#if withdrawal.isRecurring}
 		<label>
 			Konec
 			<input type="date" bind:value={withdrawal.endDate} />

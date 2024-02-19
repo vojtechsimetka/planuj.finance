@@ -5,7 +5,13 @@
 		deposit: Deposit
 	}
 	let { deposit } = $props<Props>()
-	let isRepeated = $state(false)
+
+	$effect(() => {
+		if (!deposit.isRecurring) {
+			deposit.endDate = undefined
+			deposit.frequency = undefined
+		}
+	})
 </script>
 
 <div>
@@ -23,9 +29,9 @@
 	</label>
 	<label>
 		Pravidelný vklad
-		<input type="checkbox" bind:checked={isRepeated} />
+		<input type="checkbox" bind:checked={deposit.isRecurring} />
 	</label>
-	{#if isRepeated}
+	{#if deposit.isRecurring}
 		<label>
 			Konec
 			<input type="date" bind:value={deposit.endDate} />
