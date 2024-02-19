@@ -12,7 +12,6 @@
 			withdrawal.frequency = undefined
 		}
 	})
-	$inspect(withdrawal.frequency)
 </script>
 
 <div>

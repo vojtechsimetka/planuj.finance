@@ -3,7 +3,7 @@
 	import routes from '$lib/routes'
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
-	import { Currencies } from '$lib/types'
+	import { supportedCurrenciesWithLabels } from '$lib/types'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -45,7 +45,6 @@
 	}
 
 	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
-	$inspect(detailStore.currency)
 </script>
 
 {#if loading}
@@ -63,9 +62,9 @@
 		<label>
 			Měna
 			<select bind:value={detailStore.currency}>
-				<option value={Currencies[0]}>Kč</option>
-				<option value={Currencies[1]}>€</option>
-				<option value={Currencies[2]}>$</option>
+				{#each supportedCurrenciesWithLabels as currency}
+					<option value={currency.value}>{currency.label}</option>
+				{/each}
 			</select>
 		</label>
 		<label>

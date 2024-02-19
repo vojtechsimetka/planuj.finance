@@ -22,5 +22,25 @@ export interface Withdrawal {
 	endDate?: Date
 	frequency?: number
 }
-export const Currencies: string[] = ['CZK', 'EUR', 'USD']
-export type Currency = (typeof Currencies)[number]
+
+const supportedCurrencies = ['CZK', 'EUR', 'USD'] as const
+export type Currency = (typeof supportedCurrencies)[number]
+
+interface CurrencyWithLabel {
+	label: string
+	value: Currency
+}
+export const supportedCurrenciesWithLabels: CurrencyWithLabel[] = [
+	{
+		value: 'CZK',
+		label: 'Kč',
+	},
+	{
+		value: 'EUR',
+		label: '€',
+	},
+	{
+		value: 'USD',
+		label: '$',
+	},
+] as const
