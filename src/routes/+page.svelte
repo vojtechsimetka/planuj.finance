@@ -4,16 +4,17 @@
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
 
+	let oldHash = $state('')
+	let loading = $state(true)
+
 	$effect(() => {
 		const hash = detailStore.toUrl()
 
 		if (window.location.hash !== hash) {
+			oldHash = hash
 			window.location.hash = hash
 		}
 	})
-
-	let oldHash = $state('')
-	let loading = $state(true)
 
 	page.subscribe(({ url }) => {
 		if (!detailStore) return
@@ -28,7 +29,8 @@
 		detailStore.restoreFromUrl(newHash)
 
 		oldHash = newHash
-		loading = false
+
+		setTimeout(() => (loading = false), 0)
 	})
 </script>
 
