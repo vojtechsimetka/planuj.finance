@@ -32,19 +32,18 @@
 
 		setTimeout(() => (loading = false), 0)
 	})
-	function calculateAge(dateOFBirth: Date) {
+
+	function calculateAge(dateOfBirth: Date) {
 		const today = new Date()
-		let age = today.getFullYear() - dateOFBirth.getFullYear()
-		const m = today.getMonth() - dateOFBirth.getMonth()
-		if (m < 0 || (m === 0 && today.getDate() < dateOFBirth.getDate())) {
-			age--
-		}
+		let age = today.getFullYear() - dateOfBirth.getFullYear()
+		const m = today.getMonth() - dateOfBirth.getMonth()
+
+		// The birthday hasn't occurred yet this year
+		if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) return age - 1
 		return age
 	}
-	let age = $state(calculateAge(new Date(detailStore.dateOfBirth)))
-	$effect(() => {
-		age = calculateAge(new Date(detailStore.dateOfBirth))
-	})
+
+	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
 </script>
 
 {#if loading}
