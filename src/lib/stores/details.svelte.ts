@@ -1,6 +1,8 @@
 import type { Deposit, Portfolio, Withdrawal } from '$lib/types'
+import { base64ToBytes, bytesToBase64 } from '$lib/utils'
+import pako from 'pako'
 
-interface DetailsStore {
+export interface DetailsStore {
 	age: number
 	endAge: number
 	inflation: number
@@ -14,6 +16,8 @@ interface DetailsStore {
 	addWithdrawal: (withdrawal: Withdrawal) => void
 	removeWithdrawal: (index: number) => void
 	saveWithdrawal: (index: number, withdrawal: Withdrawal) => void
+	toUrl: () => string
+	restoreFromUrl: (url: string) => void
 }
 
 function add<T>(array: T[], item: T) {
@@ -95,6 +99,35 @@ export function withDetailsStore(): DetailsStore {
 		},
 		saveWithdrawal(index, withdrawal) {
 			save(withdrawals, index, withdrawal)
+		},
+		toUrl() {
+			const data = JSON.stringify({
+				age,
+				endAge,
+				inflation,
+				portfolio,
+				deposits,
+				withdrawals,
+			})
+			return bytesToBase64(pako.deflate(data))
+		},
+		restoreFromUrl(url: string) {
+			try {
+				const uint8 = base64ToBytes(url)
+				const decodedData = pako.inflate(uint8, { to: 'string' })
+				const data = JSON.parse(decodedData)
+
+				age = data.age
+				endAge = data.endAge
+				inflation = data.inflation
+				// FIXME: should use different comparison which does not require string allocation
+				if (JSON.stringify(portfolio) !== JSON.stringify(data.portfolio)) portfolio = data.portfolio
+				if (JSON.stringify(deposits) !== JSON.stringify(data.deposits)) deposits = data.deposits
+				if (JSON.stringify(withdrawals) !== JSON.stringify(data.withdrawals))
+					withdrawals = data.withdrawals
+			} catch (error) {
+				console.error('Error restoring from URL', error)
+			}
 		},
 	}
 }
