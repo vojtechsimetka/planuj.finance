@@ -1,3 +1,5 @@
+import type { Deposit, Withdrawal } from './types'
+
 export function getEffectiveInterestRate(
 	interestRate: number,
 	successFee: number,
@@ -10,4 +12,25 @@ export function getEffectiveInterestRate(
 			(1 - inflation / 100) -
 		1
 	)
+}
+
+export function calculateTotal(operation: Deposit[] | Withdrawal[]): number {
+	let total: number = 0
+	try {
+		operation.forEach((o) => {
+			if (o.isRecurring && o.endDate !== undefined && o.frequency !== undefined) {
+				const startDate = new Date(o.startDate).getTime()
+				const endDate = new Date(o.endDate).getTime()
+				const timeOfInvestment = Math.floor((endDate - startDate) / o.frequency / 1000)
+				total += o.amount * timeOfInvestment
+				total += o.amount
+			} else {
+				total += o.amount
+			}
+		})
+		return total
+	} catch (error) {
+		console.error(error)
+		return -1
+	}
 }

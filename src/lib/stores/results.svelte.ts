@@ -1,19 +1,5 @@
-import { getEffectiveInterestRate } from '$lib/calc'
-import type { Deposit, Withdrawal } from '$lib/types'
+import { calculateTotal, getEffectiveInterestRate } from '$lib/calc'
 import { detailStore } from './details.svelte'
-
-function calculateTotal(operation: Deposit[] | Withdrawal[]): number {
-	let total: number = 0
-	operation.forEach((o) => {
-		if (o.isRecurring && o.endDate !== undefined && o.frequency !== undefined) {
-			let timeOfInvestment =Math.floor(((o.endDate.getTime() - o.startDate.getTime() )/ o.frequency)/1000)
-			total += o.amount * timeOfInvestment
-		}else{
-			total += o.amount
-		}
-	})
-	return total
-}
 
 export function withResultsStore() {
 	const effectiveApy = $derived(

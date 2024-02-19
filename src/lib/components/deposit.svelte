@@ -13,7 +13,6 @@
 			deposit.frequency = undefined
 		}
 	})
-	$inspect(deposit.frequency)
 </script>
 
 <div>

@@ -45,6 +45,8 @@
 	}
 
 	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
+
+	$inspect(resultStore.totalDeposited)
 </script>
 
 {#if loading}
