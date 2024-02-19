@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Withdrawal } from '$lib/types'
-
+	import { day, week, month, year } from '$lib/utils'
 	interface Props {
 		withdrawal: Withdrawal
 	}
@@ -12,6 +12,7 @@
 			withdrawal.frequency = undefined
 		}
 	})
+	$inspect(withdrawal.frequency)
 </script>
 
 <div>
@@ -28,7 +29,7 @@
 		<input type="date" bind:value={withdrawal.startDate} />
 	</label>
 	<label>
-		Pravidelný vklad
+		Pravidelný výběr
 		<input type="checkbox" bind:checked={withdrawal.isRecurring} />
 	</label>
 	{#if withdrawal.isRecurring}
@@ -38,7 +39,12 @@
 		</label>
 		<label>
 			Frekvence
-			<input type="number" bind:value={withdrawal.frequency} />
+			<select bind:value={withdrawal.frequency}>
+				<option value={day}>Denně</option>
+				<option value={week}>Týdně</option>
+				<option value={month}>Měsíčně</option>
+				<option value={year}>Ročně</option>
+			</select>
 		</label>
 	{/if}
 	<slot />

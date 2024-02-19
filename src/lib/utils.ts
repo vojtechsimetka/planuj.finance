@@ -1,3 +1,8 @@
+export const day = 24 * 60 * 60
+export const week = 7 * day
+export const year = 365.25 * day
+export const month = year / 12
+
 function checkInt(x: number) {
 	return (x | 0) === x
 }
