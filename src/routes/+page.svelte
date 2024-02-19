@@ -32,6 +32,19 @@
 
 		setTimeout(() => (loading = false), 0)
 	})
+	function calculateAge(dateOFBirth: Date) {
+		const today = new Date()
+		let age = today.getFullYear() - dateOFBirth.getFullYear()
+		const m = today.getMonth() - dateOFBirth.getMonth()
+		if (m < 0 || (m === 0 && today.getDate() < dateOFBirth.getDate())) {
+			age--
+		}
+		return age
+	}
+	let age = $state(calculateAge(new Date(detailStore.dateOfBirth)))
+	$effect(() => {
+		age = calculateAge(new Date(detailStore.dateOfBirth))
+	})
 </script>
 
 {#if loading}
@@ -39,8 +52,8 @@
 {:else}
 	<div>
 		<label>
-			Věk
-			<input type="number" bind:value={detailStore.age} />
+			Datum narození
+			<input type="date" bind:value={detailStore.dateOfBirth} />
 		</label>
 		<label>
 			Věk při ukončení investic
@@ -85,6 +98,6 @@
 	</div>
 	<div>
 		<h3>Výsledky</h3>
-		Efektivní zhodnocení {(resultStore.effectiveApy * 100).toFixed(2)} %
+		Efektivní zhodnocení {(resultStore.effectiveApy * 100).toFixed(2)} % Věk klienta: {age}
 	</div>
 {/if}

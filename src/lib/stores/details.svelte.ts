@@ -3,7 +3,7 @@ import { base64ToBytes, bytesToBase64 } from '$lib/utils'
 import pako from 'pako'
 
 export interface DetailsStore {
-	age: number
+	dateOfBirth: Date
 	endAge: number
 	inflation: number
 	portfolio: Portfolio
@@ -36,7 +36,7 @@ function save<T>(array: T[], index: number, item: T) {
 }
 
 export function withDetailsStore(): DetailsStore {
-	let age = $state(18)
+	let dateOfBirth = $state(new Date())
 	let endAge = $state(80)
 	let inflation = $state(0)
 	let portfolio = $state<Portfolio>({ apy: 0, feeSuccess: 0, feeMangement: 0 })
@@ -44,11 +44,11 @@ export function withDetailsStore(): DetailsStore {
 	let withdrawals = $state<Withdrawal[]>([])
 
 	return {
-		get age() {
-			return age
+		get dateOfBirth() {
+			return dateOfBirth
 		},
-		set age(value) {
-			age = value
+		set dateOfBirth(value) {
+			dateOfBirth = value
 		},
 		get endAge() {
 			return endAge
@@ -102,7 +102,7 @@ export function withDetailsStore(): DetailsStore {
 		},
 		toUrl() {
 			const data = JSON.stringify({
-				age,
+				dateOfBirth,
 				endAge,
 				inflation,
 				portfolio,
@@ -117,7 +117,7 @@ export function withDetailsStore(): DetailsStore {
 				const decodedData = pako.inflate(uint8, { to: 'string' })
 				const data = JSON.parse(decodedData)
 
-				age = data.age
+				dateOfBirth = data.dateOfBirth
 				endAge = data.endAge
 				inflation = data.inflation
 				// FIXME: should use different comparison which does not require string allocation
