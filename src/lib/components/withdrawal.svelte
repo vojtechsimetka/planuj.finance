@@ -5,6 +5,7 @@
 		withdrawal: Withdrawal
 	}
 	let { withdrawal } = $props<Props>()
+	let isRepeated = $state(false)
 </script>
 
 <div>
@@ -21,12 +22,18 @@
 		<input type="date" bind:value={withdrawal.startDate} />
 	</label>
 	<label>
-		Konec
-		<input type="date" bind:value={withdrawal.endDate} />
+		Pravidelný vklad
+		<input type="checkbox" bind:checked={isRepeated} />
 	</label>
-	<label>
-		Frekvence
-		<input type="number" bind:value={withdrawal.frequency} />
-	</label>
+	{#if isRepeated}
+		<label>
+			Konec
+			<input type="date" bind:value={withdrawal.endDate} />
+		</label>
+		<label>
+			Frekvence
+			<input type="number" bind:value={withdrawal.frequency} />
+		</label>
+	{/if}
 	<slot />
 </div>

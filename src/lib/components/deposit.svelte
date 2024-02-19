@@ -5,6 +5,7 @@
 		deposit: Deposit
 	}
 	let { deposit } = $props<Props>()
+	let isRepeated = $state(false)
 </script>
 
 <div>
@@ -21,12 +22,18 @@
 		<input type="date" bind:value={deposit.startDate} />
 	</label>
 	<label>
-		Konec
-		<input type="date" bind:value={deposit.endDate} />
+		Pravidelný vklad
+		<input type="checkbox" bind:checked={isRepeated} />
 	</label>
-	<label>
-		Frekvence
-		<input type="number" bind:value={deposit.frequency} />
-	</label>
+	{#if isRepeated}
+		<label>
+			Konec
+			<input type="date" bind:value={deposit.endDate} />
+		</label>
+		<label>
+			Frekvence
+			<input type="number" bind:value={deposit.frequency} />
+		</label>
+	{/if}
 	<slot />
 </div>
