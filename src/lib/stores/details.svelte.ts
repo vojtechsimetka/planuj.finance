@@ -1,4 +1,4 @@
-import type { Deposit, Portfolio, Withdrawal, Currencies, Currency } from '$lib/types'
+import type { Deposit, Portfolio, Withdrawal, Currency } from '$lib/types'
 import { base64ToBytes, bytesToBase64 } from '$lib/utils'
 import pako from 'pako'
 
