@@ -16,7 +16,7 @@
 			name: '',
 			amount: 0,
 			startDate: new Date(),
-			frequency: 1,
+			isRecurring: false,
 		},
 	)
 	function save() {

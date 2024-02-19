@@ -5,6 +5,13 @@
 		withdrawal: Withdrawal
 	}
 	let { withdrawal } = $props<Props>()
+
+	$effect(() => {
+		if (!withdrawal.isRecurring) {
+			withdrawal.endDate = undefined
+			withdrawal.frequency = undefined
+		}
+	})
 </script>
 
 <div>
@@ -21,12 +28,18 @@
 		<input type="date" bind:value={withdrawal.startDate} />
 	</label>
 	<label>
-		Konec
-		<input type="date" bind:value={withdrawal.endDate} />
+		Pravidelný vklad
+		<input type="checkbox" bind:checked={withdrawal.isRecurring} />
 	</label>
-	<label>
-		Frekvence
-		<input type="number" bind:value={withdrawal.frequency} />
-	</label>
+	{#if withdrawal.isRecurring}
+		<label>
+			Konec
+			<input type="date" bind:value={withdrawal.endDate} />
+		</label>
+		<label>
+			Frekvence
+			<input type="number" bind:value={withdrawal.frequency} />
+		</label>
+	{/if}
 	<slot />
 </div>

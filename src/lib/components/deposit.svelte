@@ -5,6 +5,13 @@
 		deposit: Deposit
 	}
 	let { deposit } = $props<Props>()
+
+	$effect(() => {
+		if (!deposit.isRecurring) {
+			deposit.endDate = undefined
+			deposit.frequency = undefined
+		}
+	})
 </script>
 
 <div>
@@ -21,12 +28,18 @@
 		<input type="date" bind:value={deposit.startDate} />
 	</label>
 	<label>
-		Konec
-		<input type="date" bind:value={deposit.endDate} />
+		Pravidelný vklad
+		<input type="checkbox" bind:checked={deposit.isRecurring} />
 	</label>
-	<label>
-		Frekvence
-		<input type="number" bind:value={deposit.frequency} />
-	</label>
+	{#if deposit.isRecurring}
+		<label>
+			Konec
+			<input type="date" bind:value={deposit.endDate} />
+		</label>
+		<label>
+			Frekvence
+			<input type="number" bind:value={deposit.frequency} />
+		</label>
+	{/if}
 	<slot />
 </div>
