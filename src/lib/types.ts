@@ -22,3 +22,5 @@ export interface Withdrawal {
 	endDate?: Date
 	frequency?: number
 }
+export const Currencies: string[] = ['CZK', 'EUR', 'USD']
+export type Currency = (typeof Currencies)[number]
