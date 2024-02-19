@@ -3,6 +3,7 @@
 	import routes from '$lib/routes'
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
+	import { supportedCurrenciesWithLabels } from '$lib/types'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -57,6 +58,14 @@
 		<label>
 			Věk při ukončení investic
 			<input type="number" bind:value={detailStore.endAge} />
+		</label>
+		<label>
+			Měna
+			<select bind:value={detailStore.currency}>
+				{#each supportedCurrenciesWithLabels as currency}
+					<option value={currency.value}>{currency.label}</option>
+				{/each}
+			</select>
 		</label>
 		<label>
 			inflace

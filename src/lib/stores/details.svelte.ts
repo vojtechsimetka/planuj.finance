@@ -1,10 +1,11 @@
-import type { Deposit, Portfolio, Withdrawal } from '$lib/types'
+import type { Deposit, Portfolio, Withdrawal, Currency } from '$lib/types'
 import { base64ToBytes, bytesToBase64 } from '$lib/utils'
 import pako from 'pako'
 
 export interface DetailsStore {
 	dateOfBirth: Date
 	endAge: number
+	currency: Currency
 	inflation: number
 	portfolio: Portfolio
 	deposits: Deposit[]
@@ -38,6 +39,7 @@ function save<T>(array: T[], index: number, item: T) {
 export function withDetailsStore(): DetailsStore {
 	let dateOfBirth = $state(new Date())
 	let endAge = $state(80)
+	let currency = $state<Currency>('CZK')
 	let inflation = $state(0)
 	let portfolio = $state<Portfolio>({
 		apy: 0,
@@ -61,6 +63,12 @@ export function withDetailsStore(): DetailsStore {
 		},
 		set endAge(value) {
 			endAge = value
+		},
+		get currency() {
+			return currency
+		},
+		set currency(value) {
+			currency = value
 		},
 		get inflation() {
 			return inflation
@@ -110,6 +118,7 @@ export function withDetailsStore(): DetailsStore {
 			const data = JSON.stringify({
 				dateOfBirth,
 				endAge,
+				currency,
 				inflation,
 				portfolio,
 				deposits,
@@ -125,6 +134,7 @@ export function withDetailsStore(): DetailsStore {
 
 				dateOfBirth = data.dateOfBirth
 				endAge = data.endAge
+				currency = data.currency
 				inflation = data.inflation
 				// FIXME: should use different comparison which does not require string allocation
 				if (JSON.stringify(portfolio) !== JSON.stringify(data.portfolio)) portfolio = data.portfolio
