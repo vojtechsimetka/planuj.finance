@@ -39,7 +39,7 @@ export function withDetailsStore(): DetailsStore {
 	let age = $state(18)
 	let endAge = $state(80)
 	let inflation = $state(0)
-	let portfolio = $state<Portfolio>({ apy: 0, feeSuccess: 0, feeMangement: 0 })
+	let portfolio = $state<Portfolio>({ apy: 0, feeSuccess: 0, feeMangement: 0, entryFee: 0, withdrawalFee: 0 })
 	let deposits = $state<Deposit[]>([])
 	let withdrawals = $state<Withdrawal[]>([])
 
