@@ -1,4 +1,4 @@
-import { calculateTotal, getEffectiveInterestRate } from '$lib/calc'
+import { calculateFee, calculateTotal, getEffectiveInterestRate } from '$lib/calc'
 import { detailStore } from './details.svelte'
 
 export function withResultsStore() {
@@ -13,6 +13,9 @@ export function withResultsStore() {
 	const totalDeposited: number = $derived(calculateTotal(detailStore.deposits))
 	const totalWithdrawn: number = $derived(calculateTotal(detailStore.withdrawals))
 
+	const totalDepositFees: number = $derived(calculateFee(totalDeposited, totalWithdrawn).totalDepositFees)
+	const totalWithdrawFees: number = $derived(calculateFee(totalDeposited, totalWithdrawn).totalWithdrawFees)
+
 	return {
 		get effectiveApy() {
 			return effectiveApy
@@ -23,6 +26,12 @@ export function withResultsStore() {
 		get totalWithdrawn() {
 			return totalWithdrawn
 		},
+		get totalDepositFees() {
+			return totalDepositFees
+        },
+		get totalWithdrawFees() {
+			return totalWithdrawFees
+        },
 	}
 }
 

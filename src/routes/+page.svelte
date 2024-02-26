@@ -46,7 +46,6 @@
 
 	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
 
-	$inspect(resultStore.totalDeposited)
 </script>
 
 {#if loading}
@@ -118,6 +117,8 @@
 		<h3>Výsledky</h3>
 		Efektivní zhodnocení {(resultStore.effectiveApy * 100).toFixed(2)} % Věk klienta: {age}
 		Celkové vklady: {resultStore.totalDeposited}
-		Celkové vklady: {resultStore.totalWithdrawn}
+		Celkové výbery: {resultStore.totalWithdrawn}
+		Poplatek za vklady: {resultStore.totalDepositFees}
+		Poplatek za výběry: {resultStore.totalWithdrawFees}
 	</div>
 {/if}
