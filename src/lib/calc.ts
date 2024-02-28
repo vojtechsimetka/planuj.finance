@@ -37,7 +37,7 @@ export function calculateTotal(operation: Deposit[] | Withdrawal[]): number {
 }
 
 export function calculateFee(totalDeposited: number, totalWithdrawn: number) {
-	let totalDepositFees: number = totalDeposited * (detailStore.portfolio.entryFee / 100)
-	let totalWithdrawFees: number = totalWithdrawn * (detailStore.portfolio.withdrawalFee / 100)
+	const totalDepositFees: number = totalDeposited * (detailStore.portfolio.entryFee / 100)
+	const totalWithdrawFees: number = totalWithdrawn * (detailStore.portfolio.withdrawalFee / 100)
 	return { totalDepositFees, totalWithdrawFees }
 }
