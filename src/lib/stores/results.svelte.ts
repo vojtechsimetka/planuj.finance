@@ -13,8 +13,12 @@ export function withResultsStore() {
 	const totalDeposited: number = $derived(calculateTotal(detailStore.deposits))
 	const totalWithdrawn: number = $derived(calculateTotal(detailStore.withdrawals))
 
-	const totalDepositFees: number = $derived(calculateFee(totalDeposited, totalWithdrawn).totalDepositFees)
-	const totalWithdrawFees: number = $derived(calculateFee(totalDeposited, totalWithdrawn).totalWithdrawFees)
+	const totalDepositFees: number = $derived(
+		calculateFee(totalDeposited, totalWithdrawn).totalDepositFees,
+	)
+	const totalWithdrawFees: number = $derived(
+		calculateFee(totalDeposited, totalWithdrawn).totalWithdrawFees,
+	)
 
 	return {
 		get effectiveApy() {
@@ -28,10 +32,10 @@ export function withResultsStore() {
 		},
 		get totalDepositFees() {
 			return totalDepositFees
-        },
+		},
 		get totalWithdrawFees() {
 			return totalWithdrawFees
-        },
+		},
 	}
 }
 

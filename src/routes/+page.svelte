@@ -45,7 +45,6 @@
 	}
 
 	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
-
 </script>
 
 {#if loading}
