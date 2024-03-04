@@ -1,4 +1,3 @@
-import { detailStore } from './stores/details.svelte'
 import type { Deposit, Withdrawal } from './types'
 
 export function getEffectiveInterestRate(
@@ -34,10 +33,4 @@ export function calculateTotal(operation: Deposit[] | Withdrawal[]): number {
 		console.error(error)
 		return -1
 	}
-}
-
-export function calculateFee(totalDeposited: number, totalWithdrawn: number) {
-	const totalDepositFees: number = totalDeposited * (detailStore.portfolio.entryFee / 100)
-	const totalWithdrawFees: number = totalWithdrawn * (detailStore.portfolio.withdrawalFee / 100)
-	return { totalDepositFees, totalWithdrawFees }
 }
