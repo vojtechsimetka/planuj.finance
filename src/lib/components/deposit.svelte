@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Deposit } from '$lib/types'
-	import { day, week, month, year } from '$lib/utils'
 
 	interface Props {
 		deposit: Deposit
@@ -13,7 +12,6 @@
 			deposit.frequency = undefined
 		}
 	})
-	$inspect(deposit.frequency)
 </script>
 
 <div>
@@ -41,10 +39,10 @@
 		<label>
 			Frekvence
 			<select bind:value={deposit.frequency}>
-				<option value={day}>Denně</option>
-				<option value={week}>Týdně</option>
-				<option value={month}>Měsíčně</option>
-				<option value={year}>Ročně</option>
+				<option value="day">Denně</option>
+				<option value="week">Týdně</option>
+				<option value="month">Měsíčně</option>
+				<option value="year">Ročně</option>
 			</select>
 		</label>
 	{/if}
