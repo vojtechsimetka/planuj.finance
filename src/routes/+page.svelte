@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Chart from 'chart.js/auto'
 	import { page } from '$app/stores'
 	import routes from '$lib/routes'
 	import { detailStore } from '$lib/stores/details.svelte'
@@ -45,6 +46,72 @@
 	}
 
 	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
+
+	let canvas: HTMLCanvasElement | null = $state(null)
+	let chart: Chart | null = $state(null)
+
+	$effect(() => {
+		const getLabels = () => resultStore.graphData.map((row) => row.date.getFullYear())
+		const getTotalInvested = () => resultStore.graphData.map((row) => row.totalInvested)
+		const getTotalDeposited = () => resultStore.graphData.map((row) => row.totalDeposited)
+		const getTotalWithdrawn = () => resultStore.graphData.map((row) => row.totalWithdrawn)
+		const getTotalFees = () => resultStore.graphData.map((row) => row.totalFees)
+
+		if (canvas && !chart) {
+			chart = new Chart(canvas, {
+				type: 'line',
+				data: {
+					labels: getLabels(),
+					datasets: [
+						{
+							label: 'Invested value',
+							data: getTotalInvested(),
+							fill: {
+								target: 'origin',
+							},
+						},
+						{
+							label: 'Deposited',
+							data: getTotalDeposited(),
+							fill: {
+								target: 'origin',
+							},
+						},
+						{
+							label: 'Withdrawn',
+							data: getTotalWithdrawn(),
+							fill: {
+								target: 'origin',
+							},
+						},
+						{
+							label: 'Deposit & Withdraw fees',
+							data: getTotalFees(),
+							fill: {
+								target: 'origin',
+							},
+						},
+					],
+				},
+				options: {
+					scales: {
+						y: {
+							min: 0,
+						},
+					},
+				},
+			})
+		}
+
+		if (chart && resultStore.graphData) {
+			chart.data.labels = getLabels()
+			chart.data.datasets[0].data = getTotalInvested()
+			chart.data.datasets[1].data = getTotalDeposited()
+			chart.data.datasets[2].data = getTotalWithdrawn()
+			chart.data.datasets[3].data = getTotalFees()
+			chart.update()
+		}
+	})
 </script>
 
 {#if loading}
@@ -111,6 +178,9 @@
 				>
 			</div>
 		{/each}
+	</div>
+	<div class="chart">
+		<canvas bind:this={canvas} />
 	</div>
 	<div>
 		<h3>Výsledky</h3>
