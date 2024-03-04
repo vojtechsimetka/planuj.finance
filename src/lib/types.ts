@@ -4,7 +4,7 @@ export interface Deposit {
 	startDate: Date
 	isRecurring: boolean
 	endDate?: Date
-	frequency?: number
+	frequency?: 'day' | 'week' | 'month' | 'year'
 }
 
 export interface Portfolio {

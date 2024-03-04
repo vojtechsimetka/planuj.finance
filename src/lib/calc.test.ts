@@ -1,8 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import { getEffectiveInterestRate, calculateTotal } from './calc'
-import type { Deposit, Withdrawal } from './types'
+import type { Deposit } from './types'
 import { withDetailsStore } from './stores/details.svelte'
-import { day, week, month, year } from './utils'
 
 describe('getEffectiveInterestRate', () => {
 	test('should return 0 for all values equal to 0', () => {
@@ -67,16 +66,6 @@ describe('calculateTotal', () => {
 		expect(res).toBe(0)
 	})
 
-	// TODO: add more tests
-	/*
-		bez opakovani deposity/withdrawal
-		s jednim opakovanimi - pro den, tyden, mesic, rok
-		s vice opakovanimi - pro den, tyden, mesic, rok
-		pro vice depositu/withdrawalu s ruznymi opakovanimi
-		pro vice deposity/withdrawalu s ruznymi opakovanimi i bez opakovani
-		pro zaporne hodnoty
-		pro nulove hodnoty
-	*/
 	test('should calculate total for a single non-recurring deposit', () => {
 		const detailStore = withDetailsStore()
 		const deposit: Deposit = {
@@ -97,12 +86,12 @@ describe('calculateTotal', () => {
 			amount: 100,
 			isRecurring: true,
 			startDate: new Date(2020, 1, 1),
-			frequency: day,
-			endDate: new Date(2020, 1, 2),
+			frequency: 'day',
+			endDate: new Date(2020, 1, 1),
 		}
 		detailStore.addDeposit(deposit)
 		const res = calculateTotal(detailStore.deposits)
-		expect(res).toBe(200)
+		expect(res).toBe(100)
 	})
 	test('should calculate total for a single recurring deposit (weekly)', () => {
 		const detailStore = withDetailsStore()
@@ -111,7 +100,7 @@ describe('calculateTotal', () => {
 			amount: 100,
 			isRecurring: true,
 			startDate: new Date(2020, 1, 1),
-			frequency: week,
+			frequency: 'week',
 			endDate: new Date(2020, 1, 8),
 		}
 		detailStore.addDeposit(deposit)
@@ -124,13 +113,13 @@ describe('calculateTotal', () => {
 			name: 'test',
 			amount: 100,
 			isRecurring: true,
-			startDate: new Date(2020, 1, 1),
-			frequency: week,
-			endDate: new Date(2020, 2, 2),
+			startDate: new Date(2020, 2, 1),
+			frequency: 'month',
+			endDate: new Date(2020, 2, 1),
 		}
 		detailStore.addDeposit(deposit)
 		const res = calculateTotal(detailStore.deposits)
-		expect(res).toBe(200)
+		expect(res).toBe(100)
 	})
 	test('should calculate total for a single recurring deposit (yearly)', () => {
 		const detailStore = withDetailsStore()
@@ -139,23 +128,106 @@ describe('calculateTotal', () => {
 			amount: 100,
 			isRecurring: true,
 			startDate: new Date(2020, 1, 1),
-			frequency: year,
-			endDate: new Date(2021, 2, 2),
+			frequency: 'year',
+			endDate: new Date(2020, 1, 1),
 		}
 		detailStore.addDeposit(deposit)
 		const res = calculateTotal(detailStore.deposits)
-		expect(res).toBe(200)
+		expect(res).toBe(100)
 	})
 
 	test('should calculate total for multiple non-recurring deposits', () => {
 		const detailStore = withDetailsStore()
 		const deposits: Deposit[] = [
-			{ name: 'test', amount: 100, startDate: new Date(), isRecurring: false },
-			{ name: 'test', amount: 200, startDate: new Date(), isRecurring: false },
-			{ name: 'test', amount: 300, startDate: new Date(), isRecurring: false },
+			{ name: 'test', amount: 100, startDate: new Date(2020, 1, 1), isRecurring: false },
+			{ name: 'test', amount: 200, startDate: new Date(2020, 1, 1), isRecurring: false },
+			{ name: 'test', amount: 300, startDate: new Date(2020, 1, 1), isRecurring: false },
 		]
 		deposits.forEach((deposit) => detailStore.addDeposit(deposit))
 		const res = calculateTotal(detailStore.deposits)
 		expect(res).toBe(600)
+	})
+
+	test('should calculate total for multiple recurring deposits', () => {
+		const detailStore = withDetailsStore()
+		const deposits: Deposit[] = [
+			{
+				name: 'test',
+				amount: 100,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'day',
+				endDate: new Date(2020, 1, 2),
+			},
+			{
+				name: 'test',
+				amount: 1000,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'week',
+				endDate: new Date(2020, 1, 8),
+			},
+			{
+				name: 'test',
+				amount: 10000,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'month',
+				endDate: new Date(2020, 2, 1),
+			},
+			{
+				name: 'test',
+				amount: 100000,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'year',
+				endDate: new Date(2021, 1, 1),
+			},
+		]
+		deposits.forEach((deposit) => detailStore.addDeposit(deposit))
+		const res = calculateTotal(detailStore.deposits)
+		expect(res).toBe(222200)
+	})
+
+	test('should calculate total for mixed deposits', () => {
+		const detailStore = withDetailsStore()
+		const deposits: Deposit[] = [
+			{ name: 'test', amount: 100, startDate: new Date(2020, 1, 1), isRecurring: false },
+			{
+				name: 'test',
+				amount: 100,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'day',
+				endDate: new Date(2020, 1, 2),
+			},
+			{
+				name: 'test',
+				amount: 1000,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'week',
+				endDate: new Date(2020, 1, 8),
+			},
+			{
+				name: 'test',
+				amount: 10000,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'month',
+				endDate: new Date(2020, 2, 1),
+			},
+			{
+				name: 'test',
+				amount: 100000,
+				startDate: new Date(2020, 1, 1),
+				isRecurring: true,
+				frequency: 'year',
+				endDate: new Date(2021, 1, 1),
+			},
+		]
+		deposits.forEach((deposit) => detailStore.addDeposit(deposit))
+		const res = calculateTotal(detailStore.deposits)
+		expect(res).toBe(222300)
 	})
 })
