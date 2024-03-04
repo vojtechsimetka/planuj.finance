@@ -1,11 +1,10 @@
-export interface Deposit {
-	name: string
-	amount: number
-	startDate: Date
-	isRecurring: boolean
-	endDate?: Date
-	frequency?: 'day' | 'week' | 'month' | 'year'
-}
+import { z } from 'zod'
+import type { depositWithdrawalFormSchema, depositWithdrawalSchema } from './schemas'
+
+export type DepositForm = z.infer<typeof depositWithdrawalFormSchema>
+export type WithdrawalForm = z.infer<typeof depositWithdrawalFormSchema>
+export type Deposit = z.infer<typeof depositWithdrawalSchema>
+export type Withdrawal = z.infer<typeof depositWithdrawalSchema>
 
 export interface Portfolio {
 	apy: number
@@ -13,14 +12,6 @@ export interface Portfolio {
 	feeMangement: number
 	entryFee: number
 	withdrawalFee: number
-}
-export interface Withdrawal {
-	name: string
-	amount: number
-	startDate: Date
-	isRecurring: boolean
-	endDate?: Date
-	frequency?: number
 }
 
 const supportedCurrencies = ['CZK', 'EUR', 'USD'] as const
