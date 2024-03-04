@@ -6,6 +6,7 @@ interface GraphRecord {
 	totalInvested: number
 	totalDeposited: number
 	totalWithdrawn: number
+	totalFees: number
 }
 
 export function withResultsStore() {
@@ -42,6 +43,7 @@ export function withResultsStore() {
 		let totalInvested = 0
 		let totalDeposited = 0
 		let totalWithdrawn = 0
+		let totalFees = 0
 
 		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
 		for (let i = new Date(start); i < end; i.setDate(i.getDate() + 1)) {
@@ -49,8 +51,10 @@ export function withResultsStore() {
 
 			detailStore.deposits.forEach((deposit) => {
 				if (!deposit.isRecurring && isEqualDate(new Date(deposit.startDate), i)) {
+					const fee = deposit.amount * (detailStore.portfolio.entryFee / 100)
 					totalDeposited += deposit.amount
-					totalInvested += deposit.amount * (1 - detailStore.portfolio.entryFee / 100)
+					totalInvested += deposit.amount - fee
+					totalFees += fee
 				}
 
 				// TODO: Implement recurring deposits
@@ -58,9 +62,13 @@ export function withResultsStore() {
 
 			detailStore.withdrawals.forEach((withdrawal) => {
 				if (!withdrawal.isRecurring && isEqualDate(new Date(withdrawal.startDate), i)) {
-					totalInvested -= withdrawal.amount * (1 + detailStore.portfolio.withdrawalFee / 100)
+					const fee = withdrawal.amount * (detailStore.portfolio.withdrawalFee / 100)
+					totalInvested -= withdrawal.amount + fee
 					totalWithdrawn += withdrawal.amount
+					totalFees += fee
 				}
+
+				// TODO: Implement recurring withdrawals
 			})
 
 			graphData.push({
@@ -68,6 +76,7 @@ export function withResultsStore() {
 				totalInvested,
 				totalDeposited,
 				totalWithdrawn,
+				totalFees,
 			})
 		}
 

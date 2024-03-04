@@ -5,8 +5,6 @@
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
 	import { supportedCurrenciesWithLabels } from '$lib/types'
-	import { onMount } from 'svelte'
-	import { get } from 'svelte/store'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -57,6 +55,7 @@
 		const getTotalInvested = () => resultStore.graphData.map((row) => row.totalInvested)
 		const getTotalDeposited = () => resultStore.graphData.map((row) => row.totalDeposited)
 		const getTotalWithdrawn = () => resultStore.graphData.map((row) => row.totalWithdrawn)
+		const getTotalFees = () => resultStore.graphData.map((row) => row.totalFees)
 
 		if (canvas && !chart) {
 			chart = new Chart(canvas, {
@@ -85,6 +84,13 @@
 								target: 'origin',
 							},
 						},
+						{
+							label: 'Deposit & Withdraw fees',
+							data: getTotalFees(),
+							fill: {
+								target: 'origin',
+							},
+						},
 					],
 				},
 				options: {
@@ -102,6 +108,7 @@
 			chart.data.datasets[0].data = getTotalInvested()
 			chart.data.datasets[1].data = getTotalDeposited()
 			chart.data.datasets[2].data = getTotalWithdrawn()
+			chart.data.datasets[3].data = getTotalFees()
 			chart.update()
 		}
 	})
