@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Chart from 'chart.js/auto'
+	import { _ } from 'svelte-i18n'
 	import { page } from '$app/stores'
 	import routes from '$lib/routes'
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
 	import { supportedCurrenciesWithLabels } from '$lib/types'
+	import Language from '$lib/components/language.svelte'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -28,7 +30,7 @@
 		let newHash = url.hash.slice(1)
 		if (oldHash === newHash) return
 
-		detailStore.restoreFromUrl(newHash)
+		// detailStore.restoreFromUrl(newHash)
 
 		oldHash = newHash
 
@@ -118,8 +120,9 @@
 	Loading...
 {:else}
 	<div>
+		<Language />
 		<label>
-			Datum narození
+			{$_('dateOfBirth')}
 			<input type="date" bind:value={detailStore.dateOfBirth} />
 		</label>
 		<label>
