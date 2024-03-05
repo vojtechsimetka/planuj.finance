@@ -1,16 +1,10 @@
 <script lang="ts">
-	import type { Withdrawal } from '$lib/types'
+	import type { WithdrawalForm } from '$lib/types'
+
 	interface Props {
-		withdrawal: Withdrawal
+		withdrawal: WithdrawalForm
 	}
 	let { withdrawal } = $props<Props>()
-
-	$effect(() => {
-		if (!withdrawal.isRecurring) {
-			withdrawal.endDate = undefined
-			withdrawal.frequency = undefined
-		}
-	})
 </script>
 
 <div>

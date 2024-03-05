@@ -1,3 +1,5 @@
+import type { Deposit, DepositForm, Withdrawal, WithdrawalForm } from './types'
+
 export const day = 24 * 60 * 60 * 1000
 export const week = 7 * day
 export const year = 365.25 * day
@@ -15,7 +17,7 @@ export function isInt(value: unknown) {
 	)
 }
 
-export function getElementFromArray<T>(array: T[], index: unknown) {
+export function getElementFromArray<T>(array: T[], index: unknown): T | undefined {
 	if (isInt(index)) {
 		const i = index as number
 		if (i >= 0 && i < array.length) {
@@ -23,6 +25,42 @@ export function getElementFromArray<T>(array: T[], index: unknown) {
 		}
 	}
 	return undefined
+}
+
+export function initializeForm<T extends Deposit | Withdrawal>(
+	array: T[],
+	index: unknown,
+): DepositForm | WithdrawalForm {
+	const d = getElementFromArray(array, index)
+	if (d && d.isRecurring) {
+		return {
+			...d,
+			startDate: formatDate(new Date(d.startDate)),
+			endDate: formatDate(new Date(d.endDate)),
+		}
+	}
+	if (d) {
+		return {
+			...d,
+			startDate: formatDate(new Date(d.startDate)),
+		}
+	}
+	return {
+		name: '',
+		amount: 0,
+		startDate: formatDate(new Date()),
+		isRecurring: false,
+	}
+}
+
+export function formatDate(date: Date): string {
+	// Extract year, month, and day components
+	const year = date.getFullYear().toFixed()
+	const month = (date.getMonth() + 1).toFixed().padStart(2, '0')
+	const day = date.getDate().toFixed().padStart(2, '0')
+
+	// Format the date components into "yyyy-MM-dd" format
+	return `${year}-${month}-${day}`
 }
 
 const base64abc = [

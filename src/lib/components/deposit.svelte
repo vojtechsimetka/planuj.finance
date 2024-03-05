@@ -1,17 +1,10 @@
 <script lang="ts">
-	import type { Deposit } from '$lib/types'
+	import type { DepositForm } from '$lib/types'
 
 	interface Props {
-		deposit: Deposit
+		deposit: DepositForm
 	}
 	let { deposit } = $props<Props>()
-
-	$effect(() => {
-		if (!deposit.isRecurring) {
-			deposit.endDate = undefined
-			deposit.frequency = undefined
-		}
-	})
 </script>
 
 <div>
