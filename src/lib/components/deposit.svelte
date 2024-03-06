@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { DepositForm } from '$lib/types'
+	import { _ } from 'svelte-i18n'
 
 	interface Props {
 		deposit: DepositForm
@@ -9,33 +10,33 @@
 
 <div>
 	<label>
-		Název
+		{$_('nameOfOperation')}
 		<input type="text" bind:value={deposit.name} />
 	</label>
 	<label>
-		Výše
+		{$_('amount')}
 		<input type="number" bind:value={deposit.amount} />
 	</label>
 	<label>
-		Začátek
+		{$_('startDate')}
 		<input type="date" bind:value={deposit.startDate} />
 	</label>
 	<label>
-		Pravidelný vklad
+		{$_('isDepositRecurring')}
 		<input type="checkbox" bind:checked={deposit.isRecurring} />
 	</label>
 	{#if deposit.isRecurring}
 		<label>
-			Konec
+			{$_('endDate')}
 			<input type="date" bind:value={deposit.endDate} />
 		</label>
 		<label>
-			Frekvence
+			{$_('frequency')}
 			<select bind:value={deposit.frequency}>
-				<option value="day">Denně</option>
-				<option value="week">Týdně</option>
-				<option value="month">Měsíčně</option>
-				<option value="year">Ročně</option>
+				<option value="day">{$_('daily')}</option>
+				<option value="week">{$_('weekly')}</option>
+				<option value="month">{$_('monthly')}</option>
+				<option value="year">{$_('yearly')}</option>
 			</select>
 		</label>
 	{/if}
