@@ -7,6 +7,7 @@
 	import { resultStore } from '$lib/stores/results.svelte'
 	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import Language from '$lib/components/language.svelte'
+	import Input from '$lib/components/input.svelte'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -119,52 +120,80 @@
 {#if loading}
 	Loading...
 {:else}
-	<div>
-		<Language />
-		<label>
-			{$_('dateOfBirth')}
-			<input type="date" bind:value={detailStore.dateOfBirth} />
-		</label>
-		<label>
-			{$_('endAge')}
-			<input type="number" bind:value={detailStore.endAge} />
-		</label>
-		<label>
-			{$_('currency')}
-			<select bind:value={detailStore.currency}>
-				{#each supportedCurrenciesWithLabels as currency}
-					<option value={currency.value}>{currency.label}</option>
-				{/each}
-			</select>
-		</label>
-		<label>
-			{$_('inflation')}
-			<input type="number" bind:value={detailStore.inflation} />
-		</label>
-		<label>
-			{$_('apy')}
-			<input type="number" bind:value={detailStore.portfolio.apy} />
-		</label>
-		<label>
-			{$_('feeSuccess')}
-			<input type="number" bind:value={detailStore.portfolio.feeSuccess} />
-		</label>
-		<label>
-			{$_('feeMangement')}
-			<input type="number" bind:value={detailStore.portfolio.feeMangement} />
-		</label>
-		<label>
-			{$_('entryFee')}
-			<input type="number" bind:value={detailStore.portfolio.entryFee} />
-		</label>
-		<label>
-			{$_('withdrawalFee')}
-			<input type="number" bind:value={detailStore.portfolio.withdrawalFee} />
-		</label>
-	</div>
-	<div>
-		<h3>{$_('deposits')}</h3>
-		<a href={routes.DEPOSIT()}>+</a>
+	<section>
+		<div class="flex">
+			<h5>{$_('clientInformations')}</h5>
+			<Language />
+		</div>
+		<div class="grid">
+			<Input
+				type="date"
+				labelFor="dateOfBirth"
+				placeholder={$_('dateOfBirth')}
+				bind:value={detailStore.dateOfBirth}
+			></Input>
+			<Input
+				type="number"
+				labelFor="endAge"
+				placeholder={$_('endAge')}
+				bind:value={detailStore.dateOfBirth}
+			></Input>
+		</div>
+	</section>
+	<section>
+		<h5>{$_('portfolioInformations')}</h5>
+		<div class="grid">
+			<Input
+				type="number"
+				labelFor="apy"
+				placeholder={$_('apy')}
+				bind:value={detailStore.portfolio.apy}
+			></Input>
+			<Input
+				type="number"
+				labelFor="inflation"
+				placeholder={$_('inflation')}
+				bind:value={detailStore.inflation}
+			></Input>
+			<label>
+				{$_('currency')}
+				<select bind:value={detailStore.currency}>
+					{#each supportedCurrenciesWithLabels as currency}
+						<option value={currency.value}>{currency.label}</option>
+					{/each}
+				</select>
+			</label>
+			<Input
+				type="number"
+				labelFor="entryFee"
+				placeholder={$_('entryFee')}
+				bind:value={detailStore.portfolio.entryFee}
+			></Input>
+			<Input
+				type="number"
+				labelFor="inflation"
+				placeholder={$_('withdrawalFee')}
+				bind:value={detailStore.portfolio.withdrawalFee}
+			></Input>
+			<Input
+				type="number"
+				labelFor="feeMangement"
+				placeholder={$_('feeMangement')}
+				bind:value={detailStore.portfolio.feeMangement}
+			></Input>
+			<Input
+				type="number"
+				labelFor="feeSuccess"
+				placeholder={$_('feeSuccess')}
+				bind:value={detailStore.portfolio.feeSuccess}
+			></Input>
+		</div>
+	</section>
+	<section>
+		<div class="flex">
+			<h5>{$_('plannedDeposits')}</h5>
+			<a href={routes.DEPOSIT()}>+</a>
+		</div>
 		{#each detailStore.deposits as deposit, i}
 			<div>
 				{JSON.stringify(deposit)}<a href={routes.DEPOSIT(i)}>{$_('edit')}</a><button
@@ -172,32 +201,82 @@
 				>
 			</div>
 		{/each}
-		<h3>{$_('withdrawals')}</h3>
-		<a href={routes.WITHDRAWAL()}>+</a>
+	</section>
+	<section>
+		<div class="flex">
+			<h5>{$_('plannedWithdrawals')}</h5>
+			<a href={routes.WITHDRAWAL()}>+</a>
+		</div>
 		{#each detailStore.withdrawals as withdrawal, i}
 			<div>
-				{JSON.stringify(withdrawal)}<a href={routes.WITHDRAWAL(i)}>{$_('edit')}</a><button
-					onclick={() => detailStore.removeWithdrawal(i)}>{$_('delete')}</button
-				>
+				{JSON.stringify(withdrawal)}
+				<a href={routes.WITHDRAWAL(i)}>{$_('edit')}</a>
+				<button onclick={() => detailStore.removeWithdrawal(i)}>{$_('delete')}</button>
 			</div>
 		{/each}
-	</div>
-	<div class="chart">
-		<canvas bind:this={canvas} />
-	</div>
-	<div>
-		<h3>{$_('results')}</h3>
-		{$_('effectiveEvaluation')}
-		{(resultStore.effectiveApy * 100).toFixed(2)} %
-		{$_('clientAge')}
-		{age}
-		{$_('totalDeposits')}
-		{resultStore.totalDeposited}
-		{$_('totalWithdrawals')}
-		{resultStore.totalWithdrawn}
-		{$_('totalDepositsFee')}
-		{resultStore.totalDepositFees}
-		{$_('totalWithdrawalsFee')}
-		{resultStore.totalWithdrawFees}
-	</div>
+	</section>
+	<section>
+		<div class="chart">
+			<canvas bind:this={canvas} />
+		</div>
+	</section>
+	<section>
+		<div>
+			<h3>{$_('results')}</h3>
+			{$_('effectiveEvaluation')}
+			{(resultStore.effectiveApy * 100).toFixed(2)} %
+			{$_('clientAge')}
+			{age}
+			{$_('totalDeposits')}
+			{resultStore.totalDeposited}
+			{$_('totalWithdrawals')}
+			{resultStore.totalWithdrawn}
+			{$_('totalDepositsFee')}
+			{resultStore.totalDepositFees}
+			{$_('totalWithdrawalsFee')}
+			{resultStore.totalWithdrawFees}
+		</div>
+	</section>
 {/if}
+
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: Arial, Helvetica, sans-serif;
+	}
+	body {
+		margin: 1rem;
+	}
+	section {
+		margin-bottom: 1rem;
+	}
+	.flex {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	h5 {
+		color: var(--colors-ultraHigh, #303030);
+		/* h5 */
+		font-family: Arial;
+		font-size: 1rem;
+		font-style: normal;
+		font-weight: 700;
+		line-height: 1.5rem; /* 150% */
+		letter-spacing: 0.02rem;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr); /* Vytvoří 4 sloupce s minimální šířkou 200px */
+		gap: 2rem; /* Mezera mezi sloupci */
+	}
+
+	/* Media Query pro telefony */
+	@media (max-width: 600px) {
+		.grid {
+			grid-template-columns: 1fr; /* Na telefonech pouze 1 sloupec */
+		}
+	}
+</style>

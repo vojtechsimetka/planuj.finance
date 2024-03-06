@@ -37,5 +37,9 @@
 	"daily": "Denně",
 	"weekly": "Týdně",
 	"monthly": "Měsíčně",
-	"yearly": "Ročně"
+	"yearly": "Ročně",
+	"clientInformations": "Informace o vás",
+	"portfolioInformations": "Detaily portfolia",
+	"plannedDeposits": "Plánované vklady",
+	"plannedWithdrawals": "Plánované výběry"
 }
