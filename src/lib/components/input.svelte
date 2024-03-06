@@ -2,17 +2,14 @@
 	import type { HTMLInputAttributes } from 'svelte/elements'
 
 	interface Props extends HTMLInputAttributes {
-		labelFor: string
-		type: string
-		placeholder: string
-		value: Date | number
+		labelFor?: string
 	}
-	let { type, labelFor, placeholder, value } = $props<Props>()
+	let { labelFor = Math.random().toString(16), placeholder, value, ...restProps } = $props<Props>()
 </script>
 
 <div class="root">
-	<input class="input" type={`${type}`} id={`${labelFor}`} placeholder={`${placeholder}`} {value} />
-	<label class="label" for={`${labelFor}`}>
+	<input class="input" id={labelFor} bind:value {placeholder} {...restProps} />
+	<label class="label" for={labelFor}>
 		{placeholder}
 	</label>
 	<div class="error">
