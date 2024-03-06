@@ -126,11 +126,11 @@
 			<input type="date" bind:value={detailStore.dateOfBirth} />
 		</label>
 		<label>
-			Věk při ukončení investic
+			{$_('endAge')}
 			<input type="number" bind:value={detailStore.endAge} />
 		</label>
 		<label>
-			Měna
+			{$_('currency')}
 			<select bind:value={detailStore.currency}>
 				{#each supportedCurrenciesWithLabels as currency}
 					<option value={currency.value}>{currency.label}</option>
@@ -138,32 +138,32 @@
 			</select>
 		</label>
 		<label>
-			inflace
+			{$_('inflation')}
 			<input type="number" bind:value={detailStore.inflation} />
 		</label>
 		<label>
-			Zhodnocení
+			{$_('apy')}
 			<input type="number" bind:value={detailStore.portfolio.apy} />
 		</label>
 		<label>
-			Poplatek za úspěch
+			{$_('feeSuccess')}
 			<input type="number" bind:value={detailStore.portfolio.feeSuccess} />
 		</label>
 		<label>
-			Poplatek za správu
+			{$_('feeMangement')}
 			<input type="number" bind:value={detailStore.portfolio.feeMangement} />
 		</label>
 		<label>
-			Vstupní poplatek
+			{$_('entryFee')}
 			<input type="number" bind:value={detailStore.portfolio.entryFee} />
 		</label>
 		<label>
-			Poplatek za výběr
+			{$_('withdrawalFee')}
 			<input type="number" bind:value={detailStore.portfolio.withdrawalFee} />
 		</label>
 	</div>
 	<div>
-		<h3>Vklady</h3>
+		<h3>{$_('deposits')}</h3>
 		<a href={routes.DEPOSIT()}>+</a>
 		{#each detailStore.deposits as deposit, i}
 			<div>
@@ -172,7 +172,7 @@
 				>
 			</div>
 		{/each}
-		<h3>Výběry</h3>
+		<h3>{$_('withdrawals')}</h3>
 		<a href={routes.WITHDRAWAL()}>+</a>
 		{#each detailStore.withdrawals as withdrawal, i}
 			<div>
@@ -186,11 +186,18 @@
 		<canvas bind:this={canvas} />
 	</div>
 	<div>
-		<h3>Výsledky</h3>
-		Efektivní zhodnocení {(resultStore.effectiveApy * 100).toFixed(2)} % Věk klienta: {age}
-		Celkové vklady: {resultStore.totalDeposited}
-		Celkové výbery: {resultStore.totalWithdrawn}
-		Poplatek za vklady: {resultStore.totalDepositFees}
-		Poplatek za výběry: {resultStore.totalWithdrawFees}
+		<h3>{$_('results')}</h3>
+		{$_('effectiveEvaluation')}
+		{(resultStore.effectiveApy * 100).toFixed(2)} %
+		{$_('clientAge')}
+		{age}
+		{$_('totalDeposits')}
+		{resultStore.totalDeposited}
+		{$_('totalWithdrawals')}
+		{resultStore.totalWithdrawn}
+		{$_('totalDepositsFee')}
+		{resultStore.totalDepositFees}
+		{$_('totalWithdrawalsFee')}
+		{resultStore.totalWithdrawFees}
 	</div>
 {/if}

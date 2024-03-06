@@ -1,3 +1,20 @@
 {
-	"dateOfBirth": "Date of birth"
+	"dateOfBirth": "Date of birth",
+	"endAge": "Age at the end of investment",
+	"currency": "Currency",
+	"inflation": "Inflation",
+	"apy": "APY",
+	"feeSuccess": "Success fee",
+	"feeMangement": "Management fee",
+	"entryFee": "Entry fee",
+	"withdrawalFee": "Withdrawal fee",
+	"deposits": "Deposits",
+	"withdrawals": "Withdrawals",
+	"results": "Results",
+	"effectiveEvaluation": "Effective evaluation",
+	"clientAge": "Client age",
+	"totalDeposits": "Total deposits",
+	"totalWithdrawals": "Total withdrawals",
+	"totalDepositsFee": "Total deposits fee",
+	"totalWithdrawalsFee": "Total withdrawals fee"
 }

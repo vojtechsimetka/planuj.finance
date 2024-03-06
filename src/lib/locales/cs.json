@@ -1,3 +1,20 @@
 {
-	"dateOfBirth": "Datum narození"
+	"dateOfBirth": "Datum narození",
+	"endAge": "Věk při ukončení investic",
+	"currency": "Měna",
+	"inflation": "Inflace",
+	"apy": "Zhodnocení",
+	"feeSuccess": "Poplatek za úspěch",
+	"feeMangement": "Poplatek za správu",
+	"entryFee": "Vstupní poplatek",
+	"withdrawalFee": "Poplatek za výběr",
+	"deposits": "Vklady",
+	"withdrawals": "Výběry",
+	"results": "Výsledky",
+	"effectiveEvaluation": "Efektivní zhodnocení",
+	"clientAge": "Věk klienta",
+	"totalDeposits": "Celkové vklady",
+	"totalWithdrawals": "Celkové výběry",
+	"totalDepositsFee": "Poplatek za vklady",
+	"totalWithdrawalsFee": "Poplatek za výběry"
 }
