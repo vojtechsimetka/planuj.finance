@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { WithdrawalForm } from '$lib/types'
+	import { _ } from 'svelte-i18n'
 
 	interface Props {
 		withdrawal: WithdrawalForm
@@ -9,33 +10,33 @@
 
 <div>
 	<label>
-		Název
+		{$_('nameOfOperation')}
 		<input type="text" bind:value={withdrawal.name} />
 	</label>
 	<label>
-		Výše
+		{$_('amount')}
 		<input type="number" bind:value={withdrawal.amount} />
 	</label>
 	<label>
-		Začátek
+		{$_('startDate')}
 		<input type="date" bind:value={withdrawal.startDate} />
 	</label>
 	<label>
-		Pravidelný výběr
+		{$_('isWithdrawalRecurring')}
 		<input type="checkbox" bind:checked={withdrawal.isRecurring} />
 	</label>
 	{#if withdrawal.isRecurring}
 		<label>
-			Konec
+			{$_('endDate')}
 			<input type="date" bind:value={withdrawal.endDate} />
 		</label>
 		<label>
-			Frekvence
+			{$_('frequency')}
 			<select bind:value={withdrawal.frequency}>
-				<option value="day">Denně</option>
-				<option value="week">Týdně</option>
-				<option value="month">Měsíčně</option>
-				<option value="year">Ročně</option>
+				<option value="day">{$_('daily')}</option>
+				<option value="week">{$_('weekly')}</option>
+				<option value="month">{$_('monthly')}</option>
+				<option value="year">{$_('yearly')}</option>
 			</select>
 		</label>
 	{/if}

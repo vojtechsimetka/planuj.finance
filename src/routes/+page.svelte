@@ -167,8 +167,8 @@
 		<a href={routes.DEPOSIT()}>+</a>
 		{#each detailStore.deposits as deposit, i}
 			<div>
-				{JSON.stringify(deposit)}<a href={routes.DEPOSIT(i)}>edit</a><button
-					onclick={() => detailStore.removeDeposit(i)}>delete</button
+				{JSON.stringify(deposit)}<a href={routes.DEPOSIT(i)}>{$_('edit')}</a><button
+					onclick={() => detailStore.removeDeposit(i)}>{$_('delete')}</button
 				>
 			</div>
 		{/each}
@@ -176,8 +176,8 @@
 		<a href={routes.WITHDRAWAL()}>+</a>
 		{#each detailStore.withdrawals as withdrawal, i}
 			<div>
-				{JSON.stringify(withdrawal)}<a href={routes.WITHDRAWAL(i)}>edit</a><button
-					onclick={() => detailStore.removeWithdrawal(i)}>delete</button
+				{JSON.stringify(withdrawal)}<a href={routes.WITHDRAWAL(i)}>{$_('edit')}</a><button
+					onclick={() => detailStore.removeWithdrawal(i)}>{$_('delete')}</button
 				>
 			</div>
 		{/each}

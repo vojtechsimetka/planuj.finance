@@ -9,6 +9,7 @@
 	import type { ZodError } from 'zod'
 	import type { DepositForm } from '$lib/types'
 	import { depositWithdrawalFormSchema, depositWithdrawalSchema } from '$lib/schemas'
+	import { _ } from 'svelte-i18n'
 
 	const index = get(page).params.id
 	const depositIndex = isInt(index) ? Number.parseInt(index) : undefined
@@ -59,17 +60,17 @@
 
 {#if (depositIndex === undefined && Boolean(index)) || (depositIndex !== undefined && detailStore.deposits.length <= depositIndex)}
 	<h1>Výběr s indexem {index} jsme nenalezli</h1>
-	<a href="/">Zpět</a>
+	<a href="/">{$_('back')}</a>
 {:else if depositIndex !== undefined}
-	<h1>Upravujete vklad {depositIndex}</h1>
+	<h1>{$_('editedDeposit')} {depositIndex}</h1>
 	<DepositComponent bind:deposit />
-	<button onclick={save} disabled={!formValid}>save</button>
-	<button onclick={deleteDeposit}>delete</button>
-	<button onclick={cancel}>cancel</button>
+	<button onclick={save} disabled={!formValid}>{$_('save')}</button>
+	<button onclick={deleteDeposit}>{$_('delete')}</button>
+	<button onclick={cancel}>{$_('cancel')}</button>
 {:else}
-	<h1>Nový vklad</h1>
+	<h1>{$_('newDeposit')}</h1>
 	<DepositComponent bind:deposit />
-	<button onclick={add} disabled={!formValid}>add</button>
+	<button onclick={add} disabled={!formValid}>{$_('add')}</button>
 {/if}
 {#if formErrors}
 	<pre>{JSON.stringify(formErrors, null, 2)}</pre>
