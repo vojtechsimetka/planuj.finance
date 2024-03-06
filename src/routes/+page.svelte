@@ -202,6 +202,4 @@
 		{resultStore.totalWithdrawFees}
 	</div>
 {/if}
-<Input type="number" labelFor="endDate" placeholder="End of investment"
-	>Helper text</Input
->
+<Input type="number" labelFor="endDate" placeholder="End of investment">Error text</Input>

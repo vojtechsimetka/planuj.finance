@@ -176,10 +176,13 @@
 		transform: translateY(-100%);
 		font-size: 0.75rem;
 		line-height: 1rem;
-		
 	}
-	.input:not(:placeholder-shown){
+	.input:not(:placeholder-shown) {
 		padding: 2.25rem 0.75rem 0.75rem;
 		color: var(--colors-ultraHigh);
+	}
+	.error {
+		color: #ff3333;
+		padding: 0.5rem 0.75rem 0;
 	}
 </style>
