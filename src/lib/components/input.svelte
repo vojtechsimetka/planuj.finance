@@ -1,112 +1,17 @@
-<!-- <script lang="ts">
-	import type { HTMLAnchorAttributes } from 'svelte/elements'
-
-	interface Props extends HTMLAnchorAttributes {
-		label: string
-		type: string
-	}
-	let { label, type } = $props<Props>()
-	let isActive = false
-	let labelStyle = $state('')
-	function handleFocus() {
-		isActive = true
-		labelStyle = 'active'
-	}
-
-	function handleBlur() {
-		isActive = false
-		labelStyle = 'active'
-	}
-</script>
-
-<div class="root">
-	<label>
-		<span class={labelStyle}>{label}</span>
-		<input type={`${type}`} on:focus={handleFocus} on:blur={handleBlur} />
-	</label>
-	<div>
-		<slot />
-	</div>
-</div>
-
-<style>
-	.root {
-		color: var(--colors-ultraHigh);
-		font-family: Arial;
-		font-size: 0.75rem;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 1rem;
-		letter-spacing: 0.0375rem;
-	}
-	label {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		justify-content: center;
-		align-self: stretch;
-		border: none;
-		border-radius: 0.25rem;
-		padding: 1.5rem 0.75rem;
-		color: var(--colors-high);
-		background: var(--colors-low);
-		font-family: Arial;
-		font-size: 1rem;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 1rem;
-		letter-spacing: 0.0375rem;
-	}
-	span {
-		position: relative;
-		transition: 0.3s ease;
-	}
-	label:has(input:active, input:focus) {
-		border: 0.06rem solid var(--colors-high);
-		padding: 2.25rem 0.75rem 0.75rem;
-	}
-	input {
-		width: 100%;
-		background: var(--colors-low);
-		border: none;
-		font-family: Arial;
-		font-size: 1rem;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 1.5rem;
-		letter-spacing: 0.02rem;
-	}
-	input:active,
-	input:focus {
-		color: var(--colors-top);
-		background: var(--colors-base);
-		border: none;
-		outline: none;
-	}
-	.root > div {
-		padding: 0.5rem 0.5rem;
-	}
-	.active {
-		transform: translateY(-2rem);
-		font-size: 0.75rem;
-		line-height: 1rem;
-		padding-top: 0.75rem;
-	}
-</style>
- -->
 <script lang="ts">
-	import type { HTMLAnchorAttributes } from 'svelte/elements'
+	import type { HTMLInputAttributes } from 'svelte/elements'
 
-	interface Props extends HTMLAnchorAttributes {
+	interface Props extends HTMLInputAttributes {
 		labelFor: string
 		type: string
 		placeholder: string
+		value: Date | number
 	}
-	let { type, labelFor, placeholder } = $props<Props>()
+	let { type, labelFor, placeholder, value } = $props<Props>()
 </script>
 
 <div class="root">
-	<input class="input" type={`${type}`} id={`${labelFor}`} placeholder={`${placeholder}`} />
+	<input class="input" type={`${type}`} id={`${labelFor}`} placeholder={`${placeholder}`} {value} />
 	<label class="label" for={`${labelFor}`}>
 		{placeholder}
 	</label>
@@ -125,6 +30,7 @@
 		font-weight: 400;
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
+		width: 100%;
 	}
 	.input {
 		width: 100%;

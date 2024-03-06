@@ -29,6 +29,9 @@ devDependencies:
   '@typescript-eslint/parser':
     specifier: ^7.0.1
     version: 7.0.1(eslint@8.56.0)(typescript@5.3.3)
+  carbon-icons-svelte:
+    specifier: ^12.5.0
+    version: 12.5.0
   chart.js:
     specifier: ^4.4.2
     version: 4.4.2
@@ -975,6 +978,10 @@ packages:
   /callsites@3.1.0:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
+    dev: true
+
+  /carbon-icons-svelte@12.5.0:
+    resolution: {integrity: sha512-f7iTJ5euF9e6rniXasUaLbueNg/19poywJiiBVSsXg8dMv3D71jOun69mKxGeVvL8Rh4Xw5I6jieHxrXz43s3g==}
     dev: true
 
   /chai@4.4.1:
