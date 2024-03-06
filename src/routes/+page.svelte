@@ -136,7 +136,7 @@
 				type="number"
 				labelFor="endAge"
 				placeholder={$_('endAge')}
-				bind:value={detailStore.dateOfBirth}
+				bind:value={detailStore.endAge}
 			></Input>
 		</div>
 	</section>
