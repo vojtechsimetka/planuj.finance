@@ -7,6 +7,7 @@
 	import { resultStore } from '$lib/stores/results.svelte'
 	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import Language from '$lib/components/language.svelte'
+	import Input from '$lib/components/input.svelte'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -201,3 +202,6 @@
 		{resultStore.totalWithdrawFees}
 	</div>
 {/if}
+<Input type="number" labelFor="endDate" placeholder="End of investment"
+	>Helper text</Input
+>
