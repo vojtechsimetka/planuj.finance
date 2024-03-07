@@ -158,7 +158,7 @@
 				bind:value={detailStore.inflation}
 			></Input>
 			<Select bind:value={detailStore.currency} placeholder={$_('currency')}>
-				#{#each supportedCurrenciesWithLabels as currency}
+				{#each supportedCurrenciesWithLabels as currency}
 					<Option value={currency.value}>{currency.label}</Option>
 				{/each}
 			</Select>
