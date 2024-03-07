@@ -200,7 +200,9 @@
 					<div class="info-of-operation">
 						<p class="operation-name">{deposit.name}</p>
 						<p class="operation-amount">
-							{deposit.amount}&nbsp;{detailStore.currency}{deposit.isRecurring ? ' / ' + deposit.frequency : ''}
+							{deposit.amount}&nbsp;{detailStore.currency}{deposit.isRecurring
+								? ' / ' + deposit.frequency
+								: ''}
 						</p>
 						<p class="operation-date">
 							{deposit.startDate.toLocaleDateString()}{deposit.isRecurring
@@ -231,7 +233,9 @@
 					<div class="info-of-operation">
 						<p class="operation-name">{withdrawal.name}</p>
 						<p class="operation-amount">
-							{withdrawal.amount}&nbsp;{detailStore.currency}{withdrawal.isRecurring ? ' / ' + withdrawal.frequency : ''}
+							{withdrawal.amount}&nbsp;{detailStore.currency}{withdrawal.isRecurring
+								? ' / ' + withdrawal.frequency
+								: ''}
 						</p>
 						<p class="operation-date">
 							{withdrawal.startDate.toLocaleDateString()}{withdrawal.isRecurring
