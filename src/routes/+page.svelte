@@ -8,6 +8,7 @@
 	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import Language from '$lib/components/language.svelte'
 	import Input from '$lib/components/input.svelte'
+	import Select from '$lib/components/select.svelte'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -155,14 +156,7 @@
 				placeholder={$_('inflation')}
 				bind:value={detailStore.inflation}
 			></Input>
-			<label>
-				{$_('currency')}
-				<select bind:value={detailStore.currency}>
-					{#each supportedCurrenciesWithLabels as currency}
-						<option value={currency.value}>{currency.label}</option>
-					{/each}
-				</select>
-			</label>
+			<Select placeholder={$_('currency')} options={supportedCurrenciesWithLabels}></Select>
 			<Input
 				type="number"
 				labelFor="entryFee"

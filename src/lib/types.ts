@@ -17,7 +17,7 @@ export interface Portfolio {
 const supportedCurrencies = ['CZK', 'EUR', 'USD'] as const
 export type Currency = (typeof supportedCurrencies)[number]
 
-interface CurrencyWithLabel {
+export interface CurrencyWithLabel {
 	label: string
 	value: Currency
 }
