@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { HTMLSelectAttributes } from 'svelte/elements'
-	import caretDown from '../assets/svg/caretDown.svg'
+	import { CaretDown } from 'carbon-icons-svelte'
 
 	interface Props extends HTMLSelectAttributes {
 		labelFor?: string
@@ -10,7 +10,7 @@
 </script>
 
 <div class="root">
-	<img class="icon" src={caretDown} alt="" />
+	<div class="icon"><CaretDown size={24} /></div>
 	<select bind:value class="select">
 		<slot />
 	</select>
@@ -36,7 +36,7 @@
 	}
 	.icon {
 		position: absolute;
-		top: 1rem;
+		top: 1.5rem;
 		right: 0.75rem;
 		width: 1.5rem;
 		height: 1.5rem;
