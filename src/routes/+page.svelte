@@ -200,8 +200,7 @@
 					<div class="info-of-operation">
 						<p class="operation-name">{deposit.name}</p>
 						<p class="operation-amount">
-							{deposit.amount}
-							{detailStore.currency}{deposit.isRecurring ? ' / ' + deposit.frequency : ''}
+							{deposit.amount}&nbsp;{detailStore.currency}{deposit.isRecurring ? ' / ' + deposit.frequency : ''}
 						</p>
 						<p class="operation-date">
 							{deposit.startDate.toLocaleDateString()}{deposit.isRecurring
@@ -209,9 +208,13 @@
 								: ''}
 						</p>
 					</div>
-					<div class="operation-icon">
-						<a href={routes.DEPOSIT(i)}><Edit size={24} /></a>
-						<button onclick={() => detailStore.removeDeposit(i)}><TrashCan size={24} /></button>
+					<div class="flex-wrap">
+						<div class="operation-icon">
+							<a href={routes.DEPOSIT(i)}><Edit size={24} /></a>
+						</div>
+						<div class="operation-icon">
+							<button onclick={() => detailStore.removeDeposit(i)}><TrashCan size={24} /></button>
+						</div>
 					</div>
 				</div>
 			{/each}
@@ -228,8 +231,7 @@
 					<div class="info-of-operation">
 						<p class="operation-name">{withdrawal.name}</p>
 						<p class="operation-amount">
-							{withdrawal.amount}
-							{detailStore.currency}{withdrawal.isRecurring ? ' / ' + withdrawal.frequency : ''}
+							{withdrawal.amount}&nbsp;{detailStore.currency}{withdrawal.isRecurring ? ' / ' + withdrawal.frequency : ''}
 						</p>
 						<p class="operation-date">
 							{withdrawal.startDate.toLocaleDateString()}{withdrawal.isRecurring
@@ -237,8 +239,9 @@
 								: ''}
 						</p>
 					</div>
-					<div class="operation-icon">
+					<div class="flex-wrap">
 						<a href={routes.WITHDRAWAL(i)}><Edit size={24} /></a>
+
 						<button onclick={() => detailStore.removeWithdrawal(i)}><TrashCan size={24} /></button>
 					</div>
 				</div>
@@ -278,6 +281,7 @@
 	}
 	body {
 		padding: 1rem;
+		width: 100vw;
 	}
 	section {
 		padding-bottom: 1rem;
@@ -311,11 +315,10 @@
 	.grid {
 		display: grid;
 		grid-template-columns: repeat(4, 1fr); /* Vytvoří 4 sloupce s minimální šířkou 200px */
-		gap: 2rem; /* Mezera mezi sloupci */
+		gap: 2rem;
 	}
-
 	/* Media Query pro telefony */
-	@media (max-width: 600px) {
+	@media (max-width: 760px) {
 		.grid {
 			grid-template-columns: 1fr; /* Na telefonech pouze 1 sloupec */
 		}
@@ -323,12 +326,15 @@
 	.flex-container {
 		display: flex;
 		flex-direction: row;
-		flex-wrap: wrap;
+		align-items: center;
 		padding: 0.75rem;
+		gap: 0.5rem;
 		justify-content: space-between;
 		background: var(--colors-base);
+		border-radius: 0.25rem;
 	}
 	.info-of-operation {
+		display: flex;
 		flex-direction: column;
 	}
 	p {
@@ -336,6 +342,7 @@
 		font-style: normal;
 		font-weight: 400;
 		align-self: stretch;
+		flex-wrap: nowrap;
 	}
 	.operation-name {
 		color: var(--colors-high, #555);
@@ -367,11 +374,19 @@
 		text-decoration: none;
 		color: var(--colors-ultraHigh);
 	}
+	.flex-wrap {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: flex-end;
+	}
 	.operation-icon > button,
 	.operation-icon > button:hover {
 		padding: 0.75rem;
 		border: none;
 		outline: none;
+		background: none;
 		color: var(--colors-ultraHigh);
 		cursor: pointer;
 	}
