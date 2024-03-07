@@ -47,7 +47,7 @@
 	.select {
 		width: 100%;
 		background: var(--colors-low);
-		border: none;
+		border: 1px solid var(--colors-low);
 		font-family: Arial;
 		font-size: 1rem;
 		font-style: normal;

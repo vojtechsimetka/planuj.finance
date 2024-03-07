@@ -28,11 +28,14 @@
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
 		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
 	}
 	.input {
-		width: 100%;
 		background: var(--colors-low);
-		border: none;
+		border: 1px solid var(--colors-low);
 		font-family: Arial;
 		font-size: 1rem;
 		font-style: normal;
