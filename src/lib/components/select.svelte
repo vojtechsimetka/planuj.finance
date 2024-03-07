@@ -56,9 +56,6 @@
 		letter-spacing: 0.02rem;
 		padding: 1.5rem 0.75rem;
 		appearance: none;
-		/* background-image: url('../assets/svg/sort_down.svg');
-        background-position: right center;
-        background-repeat: no-repeat; */
 	}
 	.select:focus-visible {
 		border: 1px solid var(--colors-high);
@@ -66,7 +63,6 @@
 		padding: 2.25rem 0.75rem 0.75rem;
 		line-height: 1.5rem;
 		font-size: 1rem;
-		/* background-image: url('../assets/svg/sort_up.svg'); */
 	}
 	.label {
 		position: absolute;
