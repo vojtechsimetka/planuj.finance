@@ -1,27 +1,24 @@
 <script lang="ts">
 	import type { HTMLSelectAttributes } from 'svelte/elements'
-	import type { CurrencyWithLabel } from '$lib/types'
 	import caretDown from '../assets/svg/caretDown.svg'
 
 	interface Props extends HTMLSelectAttributes {
 		labelFor?: string
-		options: CurrencyWithLabel[]
+		error?: string
 	}
-	let { labelFor = Math.random().toString(16), options, placeholder, value } = $props<Props>()
+	let { labelFor = Math.random().toString(16), error, placeholder, value } = $props<Props>()
 </script>
 
 <div class="root">
 	<img class="icon" src={caretDown} alt="" />
 	<select bind:value class="select">
-		{#each options as option}
-			<option class="option" value={option.value}>{option.label}</option>
-		{/each}
+		<slot />
 	</select>
 	<label class="label" for={labelFor}>
 		{placeholder}
 	</label>
 	<div class="error">
-		<slot />
+		{error}
 	</div>
 </div>
 
