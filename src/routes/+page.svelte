@@ -9,6 +9,7 @@
 	import Language from '$lib/components/language.svelte'
 	import Input from '$lib/components/input.svelte'
 	import Select from '$lib/components/select.svelte'
+	import { Edit, TrashCan } from 'carbon-icons-svelte'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -188,13 +189,28 @@
 			<h5>{$_('plannedDeposits')}</h5>
 			<a href={routes.DEPOSIT()}>+</a>
 		</div>
-		{#each detailStore.deposits as deposit, i}
-			<div>
-				{JSON.stringify(deposit)}<a href={routes.DEPOSIT(i)}>{$_('edit')}</a><button
-					onclick={() => detailStore.removeDeposit(i)}>{$_('delete')}</button
-				>
-			</div>
-		{/each}
+		<div class="grid">
+			{#each detailStore.deposits as deposit, i}
+				<div class="flex-container">
+					<div class="info-of-operation">
+						<p class="operation-name">{deposit.name}</p>
+						<p class="operation-amount">
+							{deposit.amount}
+							{detailStore.currency}{deposit.isRecurring ? ' / ' + deposit.frequency : ''}
+						</p>
+						<p class="operation-date">
+							{deposit.startDate.toLocaleDateString()}{deposit.isRecurring
+								? ' - ' + deposit.endDate.toLocaleDateString()
+								: ''}
+						</p>
+					</div>
+					<div class="operation-icon">
+						<a href={routes.DEPOSIT(i)}><Edit size={24} /></a>
+						<button onclick={() => detailStore.removeDeposit(i)}><TrashCan size={24} /></button>
+					</div>
+				</div>
+			{/each}
+		</div>
 	</section>
 	<section>
 		<div class="flex-add-deposit">
@@ -283,5 +299,60 @@
 		.grid {
 			grid-template-columns: 1fr; /* Na telefonech pouze 1 sloupec */
 		}
+	}
+	.flex-container {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding: 0.75rem;
+		justify-content: space-between;
+		background: var(--colors-base);
+	}
+	.info-of-operation {
+		flex-direction: column;
+	}
+	p {
+		font-family: Arial;
+		font-style: normal;
+		font-weight: 400;
+		align-self: stretch;
+	}
+	.operation-name {
+		color: var(--colors-high, #555);
+		font-size: 0.75rem;
+		line-height: 1rem;
+		letter-spacing: 0.0375rem;
+	}
+	.operation-amount {
+		color: var(--colors-ultraHigh, #303030);
+		font-size: 1rem;
+		line-height: 1.5rem;
+		letter-spacing: 0.02rem;
+		margin: 0.5rem 0;
+	}
+	.operation-date {
+		color: var(--colors-ultraHigh, #303030);
+		font-size: 0.75rem;
+		line-height: 1.5rem;
+		letter-spacing: 0.015rem;
+	}
+	.operation-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.operation-icon > a,
+	.operation-icon > a:hover {
+		padding: 0.75rem;
+		text-decoration: none;
+		color: var(--colors-ultraHigh);
+	}
+	.operation-icon > button,
+	.operation-icon > button:hover {
+		padding: 0.75rem;
+		border: none;
+		outline: none;
+		color: var(--colors-ultraHigh);
+		cursor: pointer;
 	}
 </style>
