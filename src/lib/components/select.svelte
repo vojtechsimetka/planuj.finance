@@ -62,6 +62,7 @@
 	}
 	.select:focus-visible {
 		border: 1px solid var(--colors-high);
+		background: var(--colors-base);
 		padding: 2.25rem 0.75rem 0.75rem;
 		line-height: 1.5rem;
 		font-size: 1rem;
@@ -89,6 +90,9 @@
 		font-weight: 400;
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
+	}
+	.select:focus + .label {
+		background: var(--colors-base);
 	}
 	.select:focus + .label,
 	.select:not(:placeholder-shown) + .label {
