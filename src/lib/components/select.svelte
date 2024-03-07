@@ -2,19 +2,12 @@
 	import type { HTMLSelectAttributes } from 'svelte/elements'
 	import type { CurrencyWithLabel } from '$lib/types'
 	import caretDown from '../assets/svg/caretDown.svg'
-	import caretUp from '../assets/svg/caretUp.svg'
 
 	interface Props extends HTMLSelectAttributes {
 		labelFor?: string
 		options: CurrencyWithLabel[]
 	}
-	let {
-		labelFor = Math.random().toString(16),
-		options,
-		placeholder,
-		value,
-		...restProps
-	} = $props<Props>()
+	let { labelFor = Math.random().toString(16), options, placeholder, value } = $props<Props>()
 </script>
 
 <div class="root">
