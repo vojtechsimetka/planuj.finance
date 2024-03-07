@@ -1,19 +1,24 @@
 <script lang="ts">
-	import type { HTMLInputAttributes } from 'svelte/elements'
+	import type { HTMLSelectAttributes } from 'svelte/elements'
+	import { CaretDown } from 'carbon-icons-svelte'
 
-	interface Props extends HTMLInputAttributes {
+	interface Props extends HTMLSelectAttributes {
 		labelFor?: string
+		helperText?: string
 	}
-	let { labelFor = Math.random().toString(16), placeholder, value, ...restProps } = $props<Props>()
+	let { labelFor = Math.random().toString(16), helperText, placeholder, value } = $props<Props>()
 </script>
 
 <div class="root">
-	<input class="input" id={labelFor} bind:value {placeholder} {...restProps} />
+	<div class="icon"><CaretDown size={24} /></div>
+	<select bind:value class="select">
+		<slot />
+	</select>
 	<label class="label" for={labelFor}>
 		{placeholder}
 	</label>
 	<div class="helper-text">
-		<slot />
+		{helperText}
 	</div>
 </div>
 
@@ -28,12 +33,19 @@
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
 		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		justify-content: center;
 	}
-	.input {
+	.icon {
+		position: absolute;
+		top: 1.5rem;
+		right: 0.75rem;
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+	.iconRotate {
+		transform: rotate(180deg);
+	}
+	.select {
+		width: 100%;
 		background: var(--colors-low);
 		border: 1px solid var(--colors-low);
 		font-family: Arial;
@@ -43,17 +55,14 @@
 		line-height: 1.5rem;
 		letter-spacing: 0.02rem;
 		padding: 1.5rem 0.75rem;
+		appearance: none;
 	}
-	.input:focus {
+	.select:focus-visible {
 		border: 1px solid var(--colors-high);
 		background: var(--colors-base);
 		padding: 2.25rem 0.75rem 0.75rem;
 		line-height: 1.5rem;
 		font-size: 1rem;
-	}
-	.input::placeholder {
-		text-align: center;
-		color: transparent;
 	}
 	.label {
 		position: absolute;
@@ -78,16 +87,16 @@
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
 	}
-	.input:focus + .label {
+	.select:focus + .label {
 		background: var(--colors-base);
 	}
-	.input:focus + .label,
-	.input:not(:placeholder-shown) + .label {
+	.select:focus + .label,
+	.select:not(:placeholder-shown) + .label {
 		transform: translateY(-100%);
 		font-size: 0.75rem;
 		line-height: 1rem;
 	}
-	.input:not(:placeholder-shown) {
+	.select:not(:placeholder-shown) {
 		padding: 2.25rem 0.75rem 0.75rem;
 		color: var(--colors-ultraHigh);
 	}

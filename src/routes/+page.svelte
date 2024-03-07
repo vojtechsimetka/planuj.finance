@@ -8,6 +8,8 @@
 	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import Language from '$lib/components/language.svelte'
 	import Input from '$lib/components/input.svelte'
+	import Select from '$lib/components/select.svelte'
+	import Option from '$lib/components/option.svelte'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -155,14 +157,11 @@
 				placeholder={$_('inflation')}
 				bind:value={detailStore.inflation}
 			></Input>
-			<label>
-				{$_('currency')}
-				<select bind:value={detailStore.currency}>
-					{#each supportedCurrenciesWithLabels as currency}
-						<option value={currency.value}>{currency.label}</option>
-					{/each}
-				</select>
-			</label>
+			<Select bind:value={detailStore.currency} placeholder={$_('currency')}>
+				#{#each supportedCurrenciesWithLabels as currency}
+					<Option value={currency.value}>{currency.label}</Option>
+				{/each}
+			</Select>
 			<Input
 				type="number"
 				labelFor="entryFee"
@@ -190,7 +189,7 @@
 		</div>
 	</section>
 	<section>
-		<div class="flex">
+		<div class="flex-add-deposit">
 			<h5>{$_('plannedDeposits')}</h5>
 			<a href={routes.DEPOSIT()}>+</a>
 		</div>
@@ -203,7 +202,7 @@
 		{/each}
 	</section>
 	<section>
-		<div class="flex">
+		<div class="flex-add-deposit">
 			<h5>{$_('plannedWithdrawals')}</h5>
 			<a href={routes.WITHDRAWAL()}>+</a>
 		</div>
@@ -247,15 +246,26 @@
 		font-family: Arial, Helvetica, sans-serif;
 	}
 	body {
-		margin: 1rem;
+		padding: 1rem;
 	}
 	section {
-		margin-bottom: 1rem;
+		padding-bottom: 1rem;
 	}
 	.flex {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+	}
+	.flex-add-deposit {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		position: relative;
+	}
+	.flex-add-deposit > a {
+		position: absolute;
+		top: 0;
+		left: 13rem;
 	}
 	h5 {
 		color: var(--colors-ultraHigh, #303030);
