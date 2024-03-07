@@ -246,10 +246,10 @@
 		font-family: Arial, Helvetica, sans-serif;
 	}
 	body {
-		margin: 1rem;
+		padding: 1rem;
 	}
 	section {
-		margin-bottom: 1rem;
+		padding-bottom: 1rem;
 	}
 	.flex {
 		display: flex;
