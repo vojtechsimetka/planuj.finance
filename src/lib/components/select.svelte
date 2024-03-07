@@ -4,9 +4,9 @@
 
 	interface Props extends HTMLSelectAttributes {
 		labelFor?: string
-		error?: string
+		helperText?: string
 	}
-	let { labelFor = Math.random().toString(16), error, placeholder, value } = $props<Props>()
+	let { labelFor = Math.random().toString(16), helperText, placeholder, value } = $props<Props>()
 </script>
 
 <div class="root">
@@ -17,8 +17,8 @@
 	<label class="label" for={labelFor}>
 		{placeholder}
 	</label>
-	<div class="error">
-		{error}
+	<div class="helper-text">
+		{helperText}
 	</div>
 </div>
 
@@ -100,8 +100,7 @@
 		padding: 2.25rem 0.75rem 0.75rem;
 		color: var(--colors-ultraHigh);
 	}
-	.error {
-		color: #ff3333;
+	.helper-text {
 		padding: 0.5rem 0.75rem 0;
 	}
 </style>

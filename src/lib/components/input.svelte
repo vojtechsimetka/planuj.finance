@@ -12,7 +12,7 @@
 	<label class="label" for={labelFor}>
 		{placeholder}
 	</label>
-	<div class="error">
+	<div class="helper-text">
 		<slot />
 	</div>
 </div>
@@ -91,8 +91,7 @@
 		padding: 2.25rem 0.75rem 0.75rem;
 		color: var(--colors-ultraHigh);
 	}
-	.error {
-		color: #ff3333;
+	.helper-text {
 		padding: 0.5rem 0.75rem 0;
 	}
 </style>
