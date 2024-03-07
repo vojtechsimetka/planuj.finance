@@ -222,13 +222,28 @@
 			<h5>{$_('plannedWithdrawals')}</h5>
 			<a href={routes.WITHDRAWAL()}>+</a>
 		</div>
-		{#each detailStore.withdrawals as withdrawal, i}
-			<div>
-				{JSON.stringify(withdrawal)}
-				<a href={routes.WITHDRAWAL(i)}>{$_('edit')}</a>
-				<button onclick={() => detailStore.removeWithdrawal(i)}>{$_('delete')}</button>
-			</div>
-		{/each}
+		<div class="grid">
+			{#each detailStore.withdrawals as withdrawal, i}
+				<div class="flex-container">
+					<div class="info-of-operation">
+						<p class="operation-name">{withdrawal.name}</p>
+						<p class="operation-amount">
+							{withdrawal.amount}
+							{detailStore.currency}{withdrawal.isRecurring ? ' / ' + withdrawal.frequency : ''}
+						</p>
+						<p class="operation-date">
+							{withdrawal.startDate.toLocaleDateString()}{withdrawal.isRecurring
+								? ' - ' + withdrawal.endDate.toLocaleDateString()
+								: ''}
+						</p>
+					</div>
+					<div class="operation-icon">
+						<a href={routes.WITHDRAWAL(i)}><Edit size={24} /></a>
+						<button onclick={() => detailStore.removeWithdrawal(i)}><TrashCan size={24} /></button>
+					</div>
+				</div>
+			{/each}
+		</div>
 	</section>
 	<section>
 		<div class="chart">
