@@ -10,7 +10,7 @@
 	"withdrawalFee": "Withdrawal fee",
 	"deposits": "Deposits",
 	"withdrawals": "Withdrawals",
-	"results": "Results",
+	"results": "Your performance",
 	"effectiveEvaluation": "Effective evaluation",
 	"clientAge": "Client age",
 	"totalDeposits": "Total deposits",
@@ -45,5 +45,6 @@
 	"clientInformations": "Your informations",
 	"portfolioInformations": "Portfolio details",
 	"plannedDeposits": "Planned deposits",
-	"plannedWithdrawals": "Planned withdrawals"
+	"plannedWithdrawals": "Planned withdrawals",
+	"paidOnFees": "Paid on fees"
 }
