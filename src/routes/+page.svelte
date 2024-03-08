@@ -10,6 +10,9 @@
 	import Input from '$lib/components/input.svelte'
 	import Select from '$lib/components/select.svelte'
 	import Option from '$lib/components/option.svelte'
+	import Operation from '$lib/components/operation.svelte'
+	import { Edit, TrashCan } from 'carbon-icons-svelte'
+	import Button from '$lib/components/button.svelte'
 
 	let oldHash = $state('')
 	let loading = $state(true)
@@ -193,26 +196,32 @@
 			<h5>{$_('plannedDeposits')}</h5>
 			<a href={routes.DEPOSIT()}>+</a>
 		</div>
-		{#each detailStore.deposits as deposit, i}
-			<div>
-				{JSON.stringify(deposit)}<a href={routes.DEPOSIT(i)}>{$_('edit')}</a><button
-					onclick={() => detailStore.removeDeposit(i)}>{$_('delete')}</button
-				>
-			</div>
-		{/each}
+		<div class="grid">
+			{#each detailStore.deposits as deposit, i}
+				<Operation operation={deposit} currency={detailStore.currency}>
+					<div class="edit"><a href={routes.DEPOSIT(i)}><Edit size={24} /></a></div>
+					<Button variant={'ghost'} onclick={() => detailStore.removeDeposit(i)}
+						><TrashCan size={24} /></Button
+					>
+				</Operation>
+			{/each}
+		</div>
 	</section>
 	<section>
 		<div class="flex-add-deposit">
 			<h5>{$_('plannedWithdrawals')}</h5>
 			<a href={routes.WITHDRAWAL()}>+</a>
 		</div>
-		{#each detailStore.withdrawals as withdrawal, i}
-			<div>
-				{JSON.stringify(withdrawal)}
-				<a href={routes.WITHDRAWAL(i)}>{$_('edit')}</a>
-				<button onclick={() => detailStore.removeWithdrawal(i)}>{$_('delete')}</button>
-			</div>
-		{/each}
+		<div class="grid">
+			{#each detailStore.withdrawals as withdrawal, i}
+				<Operation operation={withdrawal} currency={detailStore.currency}>
+					<div class="edit"><a href={routes.WITHDRAWAL(i)}><Edit size={24} /></a></div>
+					<Button variant={'ghost'} onclick={() => detailStore.removeWithdrawal(i)}
+						><TrashCan size={24} /></Button
+					>
+				</Operation>
+			{/each}
+		</div>
 	</section>
 	<section>
 		<div class="chart">
@@ -245,11 +254,24 @@
 		box-sizing: border-box;
 		font-family: Arial, Helvetica, sans-serif;
 	}
+	html {
+		max-width: 1200px;
+		padding: 0 auto;
+	}
 	body {
 		padding: 1rem;
 	}
 	section {
 		padding-bottom: 1rem;
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+		gap: 2rem;
+		justify-content: center;
+		width: 100%;
 	}
 	.flex {
 		display: flex;
@@ -274,19 +296,20 @@
 		font-size: 1rem;
 		font-style: normal;
 		font-weight: 700;
-		line-height: 1.5rem; /* 150% */
+		line-height: 1.5rem;
 		letter-spacing: 0.02rem;
 	}
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr); /* Vytvoří 4 sloupce s minimální šířkou 200px */
-		gap: 2rem; /* Mezera mezi sloupci */
+	.edit > a {
+		display: inline-flex;
+		padding: 12px;
+		justify-content: center;
+		align-items: center;
+		text-decoration: none;
+		background: transparent;
+		color: var(--colors-ultraHigh);
 	}
-
-	/* Media Query pro telefony */
-	@media (max-width: 600px) {
-		.grid {
-			grid-template-columns: 1fr; /* Na telefonech pouze 1 sloupec */
-		}
+	.edit > a:active {
+		background: var(--colors-low);
+		color: var(--colors-high);
 	}
 </style>
