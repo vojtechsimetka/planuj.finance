@@ -18,7 +18,7 @@
 		<Input type="number" bind:value={withdrawal.amount} placeholder={$_('amount')}></Input>
 		<Input type="date" bind:value={withdrawal.startDate} placeholder={$_('startDate')}></Input>
 	</div>
-	<Toggle bind:checked={withdrawal.isRecurring}>{$_('isDepositRecurring')}</Toggle>
+	<Toggle bind:checked={withdrawal.isRecurring}>{$_('isWithdrawalRecurring')}</Toggle>
 	{#if withdrawal.isRecurring}
 		<div class="grid">
 			<Input type="date" bind:value={withdrawal.endDate} placeholder={$_('endDate')}></Input>
