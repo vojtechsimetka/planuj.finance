@@ -12,13 +12,13 @@
 		if (operation.isRecurring) {
 			switch (operation.frequency) {
 				case 'day':
-					return  ` / ${$_('day')}`
+					return ` / ${$_('day')}`
 				case 'week':
-					return  ` / ${$_('week')}`
+					return ` / ${$_('week')}`
 				case 'month':
-					return  ` / ${$_('month')}`
+					return ` / ${$_('month')}`
 				case 'year':
-					return  ` / ${$_('year')}`
+					return ` / ${$_('year')}`
 				default:
 					return ''
 			}
