@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { DepositForm } from '$lib/types'
 	import { _ } from 'svelte-i18n'
-	import Switch from './switch.svelte'
+	import Toggle from './toggle.svelte'
 
 	interface Props {
 		deposit: DepositForm
@@ -22,7 +22,7 @@
 		{$_('startDate')}
 		<input type="date" bind:value={deposit.startDate} />
 	</label>
-	<Switch bind:checked={deposit.isRecurring}>{$_('isDepositRecurring')}</Switch>
+	<Toggle bind:checked={deposit.isRecurring}>{$_('isDepositRecurring')}</Toggle>
 	{#if deposit.isRecurring}
 		<label>
 			{$_('endDate')}
@@ -40,6 +40,3 @@
 	{/if}
 	<slot />
 </div>
-
-<style>
-</style>
