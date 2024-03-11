@@ -54,8 +54,9 @@
 	.toggle::after {
 		content: '';
 		position: absolute;
-		top: 0.225rem;
-		left: 0.25rem;
+		top: 50%;
+		transform: translateY(-50%);
+		left: 0.2rem;
 		width: 1rem;
 		height: 1rem;
 		border-radius: 50%;
@@ -71,7 +72,7 @@
 		color: var(--colors-high);
 	}
 	.toggle:checked::after {
-		transform: translateX(1rem);
+		transform: translateY(-50%) translateX(1rem);
 		background: var(--colors-ultraLow);
 	}
 </style>

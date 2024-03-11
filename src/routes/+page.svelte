@@ -229,20 +229,46 @@
 		</div>
 	</section>
 	<section>
-		<div>
-			<h3>{$_('results')}</h3>
-			{$_('effectiveEvaluation')}
-			{(resultStore.effectiveApy * 100).toFixed(2)} %
-			{$_('clientAge')}
-			{age}
-			{$_('totalDeposits')}
-			{resultStore.totalDeposited}
-			{$_('totalWithdrawals')}
-			{resultStore.totalWithdrawn}
-			{$_('totalDepositsFee')}
-			{resultStore.totalDepositFees}
-			{$_('totalWithdrawalsFee')}
-			{resultStore.totalWithdrawFees}
+		<h5>{$_('results')}</h5>
+		<div class="grid">
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('effectiveEvaluation')}
+				value={(resultStore.effectiveApy * 100).toFixed(2)}
+			></Input>
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('totalDeposits')}
+				value={resultStore.totalDeposited}
+			></Input>
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('totalWithdrawals')}
+				value={resultStore.totalWithdrawn}
+			></Input>
+			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age}></Input>
+		</div>
+		<h5>{$_('paidOnFees')}</h5>
+		<div class="grid">
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('entryFee')}
+				value={resultStore.totalDepositFees}
+			></Input>
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('withdrawalFee')}
+				value={resultStore.totalWithdrawFees}
+			></Input>
+			<Input type={'text'} readonly placeholder={$_('feeMangement')} value={'Total management fee'}
+			></Input>
+			<Input type={'text'} readonly placeholder={$_('feeSuccess')} value={'Total success fee'}
+			></Input>
 		</div>
 	</section>
 {/if}
@@ -268,8 +294,8 @@
 	}
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-		gap: 2rem;
+		grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
+		gap: 1rem;
 		justify-content: center;
 		width: 100%;
 	}

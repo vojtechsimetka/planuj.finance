@@ -3,12 +3,27 @@
 
 	interface Props extends HTMLInputAttributes {
 		labelFor?: string
+		readonly?: boolean
 	}
-	let { labelFor = Math.random().toString(16), placeholder, value, ...restProps } = $props<Props>()
+	let {
+		labelFor = Math.random().toString(16),
+		placeholder,
+		value,
+		readonly = false,
+		disabled,
+		...restProps
+	} = $props<Props>()
 </script>
 
-<div class="root">
-	<input class="input" id={labelFor} bind:value {placeholder} {...restProps} />
+<div class="root" class:readonly class:disabled>
+	<input
+		class="input"
+		id={labelFor}
+		bind:value
+		{placeholder}
+		disabled={disabled || readonly}
+		{...restProps}
+	/>
 	<label class="label" for={labelFor}>
 		{placeholder}
 	</label>
@@ -33,6 +48,11 @@
 		align-items: stretch;
 		justify-content: center;
 	}
+
+	.root.disabled {
+		pointer-events: none;
+		cursor: pointer;
+	}
 	.input {
 		background: var(--colors-low);
 		border: 1px solid var(--colors-low);
@@ -44,12 +64,18 @@
 		letter-spacing: 0.02rem;
 		padding: 1.5rem 0.75rem;
 	}
+	.readonly .input,
 	.input:focus {
-		border: 1px solid var(--colors-high);
 		background: var(--colors-base);
 		padding: 2.25rem 0.75rem 0.75rem;
 		line-height: 1.5rem;
 		font-size: 1rem;
+	}
+	.input:focus {
+		border: 1px solid var(--colors-high);
+	}
+	.readonly .input {
+		border: 1px solid transparent;
 	}
 	.input::placeholder {
 		text-align: center;
@@ -78,6 +104,7 @@
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
 	}
+	.readonly .input + label,
 	.input:focus + .label {
 		background: var(--colors-base);
 	}
