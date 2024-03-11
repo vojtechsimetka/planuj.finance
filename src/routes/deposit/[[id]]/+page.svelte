@@ -42,7 +42,7 @@
 	}
 	function deleteDeposit() {
 		if (depositIndex !== undefined) {
-			detailStore.removeDeposit(depositIndex)
+			setTimeout(() => detailStore.removeDeposit(depositIndex), 0)
 			goto(routes.HOME)
 		}
 	}
@@ -76,9 +76,7 @@
 			<Button variant="secondary" onclick={deleteDeposit} disabled={!formValid}
 				><TrashCan size={24} />{$_('delete')}</Button
 			>
-			<Button variant="secondary" onclick={cancel} disabled={!formValid}
-				><Undo size={24} />{$_('cancel')}</Button
-			>
+			<Button variant="secondary" onclick={cancel}><Undo size={24} />{$_('cancel')}</Button>
 		</div>
 	</section>
 {:else}
@@ -89,9 +87,7 @@
 			<Button variant="primary" onclick={add} disabled={!formValid}
 				><Checkmark size={24} />{$_('add')}</Button
 			>
-			<Button variant="secondary" onclick={cancel} disabled={!formValid}
-				><Undo size={24} />{$_('cancel')}</Button
-			>
+			<Button variant="secondary" onclick={cancel}><Undo size={24} />{$_('cancel')}</Button>
 		</div>
 	</section>
 {/if}
