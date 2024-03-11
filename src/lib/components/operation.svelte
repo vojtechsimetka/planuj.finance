@@ -19,8 +19,6 @@
 					return ` / ${$_('month')}`
 				case 'year':
 					return ` / ${$_('year')}`
-				default:
-					return ''
 			}
 		}
 		return ''
@@ -45,11 +43,6 @@
 </div>
 
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
 	.flex-container {
 		display: flex;
 		flex-direction: row;
@@ -65,6 +58,9 @@
 		flex-direction: column;
 	}
 	p {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
 		font-family: Arial;
 		font-style: normal;
 		font-weight: 400;
