@@ -8,20 +8,17 @@
 	}
 
 	let { operation, currency } = $props<Props>()
-	function whatFrequencyIs() {
+	function formatFrequency() {
 		if (operation.isRecurring) {
-			let result = ' / '
 			switch (operation.frequency) {
 				case 'day':
-					return result + $_('day')
+					return ` / ${$_('day')}`
 				case 'week':
-					return result + $_('week')
+					return ` / ${$_('week')}`
 				case 'month':
-					return result + $_('month')
+					return ` / ${$_('month')}`
 				case 'year':
-					return result + $_('year')
-				default:
-					return ''
+					return ` / ${$_('year')}`
 			}
 		}
 		return ''
@@ -32,7 +29,7 @@
 	<div class="info-of-operation">
 		<p class="operation-name">{operation.name}</p>
 		<p class="operation-amount">
-			{operation.amount}&nbsp;{currency}{whatFrequencyIs()}
+			{operation.amount}&nbsp;{currency}{formatFrequency()}
 		</p>
 		<p class="operation-date">
 			{operation.startDate.toLocaleDateString()}{operation.isRecurring
@@ -46,11 +43,6 @@
 </div>
 
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
 	.flex-container {
 		display: flex;
 		flex-direction: row;
@@ -66,6 +58,9 @@
 		flex-direction: column;
 	}
 	p {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
 		font-family: Arial;
 		font-style: normal;
 		font-weight: 400;
