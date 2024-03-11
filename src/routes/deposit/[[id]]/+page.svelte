@@ -63,7 +63,7 @@
 {#if (depositIndex === undefined && Boolean(index)) || (depositIndex !== undefined && detailStore.deposits.length <= depositIndex)}
 	<section>
 		<h5>Vklad s indexem {index} jsme nenalezli</h5>
-		<Button variant="ghost" onclick={cancel} disabled={!formValid}><Undo size={24} /></Button>
+		<Button variant="secondary" onclick={cancel} disabled={!formValid}><Undo size={24} /></Button>
 	</section>
 {:else if depositIndex !== undefined}
 	<section>
