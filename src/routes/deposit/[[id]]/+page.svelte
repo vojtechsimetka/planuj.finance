@@ -10,6 +10,8 @@
 	import type { DepositForm } from '$lib/types'
 	import { depositWithdrawalFormSchema, depositWithdrawalSchema } from '$lib/schemas'
 	import { _ } from 'svelte-i18n'
+	import Button from '$lib/components/button.svelte'
+	import { Checkmark, TrashCan, Undo } from 'carbon-icons-svelte'
 
 	const index = get(page).params.id
 	const depositIndex = isInt(index) ? Number.parseInt(index) : undefined
@@ -40,7 +42,7 @@
 	}
 	function deleteDeposit() {
 		if (depositIndex !== undefined) {
-			detailStore.removeDeposit(depositIndex)
+			setTimeout(() => detailStore.removeDeposit(depositIndex), 0)
 			goto(routes.HOME)
 		}
 	}
@@ -59,19 +61,75 @@
 </script>
 
 {#if (depositIndex === undefined && Boolean(index)) || (depositIndex !== undefined && detailStore.deposits.length <= depositIndex)}
-	<h1>Výběr s indexem {index} jsme nenalezli</h1>
-	<a href="/">{$_('back')}</a>
+	<section>
+		<h5>Vklad s indexem {index} jsme nenalezli</h5>
+		<Button variant="ghost" onclick={cancel} disabled={!formValid}><Undo size={24} /></Button>
+	</section>
 {:else if depositIndex !== undefined}
-	<h1>{$_('editedDeposit')} {depositIndex}</h1>
-	<DepositComponent bind:deposit />
-	<button onclick={save} disabled={!formValid}>{$_('save')}</button>
-	<button onclick={deleteDeposit}>{$_('delete')}</button>
-	<button onclick={cancel}>{$_('cancel')}</button>
+	<section>
+		<h5>{$_('editedDeposit')} {depositIndex}</h5>
+		<DepositComponent bind:deposit />
+		<div class="buttons">
+			<Button variant="primary" onclick={save} disabled={!formValid}
+				><Checkmark size={24} />{$_('save')}</Button
+			>
+			<Button variant="secondary" onclick={deleteDeposit} disabled={!formValid}
+				><TrashCan size={24} />{$_('delete')}</Button
+			>
+			<Button variant="secondary" onclick={cancel}><Undo size={24} />{$_('cancel')}</Button>
+		</div>
+	</section>
 {:else}
-	<h1>{$_('newDeposit')}</h1>
-	<DepositComponent bind:deposit />
-	<button onclick={add} disabled={!formValid}>{$_('add')}</button>
+	<section>
+		<h5>{$_('newDeposit')}</h5>
+		<DepositComponent bind:deposit />
+		<div class="buttons">
+			<Button variant="primary" onclick={add} disabled={!formValid}
+				><Checkmark size={24} />{$_('add')}</Button
+			>
+			<Button variant="secondary" onclick={cancel}><Undo size={24} />{$_('cancel')}</Button>
+		</div>
+	</section>
 {/if}
+
 {#if formErrors}
 	<pre>{JSON.stringify(formErrors, null, 2)}</pre>
 {/if}
+
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: Arial, Helvetica, sans-serif;
+	}
+	html {
+		max-width: 1200px;
+	}
+	body {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 1rem;
+	}
+	section {
+		padding-bottom: 1rem;
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+	section > h5 {
+		color: var(--colors-ultraHigh, #303030);
+		/* h5 */
+		font-family: Arial;
+		font-size: 1rem;
+		font-style: normal;
+		font-weight: 700;
+		line-height: 1.5rem;
+		letter-spacing: 0.02rem;
+		padding-bottom: 1rem;
+	}
+	.buttons {
+		display: flex;
+		gap: 1rem;
+	}
+</style>
