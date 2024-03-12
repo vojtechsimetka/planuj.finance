@@ -63,6 +63,7 @@
 		line-height: 1.5rem;
 		letter-spacing: 0.02rem;
 		padding: 1.5rem 0.75rem;
+		border-radius: 0.25rem;
 	}
 	.readonly .input,
 	.input:focus {
