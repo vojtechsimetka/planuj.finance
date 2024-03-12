@@ -235,19 +235,19 @@
 				type={'text'}
 				readonly
 				placeholder={$_('effectiveEvaluation')}
-				value={(resultStore.effectiveApy * 100).toFixed(2) + ' %'}
+				value={`${(resultStore.effectiveApy * 100).toFixed(2)} %`}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('totalDeposits')}
-				value={resultStore.totalDeposited + ' ' + detailStore.currency}
+				value={`${resultStore.totalDeposited} ${detailStore.currency}`}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('totalWithdrawals')}
-				value={resultStore.totalWithdrawn + ' ' + detailStore.currency}
+				value={`${resultStore.totalWithdrawn} ${detailStore.currency}`}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age}></Input>
 		</div>
@@ -257,13 +257,13 @@
 				type={'text'}
 				readonly
 				placeholder={$_('entryFee')}
-				value={resultStore.totalDepositFees + ' ' + detailStore.currency}
+				value={`${resultStore.totalDepositFees} ${detailStore.currency}`}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('withdrawalFee')}
-				value={resultStore.totalWithdrawFees + ' ' + detailStore.currency}
+				value={`${resultStore.totalWithdrawFees} ${detailStore.currency}`}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('feeMangement')} value={'Total management fee'}
 			></Input>
