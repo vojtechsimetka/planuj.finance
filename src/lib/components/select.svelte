@@ -48,6 +48,7 @@
 		width: 100%;
 		background: var(--colors-low);
 		border: 1px solid var(--colors-low);
+		border-radius: 0.25rem;
 		font-family: Arial;
 		font-size: 1rem;
 		font-style: normal;
