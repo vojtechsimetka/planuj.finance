@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { WithdrawalForm } from '$lib/types'
+	import type { DepositForm, WithdrawalForm } from '$lib/types'
 	import { _ } from 'svelte-i18n'
 	import Toggle from './toggle.svelte'
 	import Input from '$lib/components/input.svelte'
@@ -7,22 +7,22 @@
 	import Option from './option.svelte'
 
 	interface Props {
-		withdrawal: WithdrawalForm
+		operation: DepositForm | WithdrawalForm
 	}
-	let { withdrawal } = $props<Props>()
+	let { operation } = $props<Props>()
 </script>
 
 <section>
 	<div class="grid">
-		<Input type="text" bind:value={withdrawal.name} placeholder={$_('nameOfOperation')}></Input>
-		<Input type="number" bind:value={withdrawal.amount} placeholder={$_('amount')}></Input>
-		<Input type="date" bind:value={withdrawal.startDate} placeholder={$_('startDate')}></Input>
+		<Input type="text" bind:value={operation.name} placeholder={$_('nameOfOperation')}></Input>
+		<Input type="number" bind:value={operation.amount} placeholder={$_('amount')}></Input>
+		<Input type="date" bind:value={operation.startDate} placeholder={$_('startDate')}></Input>
 	</div>
-	<Toggle bind:checked={withdrawal.isRecurring}>{$_('isWithdrawalRecurring')}</Toggle>
-	{#if withdrawal.isRecurring}
+	<Toggle bind:checked={operation.isRecurring}>{$_('isDepositRecurring')}</Toggle>
+	{#if operation.isRecurring}
 		<div class="grid">
-			<Input type="date" bind:value={withdrawal.endDate} placeholder={$_('endDate')}></Input>
-			<Select bind:value={withdrawal.frequency} placeholder={$_('frequency')}>
+			<Input type="date" bind:value={operation.endDate} placeholder={$_('endDate')}></Input>
+			<Select bind:value={operation.frequency} placeholder={$_('frequency')}>
 				<Option value="day">{$_('daily')}</Option>
 				<Option value="week">{$_('weekly')}</Option>
 				<Option value="month">{$_('monthly')}</Option>
