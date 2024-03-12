@@ -33,8 +33,6 @@
 	}
 
 	input[type='checkbox'] {
-		--webbkit-appearance: none;
-		--moz-appearance: none;
 		appearance: none;
 		cursor: pointer;
 	}
