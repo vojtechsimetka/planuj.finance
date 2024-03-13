@@ -5,7 +5,6 @@
 	import routes from '$lib/routes'
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
-	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import Language from '$lib/components/language.svelte'
 	import Input from '$lib/components/input.svelte'
 	import Select from '$lib/components/select.svelte'
@@ -13,16 +12,84 @@
 	import Operation from '$lib/components/operation.svelte'
 	import { Edit, TrashCan } from 'carbon-icons-svelte'
 	import Button from '$lib/components/button.svelte'
+	import { supportedCurrenciesWithLabels } from '$lib/types'
+	import { formatDate } from '$lib/utils'
+	import { z } from 'zod'
+	import { withFormStore } from '$lib/stores/form.svelte'
+	import { dateOfBirthSchema, endAgeSchema, supportedCurrenciesSchema } from '$lib/schemas'
+	import Error from '$lib/components/error.svelte'
 
-	let oldHash = $state('')
-	let loading = $state(true)
+	const initialValues = {
+		dateOfBirth: formatDate(new Date()),
+		endAge: 80,
+		currency: 'CZK',
+		inflation: 2,
+		apy: 0,
+		feeSuccess: 0,
+		feeManagement: 0,
+		entryFee: 0,
+		withdrawalFee: 0,
+	} as const
+
+	let hash = $state('')
+	let loading = $state<boolean>(true)
+	let dateOfBirth = withFormStore(initialValues.dateOfBirth, dateOfBirthSchema)
+	let endAge = withFormStore(initialValues.endAge, endAgeSchema)
+	let currency = withFormStore(initialValues.currency, supportedCurrenciesSchema)
+	let inflation = withFormStore(initialValues.inflation, z.number().nonnegative())
+	let apy = withFormStore(initialValues.apy, z.number().nonnegative())
+	let feeSuccess = withFormStore(initialValues.feeSuccess, z.number().nonnegative())
+	let feeManagement = withFormStore(initialValues.feeManagement, z.number().nonnegative())
+	let entryFee = withFormStore(initialValues.entryFee, z.number().nonnegative())
+	let withdrawalFee = withFormStore(initialValues.withdrawalFee, z.number().nonnegative())
+	const synchronize = (loading: boolean, form: any, storeValue: any, initialValue: any) => {
+		if (loading) return
+
+		if (form.parsedValue !== storeValue && form.value === initialValue) form.value = storeValue
+
+		if (
+			form.parsedValue !== undefined &&
+			form.parsedValue !== storeValue &&
+			form.value !== initialValue
+		)
+			storeValue = form.parsedValue
+	}
 
 	$effect(() => {
-		const hash = detailStore.toUrl()
+		if (loading) return
 
-		if (window.location.hash !== hash) {
-			oldHash = hash
-			window.location.hash = hash
+		if (
+			dateOfBirth.parsedValue?.getTime() !== detailStore.dateOfBirth.getTime() &&
+			dateOfBirth.value === initialValues.dateOfBirth
+		)
+			dateOfBirth.value = formatDate(detailStore.dateOfBirth)
+
+		if (
+			dateOfBirth.parsedValue !== undefined &&
+			dateOfBirth.parsedValue.getTime() !== detailStore.dateOfBirth.getTime() &&
+			dateOfBirth.value !== initialValues.dateOfBirth
+		)
+			detailStore.dateOfBirth = dateOfBirth.parsedValue
+	})
+
+	$effect(() => synchronize(loading, endAge, detailStore.endAge, initialValues.endAge))
+	$effect(() => synchronize(loading, currency, detailStore.currency, initialValues.currency))
+	$effect(() => synchronize(loading, inflation, detailStore.inflation, initialValues.inflation))
+	$effect(() => synchronize(loading, apy, detailStore.apy, initialValues.apy))
+	$effect(() => synchronize(loading, entryFee, detailStore.entryFee, initialValues.entryFee))
+	$effect(() =>
+		synchronize(loading, withdrawalFee, detailStore.withdrawalFee, initialValues.withdrawalFee),
+	)
+	$effect(() =>
+		synchronize(loading, feeManagement, detailStore.feeManagement, initialValues.feeManagement),
+	)
+	$effect(() => synchronize(loading, feeSuccess, detailStore.feeSuccess, initialValues.feeSuccess))
+	$effect(() => {
+		const newHash = detailStore.toUrl()
+
+		if (hash !== newHash) {
+			hash = newHash
+			window.location.hash = newHash
 		}
 	})
 
@@ -34,13 +101,23 @@
 		}
 
 		let newHash = url.hash.slice(1)
-		if (oldHash === newHash) return
+		if (hash === newHash) return
+		hash = newHash
 
-		// detailStore.restoreFromUrl(newHash)
+		detailStore.restoreFromUrl(hash)
 
-		oldHash = newHash
-
-		setTimeout(() => (loading = false), 0)
+		setTimeout(() => {
+			dateOfBirth.value = formatDate(detailStore.dateOfBirth)
+			inflation.value = detailStore.inflation
+			endAge.value = detailStore.endAge
+			currency.value = detailStore.currency
+			apy.value = detailStore.apy
+			entryFee.value = detailStore.entryFee
+			withdrawalFee.value = detailStore.withdrawalFee
+			feeManagement.value = detailStore.feeManagement
+			feeSuccess.value = detailStore.feeSuccess
+			loading = false
+		}, 0)
 	})
 
 	function calculateAge(dateOfBirth: Date) {
@@ -135,32 +212,28 @@
 				type="date"
 				labelFor="dateOfBirth"
 				placeholder={$_('dateOfBirth')}
-				bind:value={detailStore.dateOfBirth}
-			></Input>
-			<Input
-				type="number"
-				labelFor="endAge"
-				placeholder={$_('endAge')}
-				bind:value={detailStore.endAge}
-			></Input>
+				bind:value={dateOfBirth.value}
+			>
+				<Error errors={dateOfBirth.error} />
+			</Input>
+			<Input type="number" labelFor="endAge" placeholder={$_('endAge')} bind:value={endAge.value}>
+				<Error errors={endAge.error} />
+			</Input>
 		</div>
 	</section>
 	<section>
 		<h5>{$_('portfolioInformations')}</h5>
 		<div class="grid">
-			<Input
-				type="number"
-				labelFor="apy"
-				placeholder={$_('apy')}
-				bind:value={detailStore.portfolio.apy}
-			></Input>
+			<Input type="number" labelFor="apy" placeholder={$_('apy')} bind:value={apy.value}></Input>
 			<Input
 				type="number"
 				labelFor="inflation"
 				placeholder={$_('inflation')}
-				bind:value={detailStore.inflation}
-			></Input>
-			<Select bind:value={detailStore.currency} placeholder={$_('currency')}>
+				bind:value={inflation.value}
+			>
+				<Error errors={inflation.error} />
+			</Input>
+			<Select bind:value={currency.value} placeholder={$_('currency')}>
 				#{#each supportedCurrenciesWithLabels as currency}
 					<Option value={currency.value}>{currency.label}</Option>
 				{/each}
@@ -169,26 +242,34 @@
 				type="number"
 				labelFor="entryFee"
 				placeholder={$_('entryFee')}
-				bind:value={detailStore.portfolio.entryFee}
-			></Input>
+				bind:value={entryFee.value}
+			>
+				<Error errors={entryFee.error} />
+			</Input>
 			<Input
 				type="number"
 				labelFor="inflation"
 				placeholder={$_('withdrawalFee')}
-				bind:value={detailStore.portfolio.withdrawalFee}
-			></Input>
+				bind:value={withdrawalFee.value}
+			>
+				<Error errors={withdrawalFee.error} />
+			</Input>
 			<Input
 				type="number"
-				labelFor="feeMangement"
+				labelFor="feeManagement"
 				placeholder={$_('feeMangement')}
-				bind:value={detailStore.portfolio.feeMangement}
-			></Input>
+				bind:value={feeManagement.value}
+			>
+				<Error errors={feeManagement.error} />
+			</Input>
 			<Input
 				type="number"
 				labelFor="feeSuccess"
 				placeholder={$_('feeSuccess')}
-				bind:value={detailStore.portfolio.feeSuccess}
-			></Input>
+				bind:value={feeSuccess.value}
+			>
+				<Error errors={feeSuccess.error} />
+			</Input>
 		</div>
 	</section>
 	<section>
