@@ -69,7 +69,7 @@
 {:else if withdrawalIndex !== undefined}
 	<section>
 		<h5>{$_('editedWithdrawal')} {withdrawalIndex}</h5>
-		<PageOfOperation bind:operation={withdrawal} typeOfOperation="withdrawal" />
+		<PageOfOperation bind:operation={withdrawal} recurringOperationText="isWithdrawalRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={save} disabled={!formValid}
 				><Checkmark size={24} />{$_('save')}</Button
@@ -83,7 +83,7 @@
 {:else}
 	<section>
 		<h5>{$_('newWithdrawal')}</h5>
-		<PageOfOperation bind:operation={withdrawal} typeOfOperation="withdrawal" />
+		<PageOfOperation bind:operation={withdrawal} recurringOperationText="isWithdrawalRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={add} disabled={!formValid}>
 				<Checkmark size={24} />{$_('add')}
