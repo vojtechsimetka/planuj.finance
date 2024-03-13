@@ -4,8 +4,9 @@
 
 	interface Props extends HTMLSelectAttributes {
 		helperText?: string
+		labelFor?: string
 	}
-	let { helperText, placeholder, value } = $props<Props>()
+	let { labelFor = Math.random().toString(16),helperText, placeholder, value } = $props<Props>()
 	let open = $state(false)
 </script>
 
@@ -17,17 +18,20 @@
 			<CaretDown size={24} />
 		{/if}
 	</div>
-	<input bind:value class="select" onclick={() => (open = !open)} onblur={() => (open = false)} />
-	<div class="label">
+	<input bind:value class="select" onclick={() => (open = !open)} onblur={() => (open = false)} id={labelFor} {placeholder}/>
+	<label class="label" for={labelFor}>
 		{placeholder}
-	</div>
+	</label>
 	<div class="helper-text">
 		{helperText}
 	</div>
 	{#if open}
-		<slot />
+		<div class="options">
+			<slot />
+		</div>
 	{/if}
 </div>
+
 
 <style>
 	.root {
@@ -74,6 +78,10 @@
 		line-height: 1.5rem;
 		font-size: 1rem;
 	}
+	.select::placeholder{
+		text-align: center;
+		color: transparent;
+	}
 	.label {
 		position: absolute;
 		top: 1.75rem;
@@ -112,5 +120,15 @@
 	}
 	.helper-text {
 		padding: 0.5rem 0.75rem;
+	}
+	.options {
+		position: absolute;
+		top: calc(100% + 5px);
+		left: 0;
+		width: 100%;
+		border-radius: 0.25rem;
+		border: 1px solid var(--colors-high);
+		background: var(--colors-base);
+		z-index: 9999;
 	}
 </style>
