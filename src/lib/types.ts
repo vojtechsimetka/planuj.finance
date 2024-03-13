@@ -1,21 +1,17 @@
 import { z } from 'zod'
-import type { depositWithdrawalFormSchema, depositWithdrawalSchema } from './schemas'
+import type {
+	depositWithdrawalFormSchema,
+	depositWithdrawalSchema,
+	portfolioSchema,
+	supportedCurrenciesSchema,
+} from './schemas'
 
 export type DepositForm = z.infer<typeof depositWithdrawalFormSchema>
 export type WithdrawalForm = z.infer<typeof depositWithdrawalFormSchema>
 export type Deposit = z.infer<typeof depositWithdrawalSchema>
 export type Withdrawal = z.infer<typeof depositWithdrawalSchema>
-
-export interface Portfolio {
-	apy: number
-	feeSuccess: number
-	feeMangement: number
-	entryFee: number
-	withdrawalFee: number
-}
-
-const supportedCurrencies = ['CZK', 'EUR', 'USD'] as const
-export type Currency = (typeof supportedCurrencies)[number]
+export type Portfolio = z.infer<typeof portfolioSchema>
+export type Currency = z.infer<typeof supportedCurrenciesSchema>
 
 export interface CurrencyWithLabel {
 	label: string

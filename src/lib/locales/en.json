@@ -46,5 +46,9 @@
 	"portfolioInformations": "Portfolio details",
 	"plannedDeposits": "Planned deposits",
 	"plannedWithdrawals": "Planned withdrawals",
-	"paidOnFees": "Paid on fees"
+	"paidOnFees": "Paid on fees",
+
+	"errors": {
+		"too_small": "Please enter larger value"
+	}
 }

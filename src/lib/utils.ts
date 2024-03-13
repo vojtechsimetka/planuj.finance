@@ -53,6 +53,45 @@ export function initializeForm<T extends Deposit | Withdrawal>(
 	}
 }
 
+export function compareArrays<T extends Deposit | Withdrawal | DepositForm | WithdrawalForm>(
+	a: T[],
+	b: T[],
+) {
+	if (a.length !== b.length) {
+		return false
+	}
+	for (let i = 0; i < a.length; i++) {
+		if (!areObjectsEqual(a[i], b[i])) {
+			return false
+		}
+	}
+	return true
+}
+export function areObjectsEqual<T extends Record<string, string | number | boolean | Date>>(
+	obj1: T,
+	obj2: T,
+): boolean {
+	for (const key in obj1) {
+		if (Object.hasOwnProperty.call(obj1, key) && Object.hasOwnProperty.call(obj2, key)) {
+			if (
+				typeof obj1[key] === 'object' &&
+				obj1[key] instanceof Date &&
+				typeof obj2[key] === 'object' &&
+				obj2[key] instanceof Date
+			) {
+				if ((obj1[key] as Date).getTime() !== (obj2[key] as Date).getTime()) return false
+				continue
+			}
+			if (obj1[key] !== obj2[key]) {
+				return false
+			}
+		} else {
+			return false
+		}
+	}
+	return true
+}
+
 export function formatDate(date: Date): string {
 	// Extract year, month, and day components
 	const year = date.getFullYear().toFixed()

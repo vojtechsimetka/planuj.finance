@@ -1,13 +1,13 @@
+import { detailStoreSchema } from '$lib/schemas'
 import type { Deposit, Portfolio, Withdrawal, Currency } from '$lib/types'
-import { base64ToBytes, bytesToBase64 } from '$lib/utils'
+import { base64ToBytes, bytesToBase64, compareArrays } from '$lib/utils'
 import pako from 'pako'
 
-export interface DetailsStore {
+export interface DetailsStore extends Portfolio {
 	dateOfBirth: Date
 	endAge: number
 	currency: Currency
 	inflation: number
-	portfolio: Portfolio
 	deposits: Deposit[]
 	withdrawals: Withdrawal[]
 
@@ -41,13 +41,11 @@ export function withDetailsStore(): DetailsStore {
 	let endAge = $state(80)
 	let currency = $state<Currency>('CZK')
 	let inflation = $state(0)
-	let portfolio = $state<Portfolio>({
-		apy: 0,
-		feeSuccess: 0,
-		feeMangement: 0,
-		entryFee: 0,
-		withdrawalFee: 0,
-	})
+	let apy = $state(0)
+	let feeSuccess = $state(0)
+	let feeManagement = $state(0)
+	let entryFee = $state(0)
+	let withdrawalFee = $state(0)
 	let deposits = $state<Deposit[]>([])
 	let withdrawals = $state<Withdrawal[]>([])
 
@@ -76,11 +74,35 @@ export function withDetailsStore(): DetailsStore {
 		set inflation(value) {
 			inflation = value
 		},
-		get portfolio() {
-			return portfolio
+		get apy() {
+			return apy
 		},
-		set portfolio(value) {
-			portfolio = value
+		set apy(value) {
+			apy = value
+		},
+		get feeSuccess() {
+			return feeSuccess
+		},
+		set feeSuccess(value) {
+			feeSuccess = value
+		},
+		get feeManagement() {
+			return feeManagement
+		},
+		set feeManagement(value) {
+			feeManagement = value
+		},
+		get entryFee() {
+			return entryFee
+		},
+		set entryFee(value) {
+			entryFee = value
+		},
+		get withdrawalFee() {
+			return withdrawalFee
+		},
+		set withdrawalFee(value) {
+			withdrawalFee = value
 		},
 		get deposits() {
 			return deposits
@@ -120,7 +142,11 @@ export function withDetailsStore(): DetailsStore {
 				endAge,
 				currency,
 				inflation,
-				portfolio,
+				apy,
+				feeSuccess,
+				feeManagement,
+				entryFee,
+				withdrawalFee,
 				deposits,
 				withdrawals,
 			})
@@ -132,15 +158,24 @@ export function withDetailsStore(): DetailsStore {
 				const decodedData = pako.inflate(uint8, { to: 'string' })
 				const data = JSON.parse(decodedData)
 
-				dateOfBirth = data.dateOfBirth
-				endAge = data.endAge
-				currency = data.currency
-				inflation = data.inflation
-				// FIXME: should use different comparison which does not require string allocation
-				if (JSON.stringify(portfolio) !== JSON.stringify(data.portfolio)) portfolio = data.portfolio
-				if (JSON.stringify(deposits) !== JSON.stringify(data.deposits)) deposits = data.deposits
-				if (JSON.stringify(withdrawals) !== JSON.stringify(data.withdrawals))
-					withdrawals = data.withdrawals
+				const res = detailStoreSchema.safeParse(data)
+
+				if (!res.success) {
+					console.error('Error restoring from URL', res.error)
+					return
+				}
+				dateOfBirth = res.data.dateOfBirth
+				endAge = res.data.endAge
+				currency = res.data.currency
+				inflation = res.data.inflation
+				apy = res.data.apy
+				feeSuccess = res.data.feeSuccess
+				feeManagement = res.data.feeManagement
+				withdrawalFee = res.data.withdrawalFee
+				entryFee = res.data.entryFee
+
+				if (!compareArrays(deposits, res.data.deposits)) deposits = res.data.deposits
+				if (!compareArrays(withdrawals, res.data.withdrawals)) withdrawals = res.data.withdrawals
 			} catch (error) {
 				console.error('Error restoring from URL', error)
 			}

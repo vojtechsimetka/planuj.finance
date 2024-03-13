@@ -12,19 +12,17 @@ interface GraphRecord {
 export function withResultsStore() {
 	const effectiveApy = $derived(
 		getEffectiveInterestRate(
-			detailStore.portfolio.apy,
-			detailStore.portfolio.feeSuccess,
-			detailStore.portfolio.feeMangement,
+			detailStore.apy,
+			detailStore.feeSuccess,
+			detailStore.feeManagement,
 			detailStore.inflation,
 		),
 	)
 	const totalDeposited: number = $derived(calculateTotal(detailStore.deposits))
 	const totalWithdrawn: number = $derived(calculateTotal(detailStore.withdrawals))
 
-	const totalDepositFees: number = $derived(totalDeposited * (detailStore.portfolio.entryFee / 100))
-	const totalWithdrawFees: number = $derived(
-		totalWithdrawn * (detailStore.portfolio.withdrawalFee / 100),
-	)
+	const totalDepositFees: number = $derived(totalDeposited * (detailStore.entryFee / 100))
+	const totalWithdrawFees: number = $derived(totalWithdrawn * (detailStore.withdrawalFee / 100))
 
 	function isEqualDate(a: Date, b: Date): boolean {
 		return (
@@ -51,7 +49,7 @@ export function withResultsStore() {
 
 			detailStore.deposits.forEach((deposit) => {
 				if (!deposit.isRecurring && isEqualDate(new Date(deposit.startDate), i)) {
-					const fee = deposit.amount * (detailStore.portfolio.entryFee / 100)
+					const fee = deposit.amount * (detailStore.entryFee / 100)
 					totalDeposited += deposit.amount
 					totalInvested += deposit.amount - fee
 					totalFees += fee
@@ -62,7 +60,7 @@ export function withResultsStore() {
 
 			detailStore.withdrawals.forEach((withdrawal) => {
 				if (!withdrawal.isRecurring && isEqualDate(new Date(withdrawal.startDate), i)) {
-					const fee = withdrawal.amount * (detailStore.portfolio.withdrawalFee / 100)
+					const fee = withdrawal.amount * (detailStore.withdrawalFee / 100)
 					totalInvested -= withdrawal.amount + fee
 					totalWithdrawn += withdrawal.amount
 					totalFees += fee

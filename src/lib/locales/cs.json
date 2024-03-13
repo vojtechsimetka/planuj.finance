@@ -46,5 +46,9 @@
 	"portfolioInformations": "Detaily portfolia",
 	"plannedDeposits": "Plánované vklady",
 	"plannedWithdrawals": "Plánované výběry",
-	"paidOnFees": "Zaplaceno na poplatcích"
+	"paidOnFees": "Zaplaceno na poplatcích",
+
+	"errors": {
+		"too_small": "Hodnota musí být větší"
+	}
 }
