@@ -7,6 +7,7 @@ export interface FormStore<T, V> {
 	parsedValue?: V
 	isValid: boolean
 	error: string[]
+	edited: boolean
 }
 
 export function withFormStore<T, V>(
@@ -15,6 +16,7 @@ export function withFormStore<T, V>(
 ): FormStore<T, V> {
 	let value = $state<T>(initialValue)
 	let error = $state<string[]>([])
+	let edited = $state(false)
 	const { isValid, codes, parsedValue } = $derived.by(() => {
 		const res = schema.safeParse(value)
 		if (res.success) {
@@ -22,6 +24,10 @@ export function withFormStore<T, V>(
 		}
 
 		return { isValid: false, codes: res.error.issues.map((i) => i.code) }
+	})
+
+	$effect(() => {
+		edited = edited || value !== initialValue
 	})
 
 	$effect(() => {
@@ -49,6 +55,9 @@ export function withFormStore<T, V>(
 		},
 		get parsedValue() {
 			return parsedValue
+		},
+		get edited() {
+			return edited
 		},
 	}
 }
