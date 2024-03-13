@@ -8,8 +8,9 @@
 
 	interface Props {
 		operation: DepositForm | WithdrawalForm
+		typeOfOperation: string
 	}
-	let { operation } = $props<Props>()
+	let { operation, typeOfOperation } = $props<Props>()
 </script>
 
 <section>
@@ -18,7 +19,11 @@
 		<Input type="number" bind:value={operation.amount} placeholder={$_('amount')}></Input>
 		<Input type="date" bind:value={operation.startDate} placeholder={$_('startDate')}></Input>
 	</div>
-	<Toggle bind:checked={operation.isRecurring}>{$_('isDepositRecurring')}</Toggle>
+	<Toggle bind:checked={operation.isRecurring}
+		>{typeOfOperation === 'deposit'
+			? $_('isDepositRecurring')
+			: $_('isWithdrawalRecurring')}</Toggle
+	>
 	{#if operation.isRecurring}
 		<div class="grid">
 			<Input type="date" bind:value={operation.endDate} placeholder={$_('endDate')}></Input>

@@ -68,7 +68,7 @@
 {:else if depositIndex !== undefined}
 	<section>
 		<h5>{$_('editedDeposit')} {depositIndex}</h5>
-		<PageOfOperation bind:operation={deposit} />
+		<PageOfOperation bind:operation={deposit} typeOfOperation="deposit" />
 		<div class="buttons">
 			<Button variant="primary" onclick={save} disabled={!formValid}
 				><Checkmark size={24} />{$_('save')}</Button
@@ -82,7 +82,7 @@
 {:else}
 	<section>
 		<h5>{$_('newDeposit')}</h5>
-		<PageOfOperation bind:operation={deposit} />
+		<PageOfOperation bind:operation={deposit} typeOfOperation="deposit" />
 		<div class="buttons">
 			<Button variant="primary" onclick={add} disabled={!formValid}
 				><Checkmark size={24} />{$_('add')}</Button
