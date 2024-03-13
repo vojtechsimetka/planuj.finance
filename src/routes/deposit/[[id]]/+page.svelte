@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import DepositComponent from '$lib/components/deposit.svelte'
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { goto } from '$app/navigation'
 	import { get } from 'svelte/store'
@@ -12,6 +11,7 @@
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/button.svelte'
 	import { Checkmark, TrashCan, Undo } from 'carbon-icons-svelte'
+	import PageOfOperation from '$lib/components/pageOfOperation.svelte'
 
 	const index = get(page).params.id
 	const depositIndex = isInt(index) ? Number.parseInt(index) : undefined
@@ -68,7 +68,7 @@
 {:else if depositIndex !== undefined}
 	<section>
 		<h5>{$_('editedDeposit')} {depositIndex}</h5>
-		<DepositComponent bind:deposit />
+		<PageOfOperation bind:operation={deposit} recurringOperationText="isDepositRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={save} disabled={!formValid}
 				><Checkmark size={24} />{$_('save')}</Button
@@ -82,7 +82,7 @@
 {:else}
 	<section>
 		<h5>{$_('newDeposit')}</h5>
-		<DepositComponent bind:deposit />
+		<PageOfOperation bind:operation={deposit} recurringOperationText="isDepositRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={add} disabled={!formValid}
 				><Checkmark size={24} />{$_('add')}</Button
