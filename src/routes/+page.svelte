@@ -12,26 +12,12 @@
 	import Operation from '$lib/components/operation.svelte'
 	import { Edit, TrashCan } from 'carbon-icons-svelte'
 	import Button from '$lib/components/button.svelte'
-	import { supportedCurrenciesWithLabels, type Portfolio, type Currency } from '$lib/types'
+	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import { formatDate } from '$lib/utils'
-	import { z, type ZodError } from 'zod'
+	import { z } from 'zod'
 	import { withFormStore } from '$lib/stores/form.svelte'
 	import { dateOfBirthSchema, endAgeSchema, supportedCurrenciesSchema } from '$lib/schemas'
 	import Error from '$lib/components/error.svelte'
-
-	interface FormState extends Portfolio {
-		dateOfBirth: string
-		endAge: number
-		currency: Currency
-		inflation: number
-	}
-
-	interface Form<T> {
-		originalValue?: T
-		value: T
-		error: ZodError | undefined
-		isDirty?: boolean
-	}
 
 	const initialValues = {
 		dateOfBirth: formatDate(new Date()),
@@ -104,7 +90,6 @@
 		if (hash !== newHash) {
 			hash = newHash
 			window.location.hash = newHash
-			console.count('hash saved')
 		}
 	})
 
@@ -117,7 +102,6 @@
 
 		let newHash = url.hash.slice(1)
 		if (hash === newHash) return
-		console.count('hash restored')
 		hash = newHash
 
 		detailStore.restoreFromUrl(hash)
