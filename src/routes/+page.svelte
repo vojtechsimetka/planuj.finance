@@ -3,7 +3,7 @@
 	import { _ } from 'svelte-i18n'
 	import { page } from '$app/stores'
 	import routes from '$lib/routes'
-	import { detailStore } from '$lib/stores/details.svelte'
+	import { detailStore, type DetailsStoreValues } from '$lib/stores/details.svelte'
 	import { resultStore } from '$lib/stores/results.svelte'
 	import Language from '$lib/components/language.svelte'
 	import Input from '$lib/components/input.svelte'
@@ -15,7 +15,7 @@
 	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import { formatDate } from '$lib/utils'
 	import { z } from 'zod'
-	import { withFormStore } from '$lib/stores/form.svelte'
+	import { withFormStore, type FormStore } from '$lib/stores/form.svelte'
 	import { dateOfBirthSchema, endAgeSchema, supportedCurrenciesSchema } from '$lib/schemas'
 	import Error from '$lib/components/error.svelte'
 
@@ -42,48 +42,39 @@
 	let feeManagement = withFormStore(initialValues.feeManagement, z.number().nonnegative())
 	let entryFee = withFormStore(initialValues.entryFee, z.number().nonnegative())
 	let withdrawalFee = withFormStore(initialValues.withdrawalFee, z.number().nonnegative())
-	const synchronize = (loading: boolean, form: any, storeValue: any, initialValue: any) => {
+
+	function synchronize<T extends string | number | Date, V extends string | number | Date>(
+		loading: boolean,
+		form: FormStore<V, T>,
+		store: DetailsStoreValues,
+		key: keyof DetailsStoreValues,
+	) {
 		if (loading) return
 
-		if (form.parsedValue !== storeValue && form.value === initialValue) form.value = storeValue
-
-		if (
+		if (!form.edited) {
+			const storeVal = store[key]
+			if (storeVal instanceof Date) (form.value as string) = formatDate(storeVal)
+			else (form.value as unknown) = storeVal as unknown
+		} else if (
 			form.parsedValue !== undefined &&
-			form.parsedValue !== storeValue &&
-			form.value !== initialValue
+			((form.parsedValue instanceof Date &&
+				store[key] instanceof Date &&
+				form.parsedValue.getTime() !== (store[key] as Date).getTime()) ||
+				form.parsedValue !== store[key])
 		)
-			storeValue = form.parsedValue
+			(store[key] as unknown) = form.parsedValue
 	}
 
-	$effect(() => {
-		if (loading) return
+	$effect(() => synchronize(loading, dateOfBirth, detailStore, 'dateOfBirth'))
+	$effect(() => synchronize(loading, endAge, detailStore, 'endAge'))
+	$effect(() => synchronize(loading, currency, detailStore, 'currency'))
+	$effect(() => synchronize(loading, inflation, detailStore, 'inflation'))
+	$effect(() => synchronize(loading, apy, detailStore, 'apy'))
+	$effect(() => synchronize(loading, entryFee, detailStore, 'entryFee'))
+	$effect(() => synchronize(loading, withdrawalFee, detailStore, 'withdrawalFee'))
+	$effect(() => synchronize(loading, feeManagement, detailStore, 'feeManagement'))
+	$effect(() => synchronize(loading, feeSuccess, detailStore, 'feeSuccess'))
 
-		if (
-			dateOfBirth.parsedValue?.getTime() !== detailStore.dateOfBirth.getTime() &&
-			dateOfBirth.value === initialValues.dateOfBirth
-		)
-			dateOfBirth.value = formatDate(detailStore.dateOfBirth)
-
-		if (
-			dateOfBirth.parsedValue !== undefined &&
-			dateOfBirth.parsedValue.getTime() !== detailStore.dateOfBirth.getTime() &&
-			dateOfBirth.value !== initialValues.dateOfBirth
-		)
-			detailStore.dateOfBirth = dateOfBirth.parsedValue
-	})
-
-	$effect(() => synchronize(loading, endAge, detailStore.endAge, initialValues.endAge))
-	$effect(() => synchronize(loading, currency, detailStore.currency, initialValues.currency))
-	$effect(() => synchronize(loading, inflation, detailStore.inflation, initialValues.inflation))
-	$effect(() => synchronize(loading, apy, detailStore.apy, initialValues.apy))
-	$effect(() => synchronize(loading, entryFee, detailStore.entryFee, initialValues.entryFee))
-	$effect(() =>
-		synchronize(loading, withdrawalFee, detailStore.withdrawalFee, initialValues.withdrawalFee),
-	)
-	$effect(() =>
-		synchronize(loading, feeManagement, detailStore.feeManagement, initialValues.feeManagement),
-	)
-	$effect(() => synchronize(loading, feeSuccess, detailStore.feeSuccess, initialValues.feeSuccess))
 	$effect(() => {
 		const newHash = detailStore.toUrl()
 

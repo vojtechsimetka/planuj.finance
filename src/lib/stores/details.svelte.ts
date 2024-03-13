@@ -3,11 +3,14 @@ import type { Deposit, Portfolio, Withdrawal, Currency } from '$lib/types'
 import { base64ToBytes, bytesToBase64, compareArrays } from '$lib/utils'
 import pako from 'pako'
 
-export interface DetailsStore extends Portfolio {
+export interface DetailsStoreValues extends Portfolio {
 	dateOfBirth: Date
 	endAge: number
 	currency: Currency
 	inflation: number
+}
+
+export interface DetailsStore extends DetailsStoreValues {
 	deposits: Deposit[]
 	withdrawals: Withdrawal[]
 
