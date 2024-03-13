@@ -42,7 +42,6 @@
 		font-weight: 400;
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
-		width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
@@ -74,6 +73,7 @@
 	}
 	.input:focus {
 		border: 1px solid var(--colors-high);
+		outline: none;
 	}
 	.readonly .input {
 		border: 1px solid transparent;
@@ -120,6 +120,6 @@
 		color: var(--colors-ultraHigh);
 	}
 	.helper-text {
-		padding: 0.5rem 0.75rem 0;
+		padding: 0.5rem 0.75rem;
 	}
 </style>

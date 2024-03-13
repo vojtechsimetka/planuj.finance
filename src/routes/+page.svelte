@@ -225,9 +225,11 @@
 				<Error errors={inflation.error} />
 			</Input>
 			<Select bind:value={currency.value} placeholder={$_('currency')}>
-				#{#each supportedCurrenciesWithLabels as currency}
-					<Option value={currency.value}>{currency.label}</Option>
-				{/each}
+				<div class="options">
+					{#each supportedCurrenciesWithLabels as currency}
+						<Option value={currency.value}>{currency.label}</Option>
+					{/each}
+				</div>
 			</Select>
 			<Input
 				type="number"
@@ -370,6 +372,16 @@
 		gap: 1rem;
 		justify-content: center;
 		width: 100%;
+	}
+	.options {
+		position: absolute;
+		top: calc(100% + 5px);
+		left: 0;
+		width: 100%;
+		border-radius: 0.25rem;
+		border: 1px solid var(--colors-high);
+		background: var(--colors-base);
+		z-index: 9999;
 	}
 	.flex {
 		display: flex;

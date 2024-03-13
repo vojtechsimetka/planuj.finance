@@ -1,25 +1,32 @@
 <script lang="ts">
 	import type { HTMLSelectAttributes } from 'svelte/elements'
-	import { CaretDown } from 'carbon-icons-svelte'
+	import { CaretDown, CaretUp } from 'carbon-icons-svelte'
 
 	interface Props extends HTMLSelectAttributes {
-		labelFor?: string
 		helperText?: string
 	}
-	let { labelFor = Math.random().toString(16), helperText, placeholder, value } = $props<Props>()
+	let { helperText, placeholder, value } = $props<Props>()
+	let open = $state(false)
 </script>
 
 <div class="root">
-	<div class="icon"><CaretDown size={24} /></div>
-	<select bind:value class="select">
-		<slot />
-	</select>
-	<label class="label" for={labelFor}>
+	<div class="icon">
+		{#if open}
+			<CaretUp size={24} />
+		{:else}
+			<CaretDown size={24} />
+		{/if}
+	</div>
+	<input bind:value class="select" onclick={() => (open = !open)} onblur={() => (open = false)} />
+	<div class="label">
 		{placeholder}
-	</label>
+	</div>
 	<div class="helper-text">
 		{helperText}
 	</div>
+	{#if open}
+		<slot />
+	{/if}
 </div>
 
 <style>
@@ -32,7 +39,10 @@
 		font-weight: 400;
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
-		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
 	}
 	.icon {
 		position: absolute;
@@ -41,11 +51,7 @@
 		width: 1.5rem;
 		height: 1.5rem;
 	}
-	.iconRotate {
-		transform: rotate(180deg);
-	}
 	.select {
-		width: 100%;
 		background: var(--colors-low);
 		border: 1px solid var(--colors-low);
 		border-radius: 0.25rem;
@@ -57,9 +63,12 @@
 		letter-spacing: 0.02rem;
 		padding: 1.5rem 0.75rem;
 		appearance: none;
+		flex-grow: 1;
+		cursor: pointer;
 	}
 	.select:focus-visible {
 		border: 1px solid var(--colors-high);
+		outline: none;
 		background: var(--colors-base);
 		padding: 2.25rem 0.75rem 0.75rem;
 		line-height: 1.5rem;
@@ -102,6 +111,6 @@
 		color: var(--colors-ultraHigh);
 	}
 	.helper-text {
-		padding: 0.5rem 0.75rem 0;
+		padding: 0.5rem 0.75rem;
 	}
 </style>
