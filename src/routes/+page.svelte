@@ -188,14 +188,7 @@
 			chart.update()
 		}
 	})
-	let label = $state('CZK')
-	$effect(() => {
-		supportedCurrenciesWithLabels.forEach((c) => {
-			if (c.value === detailStore.currency) {
-				label = c.label
-			}
-		})
-	})
+	const label = $derived(supportedCurrenciesWithLabels[detailStore.currency])
 </script>
 
 {#if loading}
@@ -233,8 +226,8 @@
 				<Error errors={inflation.error} />
 			</Input>
 			<Select bind:value={currency.value} placeholder={$_('currency')}>
-				{#each supportedCurrenciesWithLabels as c}
-					<Option value={c.value}>{c.label}</Option>
+				{#each Object.entries(supportedCurrenciesWithLabels) as [value, label]}
+					<Option {value}>{label}</Option>
 				{/each}
 			</Select>
 			<Input

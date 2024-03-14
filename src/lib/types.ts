@@ -13,21 +13,10 @@ export type Withdrawal = z.infer<typeof depositWithdrawalSchema>
 export type Portfolio = z.infer<typeof portfolioSchema>
 export type Currency = z.infer<typeof supportedCurrenciesSchema>
 
-export interface CurrencyWithLabel {
-	label: string
-	value: Currency
-}
-export const supportedCurrenciesWithLabels: CurrencyWithLabel[] = [
-	{
-		value: 'CZK',
-		label: 'Kč',
-	},
-	{
-		value: 'EUR',
-		label: '€',
-	},
-	{
-		value: 'USD',
-		label: '$',
-	},
-] as const
+export type CurrencyWithLabel = Record<Currency, string>
+
+export const supportedCurrenciesWithLabels: CurrencyWithLabel = {
+	CZK: 'Kč',
+	EUR: '€',
+	USD: '$',
+} as const
