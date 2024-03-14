@@ -1,22 +1,68 @@
 <script lang="ts">
-	import type { HTMLSelectAttributes } from 'svelte/elements'
-	import { CaretDown } from 'carbon-icons-svelte'
+	import type { HTMLInputAttributes } from 'svelte/elements'
+	import { CaretDown, CaretUp } from 'carbon-icons-svelte'
+	import { setContext } from 'svelte'
+	import { withSelectStore } from '$lib/stores/select.svelte'
 
-	interface Props extends HTMLSelectAttributes {
-		labelFor?: string
+	interface Props extends HTMLInputAttributes {
 		helperText?: string
+		labelFor?: string
 	}
-	let { labelFor = Math.random().toString(16), helperText, placeholder, value } = $props<Props>()
+	let {
+		labelFor = Math.random().toString(16),
+		helperText,
+		placeholder,
+		value,
+		children,
+		...restProps
+	} = $props<Props>()
+
+	const store = withSelectStore(value)
+	setContext('select-store', store)
+
+	$effect(() => {
+		value = store.value
+	})
 </script>
 
 <div class="root">
-	<div class="icon"><CaretDown size={24} /></div>
-	<select bind:value class="select">
-		<slot />
-	</select>
-	<label class="label" for={labelFor}>
-		{placeholder}
-	</label>
+	<div class="wrapper">
+		<div class="icon">
+			{#if store.open}
+				<CaretUp size={24} />
+			{:else}
+				<CaretDown size={24} />
+			{/if}
+		</div>
+		<input
+			value={store.value ? store.labels[store.value] : value}
+			class="select"
+			onclick={(e) => {
+				e.preventDefault()
+				e.stopPropagation()
+				store.open = !store.open
+			}}
+			onkeydown={(e) => {
+				if (e.key === 'ArrowDown') {
+					e.preventDefault()
+					e.stopPropagation()
+					store.open = true
+				}
+			}}
+			id={labelFor}
+			{placeholder}
+			readonly
+			{...restProps}
+		/>
+		<label class="label" for={labelFor}>
+			{placeholder}
+		</label>
+		<div class="options" class:hidden={!store.open}>
+			{#if children}
+				{@render children()}
+			{/if}
+		</div>
+	</div>
 	<div class="helper-text">
 		{helperText}
 	</div>
@@ -24,7 +70,6 @@
 
 <style>
 	.root {
-		position: relative;
 		color: var(--colors-ultraHigh);
 		font-family: Arial;
 		font-size: 0.75rem;
@@ -32,7 +77,18 @@
 		font-weight: 400;
 		line-height: 1rem;
 		letter-spacing: 0.0375rem;
-		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
+	}
+	.wrapper {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
+		flex-grow: 1;
 	}
 	.icon {
 		position: absolute;
@@ -41,11 +97,7 @@
 		width: 1.5rem;
 		height: 1.5rem;
 	}
-	.iconRotate {
-		transform: rotate(180deg);
-	}
 	.select {
-		width: 100%;
 		background: var(--colors-low);
 		border: 1px solid var(--colors-low);
 		border-radius: 0.25rem;
@@ -57,13 +109,20 @@
 		letter-spacing: 0.02rem;
 		padding: 1.5rem 0.75rem;
 		appearance: none;
+		flex-grow: 1;
+		cursor: pointer;
 	}
 	.select:focus-visible {
 		border: 1px solid var(--colors-high);
+		outline: none;
 		background: var(--colors-base);
 		padding: 2.25rem 0.75rem 0.75rem;
 		line-height: 1.5rem;
 		font-size: 1rem;
+	}
+	.select::placeholder {
+		text-align: center;
+		color: transparent;
 	}
 	.label {
 		position: absolute;
@@ -102,6 +161,27 @@
 		color: var(--colors-ultraHigh);
 	}
 	.helper-text {
-		padding: 0.5rem 0.75rem 0;
+		padding: 0.5rem 0.75rem;
+	}
+	.options {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		/* FIXME: remove the calc and solve this with nesting */
+		width: calc(100% - 1rem);
+		border-radius: 0.25rem;
+		border: 1px solid var(--colors-high);
+		background: var(--colors-base);
+		z-index: 1;
+		list-style: none;
+		margin: 0;
+		padding: 0.5rem;
+		margin-top: 0.25rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: stretch;
+	}
+	.hidden {
+		display: none;
 	}
 </style>
