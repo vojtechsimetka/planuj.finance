@@ -316,13 +316,13 @@
 				type={'text'}
 				readonly
 				placeholder={$_('totalDeposits')}
-				value={`${resultStore.totalDeposited} ${label}`}
+				value={`${resultStore.totalDeposited.toFixed(2)} ${label}`}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('totalWithdrawals')}
-				value={`${resultStore.totalWithdrawn} ${label}`}
+				value={`${resultStore.totalWithdrawn.toFixed(2)} ${label}`}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age}></Input>
 		</div>
@@ -332,13 +332,13 @@
 				type={'text'}
 				readonly
 				placeholder={$_('entryFee')}
-				value={`${resultStore.totalDepositFees} ${label}`}
+				value={`${resultStore.totalDepositFees.toFixed(2)} ${label}`}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('withdrawalFee')}
-				value={`${resultStore.totalWithdrawFees} ${label}`}
+				value={`${resultStore.totalWithdrawFees.toFixed(2)} ${label}`}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('feeMangement')} value={'Total management fee'}
 			></Input>
