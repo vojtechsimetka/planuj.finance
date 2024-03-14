@@ -3,7 +3,7 @@
 		errors: string[]
 	}
 
-	const { errors } = $props<Props>()
+	const { errors }: Props = $props()
 </script>
 
 {#if errors.length > 0}

@@ -10,7 +10,7 @@
 		operation: DepositForm | WithdrawalForm
 		recurringOperationText: string
 	}
-	let { operation, recurringOperationText } = $props<Props>()
+	let { operation, recurringOperationText }: Props = $props()
 </script>
 
 <section>

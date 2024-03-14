@@ -6,7 +6,7 @@
 	interface Props extends HTMLButtonAttributes {
 		value: string
 	}
-	let { value, children, ...restProps } = $props<Props>()
+	let { value, ...restProps }: Props = $props()
 
 	const store = getContext<SelectStore>('select-store')
 
@@ -40,9 +40,7 @@
 	class:selected
 	{...restProps}
 >
-	{#if children}
-		{@render children()}
-	{/if}
+	<slot />
 </button>
 
 <style>

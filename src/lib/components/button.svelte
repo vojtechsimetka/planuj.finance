@@ -6,7 +6,7 @@
 		active?: boolean
 		onclick?: () => void
 	}
-	let { variant, active, disabled, onclick } = $props<Props>()
+	let { variant, active, disabled, onclick }: Props = $props()
 </script>
 
 <button class={`${variant}`} class:active {disabled} {onclick}>
