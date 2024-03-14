@@ -11,25 +11,25 @@ interface GraphRecord {
 }
 
 export function withResultsStore() {
-	const effectiveApy = $derived(
-		getEffectiveInterestRate(
-			detailStore.apy,
-			detailStore.feeSuccess,
-			detailStore.feeManagement,
-			detailStore.inflation,
-		),
-	)
+	let effectiveApy = $state()
 	let totalDeposited: number = $state(0)
 	let totalWithdrawn: number = $state(0)
 	let totalDepositFees: number = $state(0)
 	let totalWithdrawFees: number = $state(0)
 	let totalInvested: number = $state(0)
 	let totalFees: number = $state(0)
+	let graphData: GraphRecord[] = $state([])
 
-	function calculateGraph(): GraphRecord[] {
+	function update() {
+		effectiveApy = getEffectiveInterestRate(
+			detailStore.apy,
+			detailStore.feeSuccess,
+			detailStore.feeManagement,
+			detailStore.inflation,
+		)
 		const start = detailStore.dateOfBirth
 		const end = incrementDate(start, 'year', detailStore.endAge)
-		const graphData: GraphRecord[] = []
+		const gd: GraphRecord[] = []
 		const depositsMap = new Map<string, number>()
 		const withdrawalsMap = new Map<string, number>()
 
@@ -59,7 +59,7 @@ export function withResultsStore() {
 			totalInvested += deposited - depositedFee - withdrawnFee
 			totalFees = totalDepositFees + totalWithdrawFees
 
-			graphData.push({
+			gd.push({
 				date: new Date(i),
 				totalInvested,
 				totalDeposited,
@@ -68,10 +68,8 @@ export function withResultsStore() {
 			})
 		}
 
-		return graphData.filter((record) => record.date.getDate() === 1)
+		graphData = gd.filter((record) => record.date.getDate() === 1)
 	}
-
-	const graphData: GraphRecord[] = $derived(calculateGraph())
 
 	return {
 		get effectiveApy() {
@@ -92,6 +90,8 @@ export function withResultsStore() {
 		get graphData() {
 			return graphData
 		},
+
+		update,
 	}
 }
 
