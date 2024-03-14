@@ -1,4 +1,6 @@
 import { calculateTotal, getEffectiveInterestRate } from '$lib/calc'
+import type { Deposit, Frequency } from '$lib/types'
+import { formatDate } from '$lib/utils'
 import { detailStore } from './details.svelte'
 
 interface GraphRecord {
@@ -43,21 +45,64 @@ export function withResultsStore() {
 		let totalWithdrawn = 0
 		let totalFees = 0
 
+		const depositsMap = new Map<string, number>()
+
+		function incrementFunction(date: Date, frequency: Frequency) {
+			const d = new Date(date.getTime())
+			switch (frequency) {
+				case 'day':
+					d.setDate(date.getDate() + 1)
+					break
+				case 'week':
+					d.setDate(date.getDate() + 7)
+					break
+				case 'month':
+					d.setMonth(date.getMonth() + 1)
+					break
+				case 'year':
+					d.setFullYear(date.getFullYear() + 1)
+					break
+			}
+			return d
+		}
+
+		// TODO: Make this function general to be able to add to both deposit and withdrawal
+		function addDeposit(date: Date, amount: number) {
+			const dateString = formatDate(date)
+			const existingDeposit = depositsMap.get(dateString) ?? 0
+			depositsMap.set(dateString, existingDeposit + amount)
+		}
+
+		// TODO: Make this function general to be able to add to both deposit and withdrawal
+		function processOperation(deposit: Deposit) {
+			if (!deposit.isRecurring) {
+				addDeposit(deposit.startDate, deposit.amount)
+			} else {
+				for (
+					let date = new Date(deposit.startDate);
+					date < deposit.endDate;
+					date = incrementFunction(date, deposit.frequency)
+				) {
+					addDeposit(date, deposit.amount)
+				}
+			}
+		}
+
+		detailStore.deposits.forEach(processOperation)
+
 		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
 		for (let i = new Date(start); i < end; i.setDate(i.getDate() + 1)) {
 			totalInvested *= dailyROI
 
-			detailStore.deposits.forEach((deposit) => {
-				if (!deposit.isRecurring && isEqualDate(new Date(deposit.startDate), i)) {
-					const fee = deposit.amount * (detailStore.entryFee / 100)
-					totalDeposited += deposit.amount
-					totalInvested += deposit.amount - fee
-					totalFees += fee
-				}
+			// Calculate deposits
+			const deposited = depositsMap.get(formatDate(i)) ?? 0
+			const fee = deposited * (detailStore.entryFee / 100)
+			totalDeposited += deposited
+			totalInvested += deposited - fee
+			totalFees += fee
 
-				// TODO: Implement recurring deposits
-			})
-
+			// Calculate deposits
+			// TODO: Implement recurring withdrawals
 			detailStore.withdrawals.forEach((withdrawal) => {
 				if (!withdrawal.isRecurring && isEqualDate(new Date(withdrawal.startDate), i)) {
 					const fee = withdrawal.amount * (detailStore.withdrawalFee / 100)
