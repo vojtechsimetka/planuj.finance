@@ -2,17 +2,22 @@ import type { Deposit, Withdrawal, Frequency } from './types'
 import { formatDate } from './utils'
 
 export function getEffectiveInterestRate(
-	interestRate: number,
+	interest: number,
 	successFee: number,
 	managementFee: number,
 	inflation: number,
 ) {
-	return (
-		(1 + (interestRate / 100) * (1 - successFee / 100)) *
-			(1 - managementFee / 100) *
-			(1 - inflation / 100) -
-		1
-	)
+	const interestRate = interest / 100
+	const successFeeRate = 1 - successFee / 100
+	const successFeePercentage = interestRate - interestRate * successFeeRate
+	const managementFeeRate = 1 - managementFee / 100
+	const inflationRate = 1 - inflation / 100
+	const effectiveInterestRate =
+		(1 + interestRate * successFeeRate) * managementFeeRate * inflationRate - 1
+	const managementFeePercentage =
+		effectiveInterestRate - ((1 + interestRate * successFeeRate) * inflationRate - 1)
+
+	return { effectiveInterestRate, successFeePercentage, managementFeePercentage }
 }
 
 export function incrementDate(date: Date, frequency: Frequency, count = 1) {

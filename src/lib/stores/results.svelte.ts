@@ -8,25 +8,32 @@ interface GraphRecord {
 	totalDeposited: number
 	totalWithdrawn: number
 	totalFees: number
+	totalDepositFee: number
+	totalWithdrawFee: number
+	totalManagementFee: number
+	totalSuccessFee: number
 }
 
 export function withResultsStore() {
 	let effectiveApy = $state(0)
 	let totalDeposited: number = $state(0)
 	let totalWithdrawn: number = $state(0)
-	let totalDepositFees: number = $state(0)
-	let totalWithdrawFees: number = $state(0)
+	let totalDepositFee: number = $state(0)
+	let totalWithdrawFee: number = $state(0)
 	let totalInvested: number = $state(0)
 	let totalFees: number = $state(0)
 	let graphData: GraphRecord[] = $state([])
+	let totalSuccessFee: number = $state(0)
+	let totalManagementFee: number = $state(0)
 
 	function update() {
-		effectiveApy = getEffectiveInterestRate(
+		const rates = getEffectiveInterestRate(
 			detailStore.apy,
 			detailStore.feeSuccess,
 			detailStore.feeManagement,
 			detailStore.inflation,
 		)
+		effectiveApy = rates.effectiveInterestRate
 		const start = detailStore.dateOfBirth
 		const end = incrementDate(start, 'year', detailStore.endAge)
 		const gd: GraphRecord[] = []
@@ -35,29 +42,39 @@ export function withResultsStore() {
 
 		totalDeposited = 0
 		totalWithdrawn = 0
-		totalDepositFees = 0
-		totalWithdrawFees = 0
+		totalDepositFee = 0
+		totalWithdrawFee = 0
 		totalInvested = 0
 		totalFees = 0
+		totalSuccessFee = 0
+		totalManagementFee = 0
 
 		detailStore.deposits.forEach((d) => processOperation(d, depositsMap))
 		detailStore.withdrawals.forEach((w) => processOperation(w, withdrawalsMap))
-
+		// const dailyManagement = Math.pow
+		const dailyManagement = Math.pow(1 + rates.managementFeePercentage, 1 / 365.25)
+		const dailySuccess = Math.pow(1 + rates.successFeePercentage, 1 / 365.25)
 		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
+
 		for (let i = new Date(start); i < end; i = incrementDate(i, 'day')) {
 			totalInvested *= dailyROI
 			const deposited = depositsMap.get(formatDate(i)) ?? 0
 			const depositedFee = deposited * (detailStore.entryFee / 100)
 			totalDeposited += deposited
-			totalDepositFees += depositedFee
+			totalDepositFee += depositedFee
 
 			const withdrawn = withdrawalsMap.get(formatDate(i)) ?? 0
 			const withdrawnFee = withdrawn * (detailStore.withdrawalFee / 100)
 			totalWithdrawn += withdrawn
-			totalWithdrawFees += withdrawnFee
+			totalWithdrawFee += withdrawnFee
+
+			const managementFee = totalInvested - totalInvested * dailyManagement
+			totalManagementFee += managementFee
+			const successFee = totalInvested * dailySuccess - totalInvested
+			totalSuccessFee += successFee
 
 			totalInvested += deposited - depositedFee - withdrawn - withdrawnFee
-			totalFees = totalDepositFees + totalWithdrawFees
+			totalFees = totalDepositFee + totalWithdrawFee + totalManagementFee + totalSuccessFee
 
 			gd.push({
 				date: new Date(i),
@@ -65,6 +82,10 @@ export function withResultsStore() {
 				totalDeposited,
 				totalWithdrawn,
 				totalFees,
+				totalManagementFee,
+				totalSuccessFee,
+				totalDepositFee,
+				totalWithdrawFee,
 			})
 		}
 
@@ -81,11 +102,17 @@ export function withResultsStore() {
 		get totalWithdrawn() {
 			return totalWithdrawn
 		},
-		get totalDepositFees() {
-			return totalDepositFees
+		get totalDepositFee() {
+			return totalDepositFee
 		},
-		get totalWithdrawFees() {
-			return totalWithdrawFees
+		get totalWithdrawFee() {
+			return totalWithdrawFee
+		},
+		get totalManagementFee() {
+			return totalManagementFee
+		},
+		get totalSuccessFee() {
+			return totalSuccessFee
 		},
 		get totalInvested() {
 			return totalInvested

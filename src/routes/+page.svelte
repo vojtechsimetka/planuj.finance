@@ -126,6 +126,10 @@
 		const getTotalDeposited = () => resultStore.graphData.map((row) => row.totalDeposited)
 		const getTotalWithdrawn = () => resultStore.graphData.map((row) => row.totalWithdrawn)
 		const getTotalFees = () => resultStore.graphData.map((row) => row.totalFees)
+		const getTotalWithdrawFee = () => resultStore.graphData.map((row) => row.totalWithdrawFee)
+		const getTotalDepositFee = () => resultStore.graphData.map((row) => row.totalDepositFee)
+		const getTotalManagementFee = () => resultStore.graphData.map((row) => row.totalManagementFee)
+		const getTotalSuccessFee = () => resultStore.graphData.map((row) => row.totalSuccessFee)
 
 		if (canvas && !chart) {
 			chart = new Chart(canvas, {
@@ -146,6 +150,7 @@
 							fill: {
 								target: 'origin',
 							},
+							hidden: true,
 						},
 						{
 							label: 'Withdrawn',
@@ -153,13 +158,47 @@
 							fill: {
 								target: 'origin',
 							},
+							hidden: true,
 						},
 						{
-							label: 'Deposit & Withdraw fees',
+							label: 'Deposit fees',
+							data: getTotalDepositFee(),
+							fill: {
+								target: 'origin',
+							},
+							hidden: true,
+						},
+						{
+							label: 'Withdraw fees',
+							data: getTotalWithdrawFee(),
+							fill: {
+								target: 'origin',
+							},
+							hidden: true,
+						},
+						{
+							label: 'Management fees',
+							data: getTotalManagementFee(),
+							fill: {
+								target: 'origin',
+							},
+							hidden: true,
+						},
+						{
+							label: 'Success fees',
+							data: getTotalSuccessFee(),
+							fill: {
+								target: 'origin',
+							},
+							hidden: true,
+						},
+						{
+							label: 'All fees',
 							data: getTotalFees(),
 							fill: {
 								target: 'origin',
 							},
+							hidden: true,
 						},
 					],
 				},
@@ -178,7 +217,11 @@
 			chart.data.datasets[0].data = getTotalInvested()
 			chart.data.datasets[1].data = getTotalDeposited()
 			chart.data.datasets[2].data = getTotalWithdrawn()
-			chart.data.datasets[3].data = getTotalFees()
+			chart.data.datasets[3].data = getTotalDepositFee()
+			chart.data.datasets[4].data = getTotalWithdrawFee()
+			chart.data.datasets[5].data = getTotalManagementFee()
+			chart.data.datasets[6].data = getTotalSuccessFee()
+			chart.data.datasets[7].data = getTotalFees()
 			chart.update()
 		}
 	})
@@ -338,17 +381,25 @@
 				type={'text'}
 				readonly
 				placeholder={$_('entryFee')}
-				value={localeAmount.format(resultStore.totalDepositFees)}
+				value={localeAmount.format(resultStore.totalDepositFee)}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('withdrawalFee')}
-				value={localeAmount.format(resultStore.totalWithdrawFees)}
+				value={localeAmount.format(resultStore.totalWithdrawFee)}
 			></Input>
-			<Input type={'text'} readonly placeholder={$_('feeMangement')} value={'Total management fee'}
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('feeMangement')}
+				value={localeAmount.format(resultStore.totalManagementFee)}
 			></Input>
-			<Input type={'text'} readonly placeholder={$_('feeSuccess')} value={'Total success fee'}
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('feeSuccess')}
+				value={localeAmount.format(resultStore.totalSuccessFee)}
 			></Input>
 		</div>
 	</section>
