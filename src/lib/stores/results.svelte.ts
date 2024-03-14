@@ -11,7 +11,7 @@ interface GraphRecord {
 }
 
 export function withResultsStore() {
-	let effectiveApy = $state()
+	let effectiveApy = $state(0)
 	let totalDeposited: number = $state(0)
 	let totalWithdrawn: number = $state(0)
 	let totalDepositFees: number = $state(0)
