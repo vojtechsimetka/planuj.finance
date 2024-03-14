@@ -1,5 +1,5 @@
-import type { Deposit, Withdrawal } from './types'
-import { day, week } from './utils'
+import type { Deposit, Withdrawal, Frequency } from './types'
+import { formatDate } from './utils'
 
 export function getEffectiveInterestRate(
 	interestRate: number,
@@ -15,42 +15,41 @@ export function getEffectiveInterestRate(
 	)
 }
 
-export function calculateTotal(operation: Deposit[] | Withdrawal[]): number {
-	let total: number = 0
-	try {
-		operation.forEach((o) => {
-			if (o.isRecurring && o.endDate !== undefined && o.frequency !== undefined) {
-				const startDate = new Date(o.startDate)
-				const endDate = new Date(o.endDate)
-				let timeOfInvestment = 0
-				switch (o.frequency) {
-					case 'day':
-						timeOfInvestment = Math.floor((endDate.getTime() - startDate.getTime()) / day)
-						break
-					case 'week':
-						timeOfInvestment = Math.floor((endDate.getTime() - startDate.getTime()) / week)
-						break
-					case 'month':
-						timeOfInvestment = endDate.getMonth() - startDate.getMonth()
-						timeOfInvestment += (endDate.getFullYear() - startDate.getFullYear()) * 12
-						break
-					case 'year':
-						timeOfInvestment = endDate.getFullYear() - startDate.getFullYear()
-						break
-					default:
-						break
-				}
+export function incrementDate(date: Date, frequency: Frequency, count = 1) {
+	const d = new Date(date.getTime())
+	switch (frequency) {
+		case 'day':
+			d.setDate(date.getDate() + count)
+			break
+		case 'week':
+			d.setDate(date.getDate() + 7 * count)
+			break
+		case 'month':
+			d.setMonth(date.getMonth() + count)
+			break
+		case 'year':
+			d.setFullYear(date.getFullYear() + count)
+			break
+	}
+	return d
+}
 
-				total += o.amount * timeOfInvestment
-				// We have to add the first deposit as well to have inclusive date limits
-				total += o.amount
-			} else {
-				total += o.amount
-			}
-		})
-		return total
-	} catch (error) {
-		console.error(error)
-		return -1
+function addOperation(date: Date, amount: number, map: Map<string, number>) {
+	const dateString = formatDate(date)
+	const existingOperation = map.get(dateString) ?? 0
+	map.set(dateString, existingOperation + amount)
+}
+
+export function processOperation(operation: Deposit | Withdrawal, map: Map<string, number>) {
+	if (!operation.isRecurring) {
+		addOperation(operation.startDate, operation.amount, map)
+	} else {
+		for (
+			let date = new Date(operation.startDate);
+			date < operation.endDate;
+			date = incrementDate(date, operation.frequency)
+		) {
+			addOperation(date, operation.amount, map)
+		}
 	}
 }

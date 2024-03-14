@@ -1,4 +1,5 @@
-import { calculateTotal, getEffectiveInterestRate } from '$lib/calc'
+import { getEffectiveInterestRate, incrementDate, processOperation } from '$lib/calc'
+import { formatDate } from '$lib/utils'
 import { detailStore } from './details.svelte'
 
 interface GraphRecord {
@@ -18,56 +19,45 @@ export function withResultsStore() {
 			detailStore.inflation,
 		),
 	)
-	const totalDeposited: number = $derived(calculateTotal(detailStore.deposits))
-	const totalWithdrawn: number = $derived(calculateTotal(detailStore.withdrawals))
-
-	const totalDepositFees: number = $derived(totalDeposited * (detailStore.entryFee / 100))
-	const totalWithdrawFees: number = $derived(totalWithdrawn * (detailStore.withdrawalFee / 100))
-
-	function isEqualDate(a: Date, b: Date): boolean {
-		return (
-			a.getDate() === b.getDate() &&
-			a.getMonth() === b.getMonth() &&
-			a.getFullYear() === b.getFullYear()
-		)
-	}
+	let totalDeposited: number = $state(0)
+	let totalWithdrawn: number = $state(0)
+	let totalDepositFees: number = $state(0)
+	let totalWithdrawFees: number = $state(0)
+	let totalInvested: number = $state(0)
+	let totalFees: number = $state(0)
 
 	function calculateGraph(): GraphRecord[] {
-		const start = new Date(detailStore.dateOfBirth)
-		const end = new Date(new Date(start).setFullYear(start.getFullYear() + detailStore.endAge))
-
+		const start = detailStore.dateOfBirth
+		const end = incrementDate(start, 'year', detailStore.endAge)
 		const graphData: GraphRecord[] = []
+		const depositsMap = new Map<string, number>()
+		const withdrawalsMap = new Map<string, number>()
 
-		let totalInvested = 0
-		let totalDeposited = 0
-		let totalWithdrawn = 0
-		let totalFees = 0
+		totalDeposited = 0
+		totalWithdrawn = 0
+		totalDepositFees = 0
+		totalWithdrawFees = 0
+		totalInvested = 0
+		totalFees = 0
+
+		detailStore.deposits.forEach((d) => processOperation(d, depositsMap))
+		detailStore.withdrawals.forEach((w) => processOperation(w, withdrawalsMap))
 
 		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
-		for (let i = new Date(start); i < end; i.setDate(i.getDate() + 1)) {
+		for (let i = new Date(start); i < end; i = incrementDate(i, 'day')) {
 			totalInvested *= dailyROI
+			const deposited = depositsMap.get(formatDate(i)) ?? 0
+			const depositedFee = deposited * (detailStore.entryFee / 100)
+			totalDeposited += deposited
+			totalDepositFees += depositedFee
 
-			detailStore.deposits.forEach((deposit) => {
-				if (!deposit.isRecurring && isEqualDate(new Date(deposit.startDate), i)) {
-					const fee = deposit.amount * (detailStore.entryFee / 100)
-					totalDeposited += deposit.amount
-					totalInvested += deposit.amount - fee
-					totalFees += fee
-				}
+			const withdrawn = withdrawalsMap.get(formatDate(i)) ?? 0
+			const withdrawnFee = withdrawn * (detailStore.withdrawalFee / 100)
+			totalWithdrawn += withdrawn
+			totalWithdrawFees += withdrawnFee
 
-				// TODO: Implement recurring deposits
-			})
-
-			detailStore.withdrawals.forEach((withdrawal) => {
-				if (!withdrawal.isRecurring && isEqualDate(new Date(withdrawal.startDate), i)) {
-					const fee = withdrawal.amount * (detailStore.withdrawalFee / 100)
-					totalInvested -= withdrawal.amount + fee
-					totalWithdrawn += withdrawal.amount
-					totalFees += fee
-				}
-
-				// TODO: Implement recurring withdrawals
-			})
+			totalInvested += deposited - depositedFee - withdrawnFee
+			totalFees = totalDepositFees + totalWithdrawFees
 
 			graphData.push({
 				date: new Date(i),

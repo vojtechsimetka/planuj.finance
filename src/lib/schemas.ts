@@ -8,6 +8,8 @@ function toDate(value: string): Date {
 	return parsedDate
 }
 
+export const frequencySchema = z.enum(['day', 'week', 'month', 'year'])
+
 export const commonDepositWithdrawalFormSchema = z.object({
 	name: z.string().trim().min(1),
 	amount: z.number().positive(),
@@ -21,7 +23,7 @@ export const depositWithdrawalFormSchema = z.discriminatedUnion('isRecurring', [
 	commonDepositWithdrawalFormSchema.extend({
 		isRecurring: z.literal(true),
 		endDate: z.string().refine(toDate, { message: 'Invalid date format' }),
-		frequency: z.enum(['day', 'week', 'month', 'year']),
+		frequency: frequencySchema,
 	}),
 ])
 
@@ -38,7 +40,7 @@ export const depositWithdrawalSchema = z.discriminatedUnion('isRecurring', [
 	commonDepositWithdrawalSchema.extend({
 		isRecurring: z.literal(true),
 		endDate: z.string().transform(toDate),
-		frequency: z.enum(['day', 'week', 'month', 'year']),
+		frequency: frequencySchema,
 	}),
 ])
 
