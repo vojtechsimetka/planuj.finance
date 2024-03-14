@@ -1,4 +1,4 @@
-import type { Deposit, DepositForm, Frequency, Withdrawal, WithdrawalForm } from './types'
+import type { Deposit, DepositForm, Withdrawal, WithdrawalForm } from './types'
 
 export const day = 24 * 60 * 60 * 1000
 export const week = 7 * day
@@ -50,45 +50,6 @@ export function initializeForm<T extends Deposit | Withdrawal>(
 		amount: 0,
 		startDate: formatDate(new Date()),
 		isRecurring: false,
-	}
-}
-
-function incrementDate(date: Date, frequency: Frequency) {
-	const d = new Date(date.getTime())
-	switch (frequency) {
-		case 'day':
-			d.setDate(date.getDate() + 1)
-			break
-		case 'week':
-			d.setDate(date.getDate() + 7)
-			break
-		case 'month':
-			d.setMonth(date.getMonth() + 1)
-			break
-		case 'year':
-			d.setFullYear(date.getFullYear() + 1)
-			break
-	}
-	return d
-}
-
-function addOperation(date: Date, amount: number, map: Map<string, number>) {
-	const dateString = formatDate(date)
-	const existingOperation = map.get(dateString) ?? 0
-	map.set(dateString, existingOperation + amount)
-}
-
-export function processOperation(operation: Deposit | Withdrawal, map: Map<string, number>) {
-	if (!operation.isRecurring) {
-		addOperation(operation.startDate, operation.amount, map)
-	} else {
-		for (
-			let date = new Date(operation.startDate);
-			date < operation.endDate;
-			date = incrementDate(date, operation.frequency)
-		) {
-			addOperation(date, operation.amount, map)
-		}
 	}
 }
 

@@ -1,5 +1,5 @@
-import { getEffectiveInterestRate } from '$lib/calc'
-import { formatDate, processOperation } from '$lib/utils'
+import { getEffectiveInterestRate, incrementDate, processOperation } from '$lib/calc'
+import { formatDate } from '$lib/utils'
 import { detailStore } from './details.svelte'
 
 interface GraphRecord {
@@ -27,8 +27,8 @@ export function withResultsStore() {
 	let totalFees: number = $state(0)
 
 	function calculateGraph(): GraphRecord[] {
-		const start = new Date(detailStore.dateOfBirth)
-		const end = new Date(new Date(start).setFullYear(start.getFullYear() + detailStore.endAge))
+		const start = detailStore.dateOfBirth
+		const end = incrementDate(start, 'year', detailStore.endAge)
 		const graphData: GraphRecord[] = []
 		const depositsMap = new Map<string, number>()
 		const withdrawalsMap = new Map<string, number>()
@@ -44,7 +44,7 @@ export function withResultsStore() {
 		detailStore.withdrawals.forEach((w) => processOperation(w, withdrawalsMap))
 
 		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
-		for (let i = new Date(start); i < end; i.setDate(i.getDate() + 1)) {
+		for (let i = new Date(start); i < end; i = incrementDate(i, 'day')) {
 			totalInvested *= dailyROI
 			const deposited = depositsMap.get(formatDate(i)) ?? 0
 			const depositedFee = deposited * (detailStore.entryFee / 100)
