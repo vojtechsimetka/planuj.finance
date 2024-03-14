@@ -1,6 +1,5 @@
 import { getEffectiveInterestRate } from '$lib/calc'
-import type { Deposit, Frequency, Withdrawal } from '$lib/types'
-import { formatDate } from '$lib/utils'
+import { formatDate, processOperation } from '$lib/utils'
 import { detailStore } from './details.svelte'
 
 interface GraphRecord {
@@ -33,52 +32,14 @@ export function withResultsStore() {
 		const graphData: GraphRecord[] = []
 		const depositsMap = new Map<string, number>()
 		const withdrawalsMap = new Map<string, number>()
+
 		totalDeposited = 0
 		totalWithdrawn = 0
 		totalDepositFees = 0
 		totalWithdrawFees = 0
 		totalInvested = 0
 		totalFees = 0
-		function incrementFunction(date: Date, frequency: Frequency) {
-			const d = new Date(date.getTime())
-			switch (frequency) {
-				case 'day':
-					d.setDate(date.getDate() + 1)
-					break
-				case 'week':
-					d.setDate(date.getDate() + 7)
-					break
-				case 'month':
-					d.setMonth(date.getMonth() + 1)
-					break
-				case 'year':
-					d.setFullYear(date.getFullYear() + 1)
-					break
-			}
-			return d
-		}
 
-		// TODO: Make this function general to be able to add to both deposit and withdrawal
-		function addOperation(date: Date, amount: number, map: Map<string, number>) {
-			const dateString = formatDate(date)
-			const existingOperation = map.get(dateString) ?? 0
-			map.set(dateString, existingOperation + amount)
-		}
-
-		// TODO: Make this function general to be able to add to both deposit and withdrawal
-		function processOperation(operation: Deposit | Withdrawal, map: Map<string, number>) {
-			if (!operation.isRecurring) {
-				addOperation(operation.startDate, operation.amount, map)
-			} else {
-				for (
-					let date = new Date(operation.startDate);
-					date < operation.endDate;
-					date = incrementFunction(date, operation.frequency)
-				) {
-					addOperation(date, operation.amount, map)
-				}
-			}
-		}
 		detailStore.deposits.forEach((d) => processOperation(d, depositsMap))
 		detailStore.withdrawals.forEach((w) => processOperation(w, withdrawalsMap))
 
@@ -90,13 +51,14 @@ export function withResultsStore() {
 			totalDeposited += deposited
 			totalDepositFees += depositedFee
 
-			const withdrawan = withdrawalsMap.get(formatDate(i)) ?? 0
-			const withdrawanFee = withdrawan * (detailStore.withdrawalFee / 100)
-			totalWithdrawn += withdrawan
-			totalWithdrawFees += withdrawanFee
+			const withdrawn = withdrawalsMap.get(formatDate(i)) ?? 0
+			const withdrawnFee = withdrawn * (detailStore.withdrawalFee / 100)
+			totalWithdrawn += withdrawn
+			totalWithdrawFees += withdrawnFee
 
-			totalInvested += deposited - depositedFee - withdrawanFee
+			totalInvested += deposited - depositedFee - withdrawnFee
 			totalFees += totalDepositFees + totalWithdrawFees
+
 			graphData.push({
 				date: new Date(i),
 				totalInvested,
