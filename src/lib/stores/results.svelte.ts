@@ -57,7 +57,7 @@ export function withResultsStore() {
 			totalWithdrawFees += withdrawnFee
 
 			totalInvested += deposited - depositedFee - withdrawnFee
-			totalFees += totalDepositFees + totalWithdrawFees
+			totalFees = totalDepositFees + totalWithdrawFees
 
 			graphData.push({
 				date: new Date(i),
