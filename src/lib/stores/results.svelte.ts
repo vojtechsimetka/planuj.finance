@@ -1,5 +1,5 @@
-import { calculateTotal, getEffectiveInterestRate } from '$lib/calc'
-import type { Deposit, Frequency } from '$lib/types'
+import { getEffectiveInterestRate } from '$lib/calc'
+import type { Deposit, Frequency, Withdrawal } from '$lib/types'
 import { formatDate } from '$lib/utils'
 import { detailStore } from './details.svelte'
 
@@ -20,33 +20,25 @@ export function withResultsStore() {
 			detailStore.inflation,
 		),
 	)
-	const totalDeposited: number = $derived(calculateTotal(detailStore.deposits))
-	const totalWithdrawn: number = $derived(calculateTotal(detailStore.withdrawals))
-
-	const totalDepositFees: number = $derived(totalDeposited * (detailStore.entryFee / 100))
-	const totalWithdrawFees: number = $derived(totalWithdrawn * (detailStore.withdrawalFee / 100))
-
-	function isEqualDate(a: Date, b: Date): boolean {
-		return (
-			a.getDate() === b.getDate() &&
-			a.getMonth() === b.getMonth() &&
-			a.getFullYear() === b.getFullYear()
-		)
-	}
+	let totalDeposited: number = $state(0)
+	let totalWithdrawn: number = $state(0)
+	let totalDepositFees: number = $state(0)
+	let totalWithdrawFees: number = $state(0)
+	let totalInvested: number = $state(0)
+	let totalFees: number = $state(0)
 
 	function calculateGraph(): GraphRecord[] {
 		const start = new Date(detailStore.dateOfBirth)
 		const end = new Date(new Date(start).setFullYear(start.getFullYear() + detailStore.endAge))
-
 		const graphData: GraphRecord[] = []
-
-		let totalInvested = 0
-		let totalDeposited = 0
-		let totalWithdrawn = 0
-		let totalFees = 0
-
 		const depositsMap = new Map<string, number>()
-
+		const withdrawalsMap = new Map<string, number>()
+		totalDeposited = 0
+		totalWithdrawn = 0
+		totalDepositFees = 0
+		totalWithdrawFees = 0
+		totalInvested = 0
+		totalFees = 0
 		function incrementFunction(date: Date, frequency: Frequency) {
 			const d = new Date(date.getTime())
 			switch (frequency) {
@@ -67,53 +59,44 @@ export function withResultsStore() {
 		}
 
 		// TODO: Make this function general to be able to add to both deposit and withdrawal
-		function addDeposit(date: Date, amount: number) {
+		function addOperation(date: Date, amount: number, map: Map<string, number>) {
 			const dateString = formatDate(date)
-			const existingDeposit = depositsMap.get(dateString) ?? 0
-			depositsMap.set(dateString, existingDeposit + amount)
+			const existingOperation = map.get(dateString) ?? 0
+			map.set(dateString, existingOperation + amount)
 		}
 
 		// TODO: Make this function general to be able to add to both deposit and withdrawal
-		function processOperation(deposit: Deposit) {
-			if (!deposit.isRecurring) {
-				addDeposit(deposit.startDate, deposit.amount)
+		function processOperation(operation: Deposit | Withdrawal, map: Map<string, number>) {
+			if (!operation.isRecurring) {
+				addOperation(operation.startDate, operation.amount, map)
 			} else {
 				for (
-					let date = new Date(deposit.startDate);
-					date < deposit.endDate;
-					date = incrementFunction(date, deposit.frequency)
+					let date = new Date(operation.startDate);
+					date < operation.endDate;
+					date = incrementFunction(date, operation.frequency)
 				) {
-					addDeposit(date, deposit.amount)
+					addOperation(date, operation.amount, map)
 				}
 			}
 		}
-
-		detailStore.deposits.forEach(processOperation)
+		detailStore.deposits.forEach((d) => processOperation(d, depositsMap))
+		detailStore.withdrawals.forEach((w) => processOperation(w, withdrawalsMap))
 
 		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
 		for (let i = new Date(start); i < end; i.setDate(i.getDate() + 1)) {
 			totalInvested *= dailyROI
-
-			// Calculate deposits
 			const deposited = depositsMap.get(formatDate(i)) ?? 0
-			const fee = deposited * (detailStore.entryFee / 100)
+			const depositedFee = deposited * (detailStore.entryFee / 100)
 			totalDeposited += deposited
-			totalInvested += deposited - fee
-			totalFees += fee
+			totalDepositFees += depositedFee
 
-			// Calculate deposits
-			// TODO: Implement recurring withdrawals
-			detailStore.withdrawals.forEach((withdrawal) => {
-				if (!withdrawal.isRecurring && isEqualDate(new Date(withdrawal.startDate), i)) {
-					const fee = withdrawal.amount * (detailStore.withdrawalFee / 100)
-					totalInvested -= withdrawal.amount + fee
-					totalWithdrawn += withdrawal.amount
-					totalFees += fee
-				}
+			const withdrawan = withdrawalsMap.get(formatDate(i)) ?? 0
+			const withdrawanFee = withdrawan * (detailStore.withdrawalFee / 100)
+			totalWithdrawn += withdrawan
+			totalWithdrawFees += withdrawanFee
 
-				// TODO: Implement recurring withdrawals
-			})
-
+			totalInvested += deposited - depositedFee - withdrawanFee
+			totalFees += totalDepositFees + totalWithdrawFees
 			graphData.push({
 				date: new Date(i),
 				totalInvested,
