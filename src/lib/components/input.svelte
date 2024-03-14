@@ -12,7 +12,7 @@
 		readonly = false,
 		disabled,
 		...restProps
-	} = $props<Props>()
+	}: Props = $props()
 </script>
 
 <div class="root" class:readonly class:disabled>

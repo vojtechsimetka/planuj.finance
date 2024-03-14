@@ -80,6 +80,7 @@
 
 		if (hash !== newHash) {
 			hash = newHash
+			resultStore.update()
 			window.location.hash = newHash
 		}
 	})
@@ -96,6 +97,7 @@
 		hash = newHash
 
 		detailStore.restoreFromUrl(hash)
+		resultStore.update()
 
 		setTimeout(() => {
 			dateOfBirth.value = formatDate(detailStore.dateOfBirth)

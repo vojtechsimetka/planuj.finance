@@ -13,9 +13,8 @@
 		helperText,
 		placeholder,
 		value,
-		children,
 		...restProps
-	} = $props<Props>()
+	}: Props = $props()
 
 	const store = withSelectStore(value)
 	setContext('select-store', store)
@@ -58,9 +57,7 @@
 			{placeholder}
 		</label>
 		<div class="options" class:hidden={!store.open}>
-			{#if children}
-				{@render children()}
-			{/if}
+			<slot />
 		</div>
 	</div>
 	<div class="helper-text">

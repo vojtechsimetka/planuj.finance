@@ -7,7 +7,7 @@
 		currency: string
 	}
 
-	let { operation, currency } = $props<Props>()
+	let { operation, currency }: Props = $props()
 	function formatFrequency() {
 		if (operation.isRecurring) {
 			switch (operation.frequency) {

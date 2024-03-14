@@ -4,7 +4,7 @@
 	interface Props extends HTMLInputAttributes {
 		labelFor?: string
 	}
-	let { labelFor = Math.random().toString(16), checked } = $props<Props>()
+	let { labelFor = Math.random().toString(16), checked }: Props = $props()
 </script>
 
 <div class="root">
