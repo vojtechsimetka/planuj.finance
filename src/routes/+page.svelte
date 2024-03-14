@@ -224,9 +224,9 @@
 			>
 				<Error errors={inflation.error} />
 			</Input>
-			<Select value={currency.value} placeholder={$_('currency')}>
-				{#each supportedCurrenciesWithLabels as currency}
-					<Option value={currency.value}>{currency.label}</Option>
+			<Select bind:value={currency.value} placeholder={$_('currency')}>
+				{#each supportedCurrenciesWithLabels as c}
+					<Option value={c.value}>{c.label}</Option>
 				{/each}
 			</Select>
 			<Input
@@ -369,6 +369,7 @@
 		grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
 		gap: 1rem;
 		justify-content: center;
+		align-items: start;
 		width: 100%;
 	}
 	.flex {
