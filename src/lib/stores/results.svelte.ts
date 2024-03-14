@@ -87,6 +87,9 @@ export function withResultsStore() {
 		get totalWithdrawFees() {
 			return totalWithdrawFees
 		},
+		get totalInvested() {
+			return totalInvested
+		},
 		get graphData() {
 			return graphData
 		},
