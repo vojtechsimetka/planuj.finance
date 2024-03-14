@@ -64,6 +64,9 @@
 		padding: 1.5rem 0.75rem;
 		border-radius: 0.25rem;
 	}
+	input[type='date']::-webkit-datetime-edit {
+		line-height: 1.375rem;
+	}
 	.readonly .input,
 	.input:focus {
 		background: var(--colors-base);
