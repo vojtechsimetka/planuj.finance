@@ -188,6 +188,14 @@
 			chart.update()
 		}
 	})
+	let label = $state('CZK')
+	$effect(() => {
+		supportedCurrenciesWithLabels.forEach((c) => {
+			if (c.value === detailStore.currency) {
+				label = c.label
+			}
+		})
+	})
 </script>
 
 {#if loading}
@@ -270,7 +278,7 @@
 		</div>
 		<div class="grid">
 			{#each detailStore.deposits as deposit, i}
-				<Operation operation={deposit} currency={detailStore.currency}>
+				<Operation operation={deposit} currency={label}>
 					<div class="edit"><a href={routes.DEPOSIT(i)}><Edit size={24} /></a></div>
 					<Button variant={'ghost'} onclick={() => detailStore.removeDeposit(i)}
 						><TrashCan size={24} /></Button
@@ -286,7 +294,7 @@
 		</div>
 		<div class="grid">
 			{#each detailStore.withdrawals as withdrawal, i}
-				<Operation operation={withdrawal} currency={detailStore.currency}>
+				<Operation operation={withdrawal} currency={label}>
 					<div class="edit"><a href={routes.WITHDRAWAL(i)}><Edit size={24} /></a></div>
 					<Button variant={'ghost'} onclick={() => detailStore.removeWithdrawal(i)}
 						><TrashCan size={24} /></Button
@@ -313,13 +321,13 @@
 				type={'text'}
 				readonly
 				placeholder={$_('totalDeposits')}
-				value={`${resultStore.totalDeposited} ${detailStore.currency}`}
+				value={`${resultStore.totalDeposited} ${label}`}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('totalWithdrawals')}
-				value={`${resultStore.totalWithdrawn} ${detailStore.currency}`}
+				value={`${resultStore.totalWithdrawn} ${label}`}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age}></Input>
 		</div>
@@ -329,13 +337,13 @@
 				type={'text'}
 				readonly
 				placeholder={$_('entryFee')}
-				value={`${resultStore.totalDepositFees} ${detailStore.currency}`}
+				value={`${resultStore.totalDepositFees} ${label}`}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('withdrawalFee')}
-				value={`${resultStore.totalWithdrawFees} ${detailStore.currency}`}
+				value={`${resultStore.totalWithdrawFees} ${label}`}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('feeMangement')} value={'Total management fee'}
 			></Input>
