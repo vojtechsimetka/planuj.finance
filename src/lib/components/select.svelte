@@ -6,7 +6,7 @@
 		helperText?: string
 		labelFor?: string
 	}
-	let { labelFor = Math.random().toString(16),helperText, placeholder, value } = $props<Props>()
+	let { labelFor = Math.random().toString(16), helperText, placeholder, value } = $props<Props>()
 	let open = $state(false)
 </script>
 
@@ -18,7 +18,14 @@
 			<CaretDown size={24} />
 		{/if}
 	</div>
-	<input bind:value class="select" onclick={() => (open = !open)} onblur={() => (open = false)} id={labelFor} {placeholder}/>
+	<input
+		bind:value
+		class="select"
+		onclick={() => (open = !open)}
+		onblur={() => (open = false)}
+		id={labelFor}
+		{placeholder}
+	/>
 	<label class="label" for={labelFor}>
 		{placeholder}
 	</label>
@@ -31,7 +38,6 @@
 		</div>
 	{/if}
 </div>
-
 
 <style>
 	.root {
@@ -78,7 +84,7 @@
 		line-height: 1.5rem;
 		font-size: 1rem;
 	}
-	.select::placeholder{
+	.select::placeholder {
 		text-align: center;
 		color: transparent;
 	}
