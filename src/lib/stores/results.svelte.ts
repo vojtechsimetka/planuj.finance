@@ -56,7 +56,7 @@ export function withResultsStore() {
 			totalWithdrawn += withdrawn
 			totalWithdrawFees += withdrawnFee
 
-			totalInvested += deposited - depositedFee - withdrawnFee
+			totalInvested += deposited - depositedFee - withdrawn - withdrawnFee
 			totalFees = totalDepositFees + totalWithdrawFees
 
 			gd.push({
