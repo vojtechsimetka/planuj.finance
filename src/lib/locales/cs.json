@@ -47,6 +47,7 @@
 	"plannedDeposits": "Plánované vklady",
 	"plannedWithdrawals": "Plánované výběry",
 	"paidOnFees": "Zaplaceno na poplatcích",
+	"remainingPortfolioValue": "Zbývající částka portfolia",
 
 	"errors": {
 		"too_small": "Hodnota musí být větší"

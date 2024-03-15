@@ -327,6 +327,12 @@
 				placeholder={$_('totalWithdrawals')}
 				value={`${resultStore.totalWithdrawn.toLocaleString()} ${label}`}
 			></Input>
+			<Input
+				type={'text'}
+				readonly
+				placeholder={$_('remainingPortfolioValue')}
+				value={`${resultStore.totalInvested.toLocaleString()} ${label}`}
+			></Input>
 			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age}></Input>
 		</div>
 		<h5>{$_('paidOnFees')}</h5>
