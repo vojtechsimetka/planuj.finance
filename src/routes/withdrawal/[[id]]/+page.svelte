@@ -11,7 +11,7 @@
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/button.svelte'
 	import { Checkmark, TrashCan, Undo } from 'carbon-icons-svelte'
-	import PageOfOperation from '$lib/components/pageOfOperation.svelte'
+	import PageOfOperation from '$lib/components/operation-form.svelte'
 
 	const index = get(page).params.id
 	const withdrawalIndex = isInt(index) ? Number.parseInt(index) : undefined

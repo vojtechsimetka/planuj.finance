@@ -11,7 +11,7 @@
 	import { _ } from 'svelte-i18n'
 	import Button from '$lib/components/button.svelte'
 	import { Checkmark, TrashCan, Undo } from 'carbon-icons-svelte'
-	import PageOfOperation from '$lib/components/pageOfOperation.svelte'
+	import OperationForm from '$lib/components/operation-form.svelte'
 
 	const index = get(page).params.id
 	const depositIndex = isInt(index) ? Number.parseInt(index) : undefined
@@ -68,7 +68,7 @@
 {:else if depositIndex !== undefined}
 	<section>
 		<h5>{$_('editedDeposit')} {depositIndex}</h5>
-		<PageOfOperation bind:operation={deposit} recurringOperationText="isDepositRecurring" />
+		<OperationForm bind:operation={deposit} recurringOperationText="isDepositRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={save} disabled={!formValid}
 				><Checkmark size={24} />{$_('save')}</Button
@@ -82,7 +82,7 @@
 {:else}
 	<section>
 		<h5>{$_('newDeposit')}</h5>
-		<PageOfOperation bind:operation={deposit} recurringOperationText="isDepositRecurring" />
+		<OperationForm bind:operation={deposit} recurringOperationText="isDepositRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={add} disabled={!formValid}
 				><Checkmark size={24} />{$_('add')}</Button
