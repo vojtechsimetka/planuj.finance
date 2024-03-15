@@ -29,7 +29,7 @@
 	<div class="info-of-operation">
 		<p class="operation-name">{operation.name}</p>
 		<p class="operation-amount">
-			{operation.amount}&nbsp;{currency}{formatFrequency()}
+			{operation.amount.toLocaleString()}&nbsp;{currency}{formatFrequency()}
 		</p>
 		<p class="operation-date">
 			{operation.startDate.toLocaleDateString()}{operation.isRecurring
