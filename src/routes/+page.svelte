@@ -129,7 +129,10 @@
 	let chart: Chart | null = $state(null)
 
 	$effect(() => {
-		const getLabels = () => resultStore.graphData.map((row) => row.date.getFullYear())
+		const getLabels = () =>
+			resultStore.graphData.map(
+				(row) => row.date.getFullYear() - detailStore.dateOfBirth.getFullYear(),
+			)
 		const getTotalInvested = () => resultStore.graphData.map((row) => row.totalInvested)
 		const getTotalDeposited = () => resultStore.graphData.map((row) => row.totalDeposited)
 		const getTotalWithdrawn = () => resultStore.graphData.map((row) => row.totalWithdrawn)
