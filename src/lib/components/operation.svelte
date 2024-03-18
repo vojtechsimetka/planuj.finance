@@ -4,7 +4,7 @@
 
 	interface Props {
 		operation: Deposit | Withdrawal
-		currency: string
+		currency: Intl.NumberFormat
 	}
 
 	let { operation, currency }: Props = $props()
@@ -29,7 +29,7 @@
 	<div class="info-of-operation">
 		<p class="operation-name">{operation.name}</p>
 		<p class="operation-amount">
-			{operation.amount.toLocaleString()}&nbsp;{currency}{formatFrequency()}
+			{currency.format(operation.amount)}&nbsp;{formatFrequency()}
 		</p>
 		<p class="operation-date">
 			{operation.startDate.toLocaleDateString()}{operation.isRecurring
