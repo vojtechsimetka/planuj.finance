@@ -18,6 +18,7 @@
 	import { withFormStore, type FormStore } from '$lib/stores/form.svelte'
 	import { dateOfBirthSchema, endAgeSchema, supportedCurrenciesSchema } from '$lib/schemas'
 	import Error from '$lib/components/error.svelte'
+	import { locale } from 'svelte-i18n'
 
 	const initialValues = {
 		dateOfBirth: formatDate(new Date()),
@@ -194,28 +195,12 @@
 		}
 	})
 
-	let localeAmount = $state(
-		new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: detailStore.currency }),
+	let localeAmount = $derived(
+		new Intl.NumberFormat($locale ?? 'cs-CZ', {
+			style: 'currency',
+			currency: detailStore.currency,
+		}),
 	)
-
-	$effect(() => {
-		if (detailStore.currency === 'CZK') {
-			localeAmount = new Intl.NumberFormat('cs-CZ', {
-				style: 'currency',
-				currency: detailStore.currency,
-			})
-		} else if (detailStore.currency === 'EUR') {
-			localeAmount = new Intl.NumberFormat('en-EU', {
-				style: 'currency',
-				currency: detailStore.currency,
-			})
-		} else if (detailStore.currency === 'USD') {
-			localeAmount = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: detailStore.currency,
-			})
-		}
-	})
 </script>
 
 {#if loading}
