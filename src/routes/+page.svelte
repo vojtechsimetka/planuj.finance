@@ -196,6 +196,8 @@
 	})
 
 	let localeAmount = $derived(
+		// TODO: remove once issue with using $ in svelte 5 is clearer
+		// eslint-disable-next-line svelte/valid-compile
 		new Intl.NumberFormat($locale ?? 'cs-CZ', {
 			style: 'currency',
 			currency: detailStore.currency,
