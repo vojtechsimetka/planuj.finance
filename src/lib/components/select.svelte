@@ -45,7 +45,19 @@
 				if (e.key === 'ArrowDown') {
 					e.preventDefault()
 					e.stopPropagation()
-					store.open = true
+					if (!store.open) {
+						store.open = true
+					} else {
+						const values = Object.keys(store.labels)
+						const index = store.value ? values.indexOf(store.value) : 0
+						store.value = values[(index + 1) % values.length]
+					}
+				} else if (e.key === 'ArrowUp' && store.open) {
+					const values = Object.keys(store.labels)
+					const index = store.value ? values.indexOf(store.value) : 0
+					store.value = values[index - 1 < 0 ? values.length - 1 : index - 1]
+				} else if (e.key === 'Enter' && store.open) {
+					store.open = false
 				}
 			}}
 			id={labelFor}

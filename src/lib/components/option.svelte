@@ -57,7 +57,9 @@
 		padding: 0.75rem;
 	}
 	button.selected,
-	button:hover {
+	button:hover,
+	button:focus,
+	button.active {
 		background-color: var(--colors-low);
 		border-radius: 0.25rem;
 		cursor: pointer;
