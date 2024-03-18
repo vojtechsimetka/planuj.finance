@@ -18,6 +18,7 @@
 	import { withFormStore, type FormStore } from '$lib/stores/form.svelte'
 	import { dateOfBirthSchema, endAgeSchema, supportedCurrenciesSchema } from '$lib/schemas'
 	import Error from '$lib/components/error.svelte'
+	import { locale } from 'svelte-i18n'
 
 	const initialValues = {
 		dateOfBirth: formatDate(new Date()),
@@ -193,7 +194,15 @@
 			chart.update()
 		}
 	})
-	const label = $derived(supportedCurrenciesWithLabels[detailStore.currency])
+
+	let localeAmount = $derived(
+		// TODO: remove once issue with using $ in svelte 5 is clearer
+		// eslint-disable-next-line svelte/valid-compile
+		new Intl.NumberFormat($locale ?? 'cs-CZ', {
+			style: 'currency',
+			currency: detailStore.currency,
+		}),
+	)
 </script>
 
 {#if loading}
@@ -276,7 +285,7 @@
 		</div>
 		<div class="grid">
 			{#each detailStore.deposits as deposit, i}
-				<Operation operation={deposit} currency={label}>
+				<Operation operation={deposit} currency={localeAmount}>
 					<div class="edit"><a href={routes.DEPOSIT(i)}><Edit size={24} /></a></div>
 					<Button variant={'ghost'} onclick={() => detailStore.removeDeposit(i)}
 						><TrashCan size={24} /></Button
@@ -292,7 +301,7 @@
 		</div>
 		<div class="grid">
 			{#each detailStore.withdrawals as withdrawal, i}
-				<Operation operation={withdrawal} currency={label}>
+				<Operation operation={withdrawal} currency={localeAmount}>
 					<div class="edit"><a href={routes.WITHDRAWAL(i)}><Edit size={24} /></a></div>
 					<Button variant={'ghost'} onclick={() => detailStore.removeWithdrawal(i)}
 						><TrashCan size={24} /></Button
@@ -319,19 +328,19 @@
 				type={'text'}
 				readonly
 				placeholder={$_('totalDeposits')}
-				value={`${resultStore.totalDeposited.toLocaleString()} ${label}`}
+				value={localeAmount.format(resultStore.totalDeposited)}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('totalWithdrawals')}
-				value={`${resultStore.totalWithdrawn.toLocaleString()} ${label}`}
+				value={localeAmount.format(resultStore.totalWithdrawn)}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('remainingPortfolioValue')}
-				value={`${resultStore.totalInvested.toLocaleString()} ${label}`}
+				value={localeAmount.format(resultStore.totalInvested)}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('clientAge')} value={age}></Input>
 		</div>
@@ -341,13 +350,13 @@
 				type={'text'}
 				readonly
 				placeholder={$_('entryFee')}
-				value={`${resultStore.totalDepositFees.toLocaleString()} ${label}`}
+				value={localeAmount.format(resultStore.totalDepositFees)}
 			></Input>
 			<Input
 				type={'text'}
 				readonly
 				placeholder={$_('withdrawalFee')}
-				value={`${resultStore.totalWithdrawFees.toLocaleString()} ${label}`}
+				value={localeAmount.format(resultStore.totalWithdrawFees)}
 			></Input>
 			<Input type={'text'} readonly placeholder={$_('feeMangement')} value={'Total management fee'}
 			></Input>
