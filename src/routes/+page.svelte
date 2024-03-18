@@ -13,23 +13,11 @@
 	import { Edit, TrashCan } from 'carbon-icons-svelte'
 	import Button from '$lib/components/button.svelte'
 	import { supportedCurrenciesWithLabels } from '$lib/types'
-	import { formatDate } from '$lib/utils'
+	import { formatDate, initialValues } from '$lib/utils'
 	import { z } from 'zod'
 	import { withFormStore, type FormStore } from '$lib/stores/form.svelte'
 	import { dateOfBirthSchema, endAgeSchema, supportedCurrenciesSchema } from '$lib/schemas'
 	import Error from '$lib/components/error.svelte'
-
-	const initialValues = {
-		dateOfBirth: formatDate(new Date()),
-		endAge: 80,
-		currency: 'CZK',
-		inflation: 2,
-		apy: 0,
-		feeSuccess: 0,
-		feeManagement: 0,
-		entryFee: 0,
-		withdrawalFee: 0,
-	} as const
 
 	let hash = $state('')
 	let loading = $state<boolean>(true)
