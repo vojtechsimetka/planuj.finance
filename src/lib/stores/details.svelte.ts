@@ -1,6 +1,6 @@
 import { detailStoreSchema } from '$lib/schemas'
 import type { Deposit, Portfolio, Withdrawal, Currency } from '$lib/types'
-import { base64ToBytes, bytesToBase64, compareArrays } from '$lib/utils'
+import { base64ToBytes, bytesToBase64, compareArrays, initialValues } from '$lib/utils'
 import pako from 'pako'
 
 export interface DetailsStoreValues extends Portfolio {
@@ -40,15 +40,15 @@ function save<T>(array: T[], index: number, item: T) {
 }
 
 export function withDetailsStore(): DetailsStore {
-	let dateOfBirth = $state(new Date())
-	let endAge = $state(80)
-	let currency = $state<Currency>('CZK')
-	let inflation = $state(0)
-	let apy = $state(0)
-	let feeSuccess = $state(0)
-	let feeManagement = $state(0)
-	let entryFee = $state(0)
-	let withdrawalFee = $state(0)
+	let dateOfBirth = $state<Date>(new Date(initialValues.dateOfBirth))
+	let endAge = $state<number>(initialValues.endAge)
+	let currency = $state<Currency>(initialValues.currency)
+	let inflation = $state<number>(initialValues.inflation)
+	let apy = $state<number>(initialValues.apy)
+	let feeSuccess = $state<number>(initialValues.feeSuccess)
+	let feeManagement = $state<number>(initialValues.feeManagement)
+	let entryFee = $state<number>(initialValues.entryFee)
+	let withdrawalFee = $state<number>(initialValues.withdrawalFee)
 	let deposits = $state<Deposit[]>([])
 	let withdrawals = $state<Withdrawal[]>([])
 

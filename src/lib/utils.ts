@@ -5,6 +5,18 @@ export const week = 7 * day
 export const year = 365.25 * day
 export const month = year / 12
 
+export const initialValues = {
+	dateOfBirth: formatDate(new Date()),
+	endAge: 80,
+	currency: 'CZK',
+	inflation: 2,
+	apy: 0,
+	feeSuccess: 0,
+	feeManagement: 0,
+	entryFee: 0,
+	withdrawalFee: 0,
+} as const
+
 function checkInt(x: number) {
 	return (x | 0) === x
 }
