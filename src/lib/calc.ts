@@ -51,7 +51,7 @@ export function processOperation(operation: Deposit | Withdrawal, map: Map<strin
 	} else {
 		for (
 			let date = new Date(operation.startDate);
-			date < operation.endDate;
+			date <= operation.endDate;
 			date = incrementDate(date, operation.frequency)
 		) {
 			addOperation(date, operation.amount, map)

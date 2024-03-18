@@ -56,7 +56,7 @@ export function withResultsStore() {
 		const dailySuccess = Math.pow(1 + rates.successFeePercentage, 1 / 365.25)
 		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
 
-		for (let i = new Date(start); i < end; i = incrementDate(i, 'day')) {
+		for (let i = new Date(start); i <= end; i = incrementDate(i, 'day')) {
 			totalInvested *= dailyROI
 			const deposited = depositsMap.get(formatDate(i)) ?? 0
 			const depositedFee = deposited * (detailStore.entryFee / 100)
