@@ -1,4 +1,10 @@
-import { getEffectiveInterestRate, incrementDate, processOperation } from '$lib/calc'
+import { Decimal } from 'decimal.js'
+import {
+	getEffectiveInterestRate,
+	incrementDate,
+	processOperation,
+	splitWithRation,
+} from '$lib/calc'
 import { formatDate } from '$lib/utils'
 import { detailStore } from './details.svelte'
 
@@ -28,68 +34,97 @@ export function withResultsStore() {
 
 	function update() {
 		const rates = getEffectiveInterestRate(
-			detailStore.apy,
-			detailStore.feeSuccess,
-			detailStore.feeManagement,
-			detailStore.inflation,
+			new Decimal(detailStore.apy),
+			new Decimal(detailStore.feeSuccess),
+			new Decimal(detailStore.feeManagement),
+			new Decimal(detailStore.inflation),
 		)
-		effectiveApy = rates.effectiveInterestRate
+		effectiveApy = rates.effectiveInterestRate.toNumber()
+		const ratesNoFees = getEffectiveInterestRate(
+			new Decimal(detailStore.apy),
+			new Decimal(0),
+			new Decimal(0),
+			new Decimal(detailStore.inflation),
+		)
+
 		const start = detailStore.dateOfBirth
 		const end = incrementDate(start, 'year', detailStore.endAge)
 		const gd: GraphRecord[] = []
 		const depositsMap = new Map<string, number>()
 		const withdrawalsMap = new Map<string, number>()
 
-		totalDeposited = 0
-		totalWithdrawn = 0
-		totalDepositFee = 0
-		totalWithdrawFee = 0
-		totalInvested = 0
-		totalFees = 0
-		totalSuccessFee = 0
-		totalManagementFee = 0
+		let newTotalDeposited = new Decimal(0)
+		let newTotalWithdrawn = new Decimal(0)
+		let newTotalDepositFee = new Decimal(0)
+		let newTotalWithdrawFee = new Decimal(0)
+		let newTotalInvested = new Decimal(0)
+		let newTotalFees = new Decimal(0)
+		let newTotalSuccessFee = new Decimal(0)
+		let newTotalManagementFee = new Decimal(0)
 
 		detailStore.deposits.forEach((d) => processOperation(d, depositsMap))
 		detailStore.withdrawals.forEach((w) => processOperation(w, withdrawalsMap))
-		// const dailyManagement = Math.pow
-		const dailyManagement = Math.pow(1 + rates.managementFeePercentage, 1 / 365.25)
-		const dailySuccess = Math.pow(1 + rates.successFeePercentage, 1 / 365.25)
-		const dailyROI = Math.pow(1 + effectiveApy, 1 / 365.25)
+
+		const dailyROI = new Decimal(1).add(effectiveApy).pow(new Decimal(1).div(new Decimal(365.25)))
+		const dailyNoFeesROI = new Decimal(1)
+			.add(ratesNoFees.effectiveInterestRate)
+			.pow(new Decimal(1).div(new Decimal(365.25)))
 
 		for (let i = new Date(start); i <= end; i = incrementDate(i, 'day')) {
-			totalInvested *= dailyROI
-			const deposited = depositsMap.get(formatDate(i)) ?? 0
-			const depositedFee = deposited * (detailStore.entryFee / 100)
-			totalDeposited += deposited
-			totalDepositFee += depositedFee
+			newTotalInvested = newTotalInvested.mul(dailyROI)
+			const deposited = new Decimal(depositsMap.get(formatDate(i)) ?? 0)
+			const depositedFee = deposited.mul(new Decimal(detailStore.entryFee).div(100))
+			newTotalDeposited = newTotalDeposited.add(deposited)
+			newTotalDepositFee = newTotalDepositFee.add(depositedFee)
 
-			const withdrawn = withdrawalsMap.get(formatDate(i)) ?? 0
-			const withdrawnFee = withdrawn * (detailStore.withdrawalFee / 100)
-			totalWithdrawn += withdrawn
-			totalWithdrawFee += withdrawnFee
+			const withdrawn = new Decimal(withdrawalsMap.get(formatDate(i)) ?? 0)
+			const withdrawnFee = withdrawn.mul(new Decimal(detailStore.withdrawalFee).div(100))
+			newTotalWithdrawn = newTotalWithdrawn.add(withdrawn)
+			newTotalWithdrawFee = newTotalWithdrawFee.add(withdrawnFee)
 
-			const managementFee = totalInvested - totalInvested * dailyManagement
-			totalManagementFee += managementFee
-			const successFee = totalInvested * dailySuccess - totalInvested
-			totalSuccessFee += successFee
+			const fee = newTotalInvested.mul(dailyNoFeesROI).sub(newTotalInvested.mul(dailyROI))
+			const [managementFee, successFee] = splitWithRation(
+				rates.managementFeePercentage,
+				rates.successFeePercentage,
+				fee,
+			)
+			newTotalManagementFee = newTotalManagementFee.add(managementFee)
+			newTotalSuccessFee = newTotalSuccessFee.add(successFee)
 
-			totalInvested += deposited - depositedFee - withdrawn - withdrawnFee
-			totalFees = totalDepositFee + totalWithdrawFee + totalManagementFee + totalSuccessFee
+			newTotalInvested = newTotalInvested
+				.add(deposited)
+				.sub(depositedFee)
+				.sub(withdrawn)
+				.sub(withdrawnFee)
+			newTotalFees = newTotalDepositFee
+				.add(newTotalWithdrawFee)
+				.add(newTotalManagementFee)
+				.add(newTotalSuccessFee)
 
 			gd.push({
 				date: new Date(i),
-				totalInvested,
-				totalDeposited,
-				totalWithdrawn,
-				totalFees,
-				totalManagementFee,
-				totalSuccessFee,
-				totalDepositFee,
-				totalWithdrawFee,
+				totalInvested: newTotalInvested.toNumber(),
+				totalDeposited: newTotalDeposited.toNumber(),
+				totalWithdrawn: newTotalWithdrawn.toNumber(),
+				totalFees: newTotalFees.toNumber(),
+				totalManagementFee: newTotalManagementFee.toNumber(),
+				totalSuccessFee: newTotalSuccessFee.toNumber(),
+				totalDepositFee: newTotalDepositFee.toNumber(),
+				totalWithdrawFee: newTotalWithdrawFee.toNumber(),
 			})
 		}
 
-		graphData = gd.filter((record) => record.date.getDate() === 1)
+		totalDepositFee = newTotalDepositFee.toNumber()
+		totalWithdrawFee = newTotalWithdrawFee.toNumber()
+		totalManagementFee = newTotalManagementFee.toNumber()
+		totalSuccessFee = newTotalSuccessFee.toNumber()
+		totalInvested = newTotalInvested.toNumber()
+		totalFees = newTotalFees.toNumber()
+		totalDeposited = newTotalDeposited.toNumber()
+		totalWithdrawn = newTotalWithdrawn.toNumber()
+		graphData = gd
+			.filter((record) => record.date.getDate() === 1)
+			.filter((record) => record.date.getMonth() % 12 === 0)
 	}
 
 	return {
@@ -119,6 +154,9 @@ export function withResultsStore() {
 		},
 		get graphData() {
 			return graphData
+		},
+		get totalFees() {
+			return totalFees
 		},
 
 		update,
