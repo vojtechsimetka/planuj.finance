@@ -1,18 +1,66 @@
+import Decimal from 'decimal.js'
 import type { Deposit, Withdrawal, Frequency } from './types'
 import { formatDate } from './utils'
 
+Decimal.set({ precision: 30 })
+
+const c1 = new Decimal(1)
+const c100 = new Decimal(100)
+
 export function getEffectiveInterestRate(
-	interestRate: number,
-	successFee: number,
-	managementFee: number,
-	inflation: number,
+	interest: Decimal,
+	successFee: Decimal,
+	managementFee: Decimal,
+	inflation: Decimal,
 ) {
-	return (
-		(1 + (interestRate / 100) * (1 - successFee / 100)) *
-			(1 - managementFee / 100) *
-			(1 - inflation / 100) -
-		1
-	)
+	const interestRate = interest.div(c100)
+	const inflationRate = c1.sub(inflation.div(c100))
+	const successFeeRate = c1.sub(successFee.div(c100))
+
+	const successFeePercentage = interestRate.sub(interestRate.mul(successFeeRate)).mul(inflationRate)
+	const managementFeeRate = c1.sub(managementFee.div(c100))
+	const effectiveInterestRate = c1
+		.add(interestRate.mul(successFeeRate))
+		.mul(managementFeeRate)
+		.mul(inflationRate)
+		.sub(c1)
+	const managementFeePercentage = effectiveInterestRate
+		.sub(c1.add(interestRate.mul(successFeeRate)).sub(c1))
+		.mul(inflationRate)
+		.abs()
+
+	return {
+		effectiveInterestRate,
+		successFeePercentage: successFeePercentage.greaterThanOrEqualTo(0)
+			? successFeePercentage
+			: new Decimal(0),
+		managementFeePercentage,
+	}
+}
+
+export function splitWithRation(
+	ratio1: Decimal,
+	ratio2: Decimal,
+	value: Decimal,
+): [Decimal, Decimal] {
+	if (ratio1.equals(0) && ratio2.equals(0)) {
+		return [new Decimal(0), new Decimal(0)]
+	}
+
+	const totalPercentage = ratio1.add(ratio2)
+
+	// If one percentage is 0, assign the entire value to the other portion
+	if (ratio1.equals(0)) {
+		return [new Decimal(0), value]
+	} else if (ratio2.equals(0)) {
+		return [value, new Decimal(0)]
+	}
+
+	// Calculate portions
+	const portion1 = ratio1.div(totalPercentage).mul(value)
+	const portion2 = ratio2.div(totalPercentage).mul(value)
+
+	return [portion1, portion2]
 }
 
 export function incrementDate(date: Date, frequency: Frequency, count = 1) {
@@ -46,7 +94,7 @@ export function processOperation(operation: Deposit | Withdrawal, map: Map<strin
 	} else {
 		for (
 			let date = new Date(operation.startDate);
-			date < operation.endDate;
+			date <= operation.endDate;
 			date = incrementDate(date, operation.frequency)
 		) {
 			addOperation(date, operation.amount, map)
