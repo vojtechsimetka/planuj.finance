@@ -169,8 +169,10 @@
 							min: 0,
 						},
 					},
+					responsive: false,
 				},
 			})
+			chart.resize()
 		}
 
 		if (chart && resultStore.graphData) {
@@ -191,6 +193,26 @@
 			currency: detailStore.currency,
 		}),
 	)
+	let prevChartWidth: number = $state(0)
+	let actChartWidth: number = $state(0)
+	let interval: undefined | ReturnType<typeof setInterval> = $state()
+	$effect(() => {
+		if (actChartWidth !== prevChartWidth && chart) {
+			prevChartWidth = actChartWidth
+			if (interval) {
+				clearInterval(interval)
+			}
+			interval = setInterval(() => {
+				chart?.resize()
+				interval = undefined
+			}, 1000)
+		}
+		return () => {
+			if (interval) {
+				clearInterval(interval)
+			}
+		}
+	})
 </script>
 
 {#if loading}
@@ -299,7 +321,7 @@
 		</div>
 	</section>
 	<section>
-		<div class="chart">
+		<div class="chart" bind:clientWidth={actChartWidth}>
 			<canvas bind:this={canvas} />
 		</div>
 	</section>
