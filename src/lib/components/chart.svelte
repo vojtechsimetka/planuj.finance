@@ -2,7 +2,7 @@
 	import Chart, { type ChartDataset } from 'chart.js/auto'
 
 	interface Props {
-		labels: number[]
+		labels: (number | string)[]
 		series: ChartDataset[]
 	}
 	let { labels, series }: Props = $props()
@@ -38,6 +38,7 @@
 	})
 	let prevChartWidth: number = $state(0)
 	let actChartWidth: number = $state(0)
+	$inspect
 	$effect(() => {
 		const interval = setInterval(() => {
 			if (actChartWidth !== prevChartWidth && chart) {
@@ -51,6 +52,6 @@
 	})
 </script>
 
-<div class="chart">
-	<canvas bind:this={canvas} bind:clientWidth={actChartWidth} />
+<div class="chart" bind:clientWidth={actChartWidth}>
+	<canvas bind:this={canvas} />
 </div>
