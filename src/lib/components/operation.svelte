@@ -4,6 +4,7 @@
 	import { detailStore } from '$lib/stores/details.svelte'
 	import { year } from '$lib/utils'
 	import { Warning } from 'carbon-icons-svelte'
+	import { incrementDate } from '$lib/calc'
 
 	interface Props {
 		operation: Deposit | Withdrawal
@@ -26,20 +27,23 @@
 		}
 		return ''
 	}
-	let operationErrors: string[] = $state([])
-	$effect(() => {
+	let operationErrors: string[] = $derived.by(() => {
 		const dateOfBirth = new Date(detailStore.dateOfBirth).getTime()
-		const dateOfEndInvestment = dateOfBirth + detailStore.endAge * year
+		const dateOfEndInvestment = incrementDate(
+			detailStore.dateOfBirth,
+			'year',
+			detailStore.endAge,
+		).getTime()
 		const dateOfStartOperation = operation.startDate.getTime()
 		const dateOfEndOperation = operation.isRecurring ? operation.endDate.getTime() : 0
 		if (dateOfStartOperation < dateOfBirth && dateOfEndInvestment < dateOfEndOperation) {
-			operationErrors = [$_('operationBeforeBorn'), $_('operationAfterEnd')]
+			return [$_('operationBeforeBorn'), $_('operationAfterEnd')]
 		} else if (dateOfStartOperation < dateOfBirth) {
-			operationErrors = [$_('operationBeforeBorn')]
+			return [$_('operationBeforeBorn')]
 		} else if (dateOfEndInvestment < dateOfEndOperation) {
-			operationErrors = [$_('operationAfterEnd')]
+			return [$_('operationAfterEnd')]
 		} else {
-			operationErrors = []
+			return []
 		}
 	})
 </script>
