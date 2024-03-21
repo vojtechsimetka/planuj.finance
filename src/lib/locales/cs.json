@@ -48,6 +48,8 @@
 	"plannedWithdrawals": "Plánované výběry",
 	"paidOnFees": "Zaplaceno na poplatcích",
 	"remainingPortfolioValue": "Zbývající částka portfolia",
+	"operationBeforeBorn": "Operace před narozením",
+	"operationAfterEnd": "Operace po planovaném konci",
 
 	"errors": {
 		"too_small": "Hodnota musí být větší"

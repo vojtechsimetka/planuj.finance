@@ -1,6 +1,9 @@
 <script lang="ts">
 	import type { Deposit, Withdrawal } from '$lib/types'
 	import { _ } from 'svelte-i18n'
+	import { detailStore } from '$lib/stores/details.svelte'
+	import { year } from '$lib/utils'
+	import { Warning } from 'carbon-icons-svelte'
 
 	interface Props {
 		operation: Deposit | Withdrawal
@@ -23,22 +26,49 @@
 		}
 		return ''
 	}
+	let operationErrors: string[] = $state([])
+	$effect(() => {
+		const dateOfBirth = new Date(detailStore.dateOfBirth).getTime()
+		const dateOfEndInvestment = dateOfBirth + detailStore.endAge * year
+		const dateOfStartOperation = operation.startDate.getTime()
+		const dateOfEndOperation = operation.isRecurring ? operation.endDate.getTime() : 0
+		if (dateOfStartOperation < dateOfBirth && dateOfEndInvestment < dateOfEndOperation) {
+			operationErrors = [$_('operationBeforeBorn'), $_('operationAfterEnd')]
+		} else if (dateOfStartOperation < dateOfBirth) {
+			operationErrors = [$_('operationBeforeBorn')]
+		} else if (dateOfEndInvestment < dateOfEndOperation) {
+			operationErrors = [$_('operationAfterEnd')]
+		} else {
+			operationErrors = []
+		}
+	})
 </script>
 
-<div class="flex-container">
-	<div class="info-of-operation">
-		<p class="operation-name">{operation.name}</p>
-		<p class="operation-amount">
-			{currency.format(operation.amount)}&nbsp;{formatFrequency()}
-		</p>
-		<p class="operation-date">
-			{operation.startDate.toLocaleDateString()}{operation.isRecurring
-				? ' - ' + operation.endDate.toLocaleDateString()
-				: ''}
-		</p>
+<div>
+	<div class="flex-container">
+		<div class="info-of-operation">
+			<p class="operation-name">{operation.name}</p>
+			<p class="operation-amount">
+				{currency.format(operation.amount)}&nbsp;{formatFrequency()}
+			</p>
+			<p class="operation-date">
+				{operation.startDate.toLocaleDateString()}{operation.isRecurring
+					? ' - ' + operation.endDate.toLocaleDateString()
+					: ''}
+			</p>
+		</div>
+		<div class="operation-icon">
+			<slot />
+		</div>
 	</div>
-	<div class="operation-icon">
-		<slot />
+	<div class="helper-text">
+		{#if operationErrors.length > 0}
+			{#each operationErrors as err}
+				<div class="error">
+					<Warning />&nbsp;{err}
+				</div>
+			{/each}
+		{/if}
 	</div>
 </div>
 
@@ -90,5 +120,22 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
+	}
+	.helper-text {
+		color: var(--colors-ultraHigh);
+		font-family: Arial;
+		font-size: 0.75rem;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 1rem;
+		letter-spacing: 0.0375rem;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
+		padding: 0rem 0.75rem 0.5rem;
+	}
+	.error {
+		display: inline-flex;
 	}
 </style>

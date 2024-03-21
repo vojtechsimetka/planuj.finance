@@ -48,6 +48,8 @@
 	"plannedWithdrawals": "Planned withdrawals",
 	"paidOnFees": "Paid on fees",
 	"remainingPortfolioValue": "Remaining portfolio value",
+	"operationBeforeBorn": "Operation before born",
+	"operationAfterEnd": "Operation after the scheduled end",
 
 	"errors": {
 		"too_small": "Please enter larger value"
