@@ -3,6 +3,7 @@
 	/* eslint svelte/valid-compile: 0 */
 	import { browser } from '$app/environment'
 	import { locale, locales } from 'svelte-i18n'
+	import Button from './button.svelte'
 
 	// Assuming $locale is automatically set by svelte-i18n to the browser's setting, e.g., 'en-US'
 	$effect(() => {
@@ -15,17 +16,22 @@
 	})
 	$effect(() => {
 		if (browser && $locale) localStorage.setItem('user-lang', $locale)
+		console.log($locale)
 	})
 </script>
 
-<select bind:value={$locale}>
-	{#each $locales as locale}
-		<option value={locale}>{locale}</option>
-	{/each}
-</select>
+<div class="lang">
+	<Button
+		bind:value={$locale}
+		variant={'ghost'}
+		onclick={() => {
+			$locale = $locale === 'en' ? 'cs' : 'en'
+		}}>{$locale}</Button
+	>
+</div>
 
 <style>
-	select {
+	.lang {
 		position: absolute;
 		top: 0;
 		right: 0;
