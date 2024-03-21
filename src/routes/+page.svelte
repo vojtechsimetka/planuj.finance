@@ -114,19 +114,6 @@
 
 	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
 
-	const getLabels = () =>
-		resultStore.graphData.map(
-			(row) => row.date.getFullYear() - detailStore.dateOfBirth.getFullYear(),
-		)
-	const getTotalInvested = () => resultStore.graphData.map((row) => row.totalInvested)
-	const getTotalDeposited = () => resultStore.graphData.map((row) => row.totalDeposited)
-	const getTotalWithdrawn = () => resultStore.graphData.map((row) => row.totalWithdrawn)
-	const getTotalFees = () => resultStore.graphData.map((row) => row.totalFees)
-	const getTotalWithdrawFee = () => resultStore.graphData.map((row) => row.totalWithdrawFee)
-	const getTotalDepositFee = () => resultStore.graphData.map((row) => row.totalDepositFee)
-	const getTotalManagementFee = () => resultStore.graphData.map((row) => row.totalManagementFee)
-	const getTotalSuccessFee = () => resultStore.graphData.map((row) => row.totalSuccessFee)
-
 	let localeAmount = $derived(
 		// TODO: remove once issue with using $ in svelte 5 is clearer
 		// eslint-disable-next-line svelte/valid-compile
@@ -242,46 +229,55 @@
 	</section>
 	<section>
 		<ChartComponent
-			labels={getLabels()}
+			labels={resultStore.graphDates}
 			series={[
-				{ label: 'Invested value', data: getTotalInvested(), fill: { target: 'origin' } },
+				{
+					label: 'Invested value',
+					data: resultStore.graphTotalInvested,
+					fill: { target: 'origin' },
+				},
 				{
 					label: 'Total deposited',
-					data: getTotalDeposited(),
+					data: resultStore.graphTotalDeposited,
 					fill: { target: 'origin' },
 					hidden: true,
 				},
 				{
 					label: 'Total withdrawn',
-					data: getTotalWithdrawn(),
+					data: resultStore.graphTotalWithdrawn,
 					fill: { target: 'origin' },
 					hidden: true,
 				},
 				{
 					label: 'Total deposited fee',
-					data: getTotalDepositFee(),
+					data: resultStore.graphTotalDepositFee,
 					fill: { target: 'origin' },
 					hidden: true,
 				},
 				{
 					label: 'Total withdrawn fee',
-					data: getTotalWithdrawFee(),
+					data: resultStore.graphTotalWithdrawFee,
 					fill: { target: 'origin' },
 					hidden: true,
 				},
 				{
 					label: 'Total management fee',
-					data: getTotalManagementFee(),
+					data: resultStore.graphTotalManagementFee,
 					fill: { target: 'origin' },
 					hidden: true,
 				},
 				{
 					label: 'Total success fee',
-					data: getTotalSuccessFee(),
+					data: resultStore.graphTotalSuccessFee,
 					fill: { target: 'origin' },
 					hidden: true,
 				},
-				{ label: 'Total fees', data: getTotalFees(), fill: { target: 'origin' }, hidden: true },
+				{
+					label: 'Total fees',
+					data: resultStore.graphTotalFees,
+					fill: { target: 'origin' },
+					hidden: true,
+				},
 			]}
 		></ChartComponent>
 	</section>
