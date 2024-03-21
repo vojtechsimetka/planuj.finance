@@ -16,7 +16,6 @@
 	})
 	$effect(() => {
 		if (browser && $locale) localStorage.setItem('user-lang', $locale)
-		console.log($locale)
 	})
 </script>
 
