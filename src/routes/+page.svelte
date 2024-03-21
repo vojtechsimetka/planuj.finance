@@ -262,10 +262,8 @@
 	Loading...
 {:else}
 	<section>
-		<div class="flex">
-			<h5>{$_('clientInformations')}</h5>
-			<Language />
-		</div>
+		<h5>{$_('clientInformations')}</h5>
+		<Language />
 		<div class="grid">
 			<Input
 				type="date"
@@ -425,6 +423,10 @@
 			></Input>
 		</div>
 	</section>
+	<section>
+		<h5>{$_('disclaimer')}</h5>
+		<p class="smallParagraph">{$_('disclaimerText')}</p>
+	</section>
 {/if}
 
 <style>
@@ -442,9 +444,13 @@
 		padding: 1rem;
 	}
 	section {
+		position: relative;
 		padding-bottom: 1rem;
 		max-width: 1200px;
 		margin: 0 auto;
+	}
+	section > h5 {
+		padding-bottom: 1rem;
 	}
 	.grid {
 		display: grid;
@@ -492,5 +498,17 @@
 	.edit > a:active {
 		background: var(--colors-low);
 		color: var(--colors-high);
+	}
+	.smallParagraph {
+		align-self: stretch;
+		color: var(--colors-ultraHigh, #303030);
+		/* smallParagraph */
+		font-family: Arial;
+		font-size: 0.75rem;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 1rem; /* 133.333% */
+		letter-spacing: 0.0375rem;
+		padding: 0 0.75rem;
 	}
 </style>

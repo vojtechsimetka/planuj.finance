@@ -23,3 +23,11 @@
 		<option value={locale}>{locale}</option>
 	{/each}
 </select>
+
+<style>
+	select {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+</style>
