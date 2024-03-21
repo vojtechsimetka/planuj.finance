@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Chart from 'chart.js/auto'
 	import { _ } from 'svelte-i18n'
 	import { page } from '$app/stores'
 	import routes from '$lib/routes'
@@ -19,6 +18,7 @@
 	import { dateOfBirthSchema, endAgeSchema, supportedCurrenciesSchema } from '$lib/schemas'
 	import Error from '$lib/components/error.svelte'
 	import { locale } from 'svelte-i18n'
+	import ChartComponent from '$lib/components/chart.svelte'
 
 	let hash = $state('')
 	let loading = $state<boolean>(true)
@@ -114,119 +114,18 @@
 
 	let age = $derived.by(() => calculateAge(new Date(detailStore.dateOfBirth)))
 
-	let canvas: HTMLCanvasElement | null = $state(null)
-	let chart: Chart | null = $state(null)
-
-	$effect(() => {
-		const getLabels = () =>
-			resultStore.graphData.map(
-				(row) => row.date.getFullYear() - detailStore.dateOfBirth.getFullYear(),
-			)
-		const getTotalInvested = () => resultStore.graphData.map((row) => row.totalInvested)
-		const getTotalDeposited = () => resultStore.graphData.map((row) => row.totalDeposited)
-		const getTotalWithdrawn = () => resultStore.graphData.map((row) => row.totalWithdrawn)
-		const getTotalFees = () => resultStore.graphData.map((row) => row.totalFees)
-		const getTotalWithdrawFee = () => resultStore.graphData.map((row) => row.totalWithdrawFee)
-		const getTotalDepositFee = () => resultStore.graphData.map((row) => row.totalDepositFee)
-		const getTotalManagementFee = () => resultStore.graphData.map((row) => row.totalManagementFee)
-		const getTotalSuccessFee = () => resultStore.graphData.map((row) => row.totalSuccessFee)
-
-		if (canvas && !chart) {
-			chart = new Chart(canvas, {
-				type: 'line',
-				data: {
-					labels: getLabels(),
-					datasets: [
-						{
-							label: 'Invested value',
-							data: getTotalInvested(),
-							fill: {
-								target: 'origin',
-							},
-						},
-						{
-							label: 'Deposited',
-							data: getTotalDeposited(),
-							fill: {
-								target: 'origin',
-							},
-							hidden: true,
-						},
-						{
-							label: 'Withdrawn',
-							data: getTotalWithdrawn(),
-							fill: {
-								target: 'origin',
-							},
-							hidden: true,
-						},
-						{
-							label: 'Deposit fees',
-							data: getTotalDepositFee(),
-							fill: {
-								target: 'origin',
-							},
-							hidden: true,
-						},
-						{
-							label: 'Withdraw fees',
-							data: getTotalWithdrawFee(),
-							fill: {
-								target: 'origin',
-							},
-							hidden: true,
-						},
-						{
-							label: 'Management fees',
-							data: getTotalManagementFee(),
-							fill: {
-								target: 'origin',
-							},
-							hidden: true,
-						},
-						{
-							label: 'Success fees',
-							data: getTotalSuccessFee(),
-							fill: {
-								target: 'origin',
-							},
-							hidden: true,
-						},
-						{
-							label: 'All fees',
-							data: getTotalFees(),
-							fill: {
-								target: 'origin',
-							},
-							hidden: true,
-						},
-					],
-				},
-				options: {
-					scales: {
-						y: {
-							min: 0,
-						},
-					},
-					responsive: false,
-				},
-			})
-			chart.resize()
-		}
-
-		if (chart && resultStore.graphData) {
-			chart.data.labels = getLabels()
-			chart.data.datasets[0].data = getTotalInvested()
-			chart.data.datasets[1].data = getTotalDeposited()
-			chart.data.datasets[2].data = getTotalWithdrawn()
-			chart.data.datasets[3].data = getTotalDepositFee()
-			chart.data.datasets[4].data = getTotalWithdrawFee()
-			chart.data.datasets[5].data = getTotalManagementFee()
-			chart.data.datasets[6].data = getTotalSuccessFee()
-			chart.data.datasets[7].data = getTotalFees()
-			chart.update()
-		}
-	})
+	const getLabels = () =>
+		resultStore.graphData.map(
+			(row) => row.date.getFullYear() - detailStore.dateOfBirth.getFullYear(),
+		)
+	const getTotalInvested = () => resultStore.graphData.map((row) => row.totalInvested)
+	const getTotalDeposited = () => resultStore.graphData.map((row) => row.totalDeposited)
+	const getTotalWithdrawn = () => resultStore.graphData.map((row) => row.totalWithdrawn)
+	const getTotalFees = () => resultStore.graphData.map((row) => row.totalFees)
+	const getTotalWithdrawFee = () => resultStore.graphData.map((row) => row.totalWithdrawFee)
+	const getTotalDepositFee = () => resultStore.graphData.map((row) => row.totalDepositFee)
+	const getTotalManagementFee = () => resultStore.graphData.map((row) => row.totalManagementFee)
+	const getTotalSuccessFee = () => resultStore.graphData.map((row) => row.totalSuccessFee)
 
 	let localeAmount = $derived(
 		// TODO: remove once issue with using $ in svelte 5 is clearer
@@ -236,36 +135,14 @@
 			currency: detailStore.currency,
 		}),
 	)
-	let prevChartWidth: number = $state(0)
-	let actChartWidth: number = $state(0)
-	let interval: undefined | ReturnType<typeof setInterval> = $state()
-	$effect(() => {
-		if (actChartWidth !== prevChartWidth && chart) {
-			prevChartWidth = actChartWidth
-			if (interval) {
-				clearInterval(interval)
-			}
-			interval = setInterval(() => {
-				chart?.resize()
-				interval = undefined
-			}, 1000)
-		}
-		return () => {
-			if (interval) {
-				clearInterval(interval)
-			}
-		}
-	})
 </script>
 
 {#if loading}
 	Loading...
 {:else}
 	<section>
-		<div class="flex">
-			<h5>{$_('clientInformations')}</h5>
-			<Language />
-		</div>
+		<h5>{$_('clientInformations')}</h5>
+		<Language />
 		<div class="grid">
 			<Input
 				type="date"
@@ -364,9 +241,49 @@
 		</div>
 	</section>
 	<section>
-		<div class="chart" bind:clientWidth={actChartWidth}>
-			<canvas bind:this={canvas} />
-		</div>
+		<ChartComponent
+			labels={getLabels()}
+			series={[
+				{ label: 'Invested value', data: getTotalInvested(), fill: { target: 'origin' } },
+				{
+					label: 'Total deposited',
+					data: getTotalDeposited(),
+					fill: { target: 'origin' },
+					hidden: true,
+				},
+				{
+					label: 'Total withdrawn',
+					data: getTotalWithdrawn(),
+					fill: { target: 'origin' },
+					hidden: true,
+				},
+				{
+					label: 'Total deposited fee',
+					data: getTotalDepositFee(),
+					fill: { target: 'origin' },
+					hidden: true,
+				},
+				{
+					label: 'Total withdrawn fee',
+					data: getTotalWithdrawFee(),
+					fill: { target: 'origin' },
+					hidden: true,
+				},
+				{
+					label: 'Total management fee',
+					data: getTotalManagementFee(),
+					fill: { target: 'origin' },
+					hidden: true,
+				},
+				{
+					label: 'Total success fee',
+					data: getTotalSuccessFee(),
+					fill: { target: 'origin' },
+					hidden: true,
+				},
+				{ label: 'Total fees', data: getTotalFees(), fill: { target: 'origin' }, hidden: true },
+			]}
+		></ChartComponent>
 	</section>
 	<section>
 		<h5>{$_('results')}</h5>
@@ -425,6 +342,10 @@
 			></Input>
 		</div>
 	</section>
+	<section>
+		<h5>{$_('disclaimer')}</h5>
+		<p class="smallParagraph">{$_('disclaimerText')}</p>
+	</section>
 {/if}
 
 <style>
@@ -442,9 +363,13 @@
 		padding: 1rem;
 	}
 	section {
+		position: relative;
 		padding-bottom: 1rem;
 		max-width: 1200px;
 		margin: 0 auto;
+	}
+	section > h5 {
+		padding-bottom: 1rem;
 	}
 	.grid {
 		display: grid;
@@ -492,5 +417,17 @@
 	.edit > a:active {
 		background: var(--colors-low);
 		color: var(--colors-high);
+	}
+	.smallParagraph {
+		align-self: stretch;
+		color: var(--colors-ultraHigh, #303030);
+		/* smallParagraph */
+		font-family: Arial;
+		font-size: 0.75rem;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 1rem; /* 133.333% */
+		letter-spacing: 0.0375rem;
+		padding: 0 0.75rem;
 	}
 </style>
