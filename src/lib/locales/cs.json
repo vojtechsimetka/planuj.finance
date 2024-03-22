@@ -50,8 +50,6 @@
 	"remainingPortfolioValue": "Zbývající částka portfolia",
 	"operationBeforeBorn": "Začátek před narozením",
 	"operationAfterEnd": "Konec po ivestičním horizontu",
-	"disclaimer": "Upozornění",
-	"disclaimerText": "Uvedené informace slouží pouze k ilustračním účelům a nejsou považovány za finanční poradenství. Investice obnášejí rizika a výsledky v minulosti nejsou zárukou budoucích výsledků. Zobrazená čísla jsou hypotetická a neodrážejí skutečné investiční výnosy. Před provedením jakýchkoli investičních rozhodnutí je důležité provést důkladný výzkum a vyhledat radu od kvalifikovaného finančního poradce. Neposkytujeme žádnou záruku ohledně přesnosti nebo úplnosti uvedených informací. Uživatel přebírá veškerou odpovědnost za svá investiční rozhodnutí.",
 
 	"errors": {
 		"too_small": "Hodnota musí být větší"

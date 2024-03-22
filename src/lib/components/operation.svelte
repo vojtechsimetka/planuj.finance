@@ -2,7 +2,6 @@
 	import type { Deposit, Withdrawal } from '$lib/types'
 	import { _ } from 'svelte-i18n'
 	import { detailStore } from '$lib/stores/details.svelte'
-	import { year } from '$lib/utils'
 	import { Warning } from 'carbon-icons-svelte'
 	import { incrementDate } from '$lib/calc'
 
