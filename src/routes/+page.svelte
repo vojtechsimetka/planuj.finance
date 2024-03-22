@@ -342,10 +342,6 @@
 			></Input>
 		</div>
 	</section>
-	<section>
-		<h5>{$_('disclaimer')}</h5>
-		<p class="smallParagraph">{$_('disclaimerText')}</p>
-	</section>
 {/if}
 
 <style>
