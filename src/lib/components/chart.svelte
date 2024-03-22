@@ -38,7 +38,6 @@
 	})
 	let prevChartWidth: number = $state(0)
 	let actChartWidth: number = $state(0)
-	$inspect
 	$effect(() => {
 		const interval = setInterval(() => {
 			if (actChartWidth !== prevChartWidth && chart) {
