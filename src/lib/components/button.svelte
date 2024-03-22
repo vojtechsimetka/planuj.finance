@@ -1,20 +1,40 @@
 <script lang="ts">
-	import type { HTMLButtonAttributes } from 'svelte/elements'
-
-	interface Props extends HTMLButtonAttributes {
-		variant: 'primary' | 'secondary' | 'ghost' | 'overlay' | 'darkoverlay'
+	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements'
+	type Variant = 'primary' | 'secondary' | 'ghost' | 'overlay' | 'darkoverlay'
+	type Props = {
+		variant: Variant
 		active?: boolean
-		onclick?: () => void
+		class?: string | null
 	}
-	let { variant, active, disabled, onclick }: Props = $props()
+	interface AnchorElement extends HTMLAnchorAttributes, Props {
+		href?: HTMLAnchorAttributes['href']
+		type?: never
+		disabled?: never
+	}
+
+	interface ButtonElement extends HTMLButtonAttributes, Props {
+		type?: HTMLButtonAttributes['type']
+		href?: never
+		disabled?: boolean
+	}
+	type Propss = AnchorElement | ButtonElement
+	let { variant, active, disabled, href, ...restProps }: Propss = $props()
 </script>
 
-<button class={`${variant}`} class:active {disabled} {onclick}>
+<svelte:element
+	this={href ? 'a' : 'button'}
+	class={`${variant}`}
+	{href}
+	class:active
+	{disabled}
+	{...restProps}
+>
 	<slot />
-</button>
+</svelte:element>
 
 <style>
-	button {
+	button,
+	a {
 		display: inline-flex;
 		padding: 12px;
 		justify-content: center;
@@ -29,6 +49,7 @@
 		letter-spacing: 0.02rem;
 		border: 1px solid var(--colors-ultraHigh);
 		cursor: pointer;
+		text-decoration: none;
 	}
 	.primary {
 		background: var(--colors-ultraHigh);

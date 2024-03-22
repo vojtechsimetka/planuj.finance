@@ -63,11 +63,11 @@
 {#if (depositIndex === undefined && Boolean(index)) || (depositIndex !== undefined && detailStore.deposits.length <= depositIndex)}
 	<section>
 		<h5>Vklad s indexem {index} jsme nenalezli</h5>
-		<Button variant="secondary" onclick={cancel} disabled={!formValid}><Undo size={24} /></Button>
+		<Button variant="secondary" onclick={cancel}><Undo size={24} /></Button>
 	</section>
 {:else if depositIndex !== undefined}
 	<section>
-		<h5>{$_('editedDeposit')} {depositIndex}</h5>
+		<h5>{$_('editedDeposit')} #{depositIndex} - "{deposit.name}"</h5>
 		<OperationForm bind:operation={deposit} recurringOperationText="isDepositRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={save} disabled={!formValid}
