@@ -9,7 +9,7 @@
 	import Select from '$lib/components/select.svelte'
 	import Option from '$lib/components/option.svelte'
 	import Operation from '$lib/components/operation.svelte'
-	import { Edit, TrashCan } from 'carbon-icons-svelte'
+	import { Add, Edit, TrashCan } from 'carbon-icons-svelte'
 	import Button from '$lib/components/button.svelte'
 	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import { formatDate, initialValues } from '$lib/utils'
@@ -211,12 +211,12 @@
 	<section>
 		<div class="flex-add-deposit">
 			<h5>{$_('plannedDeposits')}</h5>
-			<a href={routes.DEPOSIT()}>+</a>
+			<Button variant="ghost" href={routes.DEPOSIT()}><Add size={24} /></Button>
 		</div>
 		<div class="grid">
 			{#each detailStore.deposits as deposit, i}
 				<Operation operation={deposit} currency={localeAmount}>
-					<div class="edit"><a href={routes.DEPOSIT(i)}><Edit size={24} /></a></div>
+					<Button variant={'ghost'} href={routes.DEPOSIT(i)}><Edit size={24} /></Button>
 					<Button variant={'ghost'} onclick={() => detailStore.removeDeposit(i)}
 						><TrashCan size={24} /></Button
 					>
@@ -227,12 +227,12 @@
 	<section>
 		<div class="flex-add-deposit">
 			<h5>{$_('plannedWithdrawals')}</h5>
-			<a href={routes.WITHDRAWAL()}>+</a>
+			<Button variant="ghost" href={routes.WITHDRAWAL()}><Add size={24} /></Button>
 		</div>
 		<div class="grid">
 			{#each detailStore.withdrawals as withdrawal, i}
 				<Operation operation={withdrawal} currency={localeAmount}>
-					<div class="edit"><a href={routes.WITHDRAWAL(i)}><Edit size={24} /></a></div>
+					<Button variant={'ghost'} href={routes.WITHDRAWAL(i)}><Edit size={24} /></Button>
 					<Button variant={'ghost'} onclick={() => detailStore.removeWithdrawal(i)}
 						><TrashCan size={24} /></Button
 					>

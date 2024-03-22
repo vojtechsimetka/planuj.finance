@@ -68,7 +68,7 @@
 	</section>
 {:else if withdrawalIndex !== undefined}
 	<section>
-		<h5>{$_('editedWithdrawal')} {withdrawalIndex}</h5>
+		<h5>{$_('editedWithdrawal')} #{withdrawalIndex} - "{withdrawal.name}"</h5>
 		<PageOfOperation bind:operation={withdrawal} recurringOperationText="isWithdrawalRecurring" />
 		<div class="buttons">
 			<Button variant="primary" onclick={save} disabled={!formValid}
