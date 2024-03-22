@@ -103,7 +103,7 @@ export function withResultsStore() {
 				.add(newTotalWithdrawFee)
 				.add(newTotalManagementFee)
 				.add(newTotalSuccessFee)
-			if (i.getDate() % 30 === 0) {
+			if (i.getDate() === 1) {
 				graphDates.push(new Date(i).getFullYear())
 				graphTotalInvested.push(newTotalInvested.toNumber())
 				graphTotalDeposited.push(newTotalDeposited.toNumber())

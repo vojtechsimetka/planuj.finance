@@ -2,7 +2,7 @@
 	import Chart, { type ChartDataset } from 'chart.js/auto'
 
 	interface Props {
-		labels: number[]
+		labels: (number | string)[]
 		series: ChartDataset[]
 	}
 	let { labels, series }: Props = $props()
