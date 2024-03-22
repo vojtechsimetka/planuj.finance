@@ -27,6 +27,7 @@ export function withResultsStore() {
 	let totalFees: number = $state(0)
 	let totalSuccessFee: number = $state(0)
 	let totalManagementFee: number = $state(0)
+	let investedValueError: string | undefined = $state(undefined)
 
 	function update() {
 		const rates = getEffectiveInterestRate(
@@ -74,45 +75,51 @@ export function withResultsStore() {
 			.pow(new Decimal(1).div(new Decimal(365.25)))
 
 		for (let i = new Date(start); i <= end; i = incrementDate(i, 'day')) {
-			newTotalInvested = newTotalInvested.mul(dailyROI)
-			const deposited = new Decimal(depositsMap.get(formatDate(i)) ?? 0)
-			const depositedFee = deposited.mul(new Decimal(detailStore.entryFee).div(100))
-			newTotalDeposited = newTotalDeposited.add(deposited)
-			newTotalDepositFee = newTotalDepositFee.add(depositedFee)
+			if (newTotalInvested >= new Decimal(0)) {
+				newTotalInvested = newTotalInvested.mul(dailyROI)
+				const deposited = new Decimal(depositsMap.get(formatDate(i)) ?? 0)
+				const depositedFee = deposited.mul(new Decimal(detailStore.entryFee).div(100))
+				newTotalDeposited = newTotalDeposited.add(deposited)
+				newTotalDepositFee = newTotalDepositFee.add(depositedFee)
 
-			const withdrawn = new Decimal(withdrawalsMap.get(formatDate(i)) ?? 0)
-			const withdrawnFee = withdrawn.mul(new Decimal(detailStore.withdrawalFee).div(100))
-			newTotalWithdrawn = newTotalWithdrawn.add(withdrawn)
-			newTotalWithdrawFee = newTotalWithdrawFee.add(withdrawnFee)
+				const withdrawn = new Decimal(withdrawalsMap.get(formatDate(i)) ?? 0)
+				const withdrawnFee = withdrawn.mul(new Decimal(detailStore.withdrawalFee).div(100))
+				newTotalWithdrawn = newTotalWithdrawn.add(withdrawn)
+				newTotalWithdrawFee = newTotalWithdrawFee.add(withdrawnFee)
 
-			const fee = newTotalInvested.mul(dailyNoFeesROI).sub(newTotalInvested.mul(dailyROI))
-			const [managementFee, successFee] = splitWithRation(
-				rates.managementFeePercentage,
-				rates.successFeePercentage,
-				fee,
-			)
-			newTotalManagementFee = newTotalManagementFee.add(managementFee)
-			newTotalSuccessFee = newTotalSuccessFee.add(successFee)
+				const fee = newTotalInvested.mul(dailyNoFeesROI).sub(newTotalInvested.mul(dailyROI))
+				const [managementFee, successFee] = splitWithRation(
+					rates.managementFeePercentage,
+					rates.successFeePercentage,
+					fee,
+				)
+				newTotalManagementFee = newTotalManagementFee.add(managementFee)
+				newTotalSuccessFee = newTotalSuccessFee.add(successFee)
 
-			newTotalInvested = newTotalInvested
-				.add(deposited)
-				.sub(depositedFee)
-				.sub(withdrawn)
-				.sub(withdrawnFee)
-			newTotalFees = newTotalDepositFee
-				.add(newTotalWithdrawFee)
-				.add(newTotalManagementFee)
-				.add(newTotalSuccessFee)
-			if (i.getDate() === 1) {
-				graphDates.push(new Date(i).getFullYear())
-				graphTotalInvested.push(newTotalInvested.toNumber())
-				graphTotalDeposited.push(newTotalDeposited.toNumber())
-				graphTotalWithdrawn.push(newTotalWithdrawn.toNumber())
-				graphTotalDepositFee.push(newTotalDepositFee.toNumber())
-				graphTotalWithdrawFee.push(newTotalWithdrawFee.toNumber())
-				graphTotalFees.push(newTotalFees.toNumber())
-				graphTotalManagementFee.push(newTotalManagementFee.toNumber())
-				graphTotalSuccessFee.push(newTotalSuccessFee.toNumber())
+				newTotalInvested = newTotalInvested
+					.add(deposited)
+					.sub(depositedFee)
+					.sub(withdrawn)
+					.sub(withdrawnFee)
+				newTotalFees = newTotalDepositFee
+					.add(newTotalWithdrawFee)
+					.add(newTotalManagementFee)
+					.add(newTotalSuccessFee)
+				if (i.getDate() === 1) {
+					graphDates.push(new Date(i).getFullYear())
+					graphTotalInvested.push(newTotalInvested.toNumber())
+					graphTotalDeposited.push(newTotalDeposited.toNumber())
+					graphTotalWithdrawn.push(newTotalWithdrawn.toNumber())
+					graphTotalDepositFee.push(newTotalDepositFee.toNumber())
+					graphTotalWithdrawFee.push(newTotalWithdrawFee.toNumber())
+					graphTotalFees.push(newTotalFees.toNumber())
+					graphTotalManagementFee.push(newTotalManagementFee.toNumber())
+					graphTotalSuccessFee.push(newTotalSuccessFee.toNumber())
+				}
+				investedValueError = undefined
+			} else {
+				investedValueError = `Portfolio se dostalo pod 0 ke dni ${incrementDate(i, 'day', -1).toLocaleDateString()}`
+				return
 			}
 		}
 
@@ -180,6 +187,9 @@ export function withResultsStore() {
 		},
 		get graphTotalSuccessFee() {
 			return graphTotalSuccessFee
+		},
+		get investedValueError() {
+			return investedValueError
 		},
 
 		update,

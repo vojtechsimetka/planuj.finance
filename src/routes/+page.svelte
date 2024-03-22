@@ -9,7 +9,7 @@
 	import Select from '$lib/components/select.svelte'
 	import Option from '$lib/components/option.svelte'
 	import Operation from '$lib/components/operation.svelte'
-	import { Edit, TrashCan } from 'carbon-icons-svelte'
+	import { Edit, TrashCan, Warning } from 'carbon-icons-svelte'
 	import Button from '$lib/components/button.svelte'
 	import { supportedCurrenciesWithLabels } from '$lib/types'
 	import { formatDate, initialValues } from '$lib/utils'
@@ -228,6 +228,12 @@
 		</div>
 	</section>
 	<section>
+		<div class="investedError">
+			{#if resultStore.investedValueError !== undefined}
+				<Warning size={24} />&nbsp;
+				<p class="paragraph">{resultStore.investedValueError}</p>
+			{/if}
+		</div>
 		<ChartComponent
 			labels={resultStore.graphDates}
 			series={[
@@ -413,6 +419,21 @@
 	.edit > a:active {
 		background: var(--colors-low);
 		color: var(--colors-high);
+	}
+	.investedError {
+		display: inline-flex;
+		padding: 1rem;
+	}
+	.paragraph {
+		align-self: stretch;
+		color: var(--colors-ultraHigh, #303030);
+		/* paragraph */
+		font-family: Arial;
+		font-size: 1rem;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 1.5rem; /* 150% */
+		letter-spacing: 0.02rem;
 	}
 	.smallParagraph {
 		align-self: stretch;
