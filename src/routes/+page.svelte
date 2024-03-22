@@ -228,12 +228,12 @@
 		</div>
 	</section>
 	<section>
-		<div class="investedError">
-			{#if resultStore.investedValueError !== undefined}
+		{#if resultStore.investedValueError !== undefined}
+			<div class="investedError">
 				<Warning size={24} />&nbsp;
-				<p class="paragraph">{resultStore.investedValueError}</p>
-			{/if}
-		</div>
+				<p class="paragraph">{$_('investedValueError')}&nbsp;{resultStore.investedValueError}</p>
+			</div>
+		{/if}
 		<ChartComponent
 			labels={resultStore.graphDates}
 			series={[

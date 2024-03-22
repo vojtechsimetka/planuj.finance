@@ -118,7 +118,7 @@ export function withResultsStore() {
 				}
 				investedValueError = undefined
 			} else {
-				investedValueError = `Portfolio se dostalo pod 0 ke dni ${incrementDate(i, 'day', -1).toLocaleDateString()}`
+				investedValueError = incrementDate(i, 'day', -1).toLocaleDateString()
 				return
 			}
 		}
