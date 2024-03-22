@@ -18,7 +18,12 @@
 
 	const store = withSelectStore(value)
 	setContext('select-store', store)
-
+	const body = document.body
+	body.addEventListener('click', () => {
+		if (store.open) {
+			store.open = false
+		}
+	})
 	$effect(() => {
 		value = store.value
 	})
@@ -45,7 +50,23 @@
 				if (e.key === 'ArrowDown') {
 					e.preventDefault()
 					e.stopPropagation()
-					store.open = true
+					if (!store.open) {
+						store.open = true
+					} else {
+						const values = Object.keys(store.labels)
+						const index = store.value ? values.indexOf(store.value) : 0
+						store.value = values[(index + 1) % values.length]
+					}
+				} else if (e.key === 'ArrowUp' && store.open) {
+					e.preventDefault()
+					e.stopPropagation()
+					const values = Object.keys(store.labels)
+					const index = store.value ? values.indexOf(store.value) : 0
+					store.value = values[index - 1 < 0 ? values.length - 1 : index - 1]
+				} else if ((e.key === 'Enter' || e.key === 'Escape') && store.open) {
+					e.preventDefault()
+					e.stopPropagation()
+					store.open = false
 				}
 			}}
 			id={labelFor}
@@ -165,7 +186,7 @@
 		top: 100%;
 		left: 0;
 		/* FIXME: remove the calc and solve this with nesting */
-		width: calc(100% - 1rem);
+		width: calc(100% - 18px);
 		border-radius: 0.25rem;
 		border: 1px solid var(--colors-high);
 		background: var(--colors-base);

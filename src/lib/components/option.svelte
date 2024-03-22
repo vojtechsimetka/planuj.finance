@@ -10,11 +10,11 @@
 
 	const store = getContext<SelectStore>('select-store')
 
-	let liElement = $state<HTMLButtonElement | undefined>()
+	let buttonElement = $state<HTMLButtonElement | undefined>()
 
 	const updateLabel = () => {
-		if (liElement && liElement.childNodes.length > 0) {
-			const filteredNodes = Array.from(liElement.childNodes).filter(
+		if (buttonElement && buttonElement.childNodes.length > 0) {
+			const filteredNodes = Array.from(buttonElement.childNodes).filter(
 				(node) => node.nodeType !== Node.COMMENT_NODE,
 			)
 			const content = filteredNodes.map((node) => node.nodeValue).join('')
@@ -29,9 +29,8 @@
 </script>
 
 <button
-	bind:this={liElement}
+	bind:this={buttonElement}
 	onclick={(e: MouseEvent) => {
-		if (!store.open) return
 		e.preventDefault()
 		e.stopPropagation()
 		store.open = false
@@ -55,9 +54,16 @@
 		line-height: 1.5rem; /* 150% */
 		letter-spacing: 0.02rem;
 		padding: 0.75rem;
+		display: flex;
+		justify-content: flex-start;
+	}
+	button:focus {
+		outline: 1px solid var(--colors-high);
 	}
 	button.selected,
-	button:hover {
+	button:hover,
+	button:focus,
+	button.active {
 		background-color: var(--colors-low);
 		border-radius: 0.25rem;
 		cursor: pointer;
